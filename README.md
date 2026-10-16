@@ -211,6 +211,13 @@ Visibility của keypoint: 2 = thấy, **1 = trong ảnh nhưng bị chính cơ 
 - `yolo`: `images/<split>/`, `labels/<split>/`, `data.yaml` (`kpt_shape: [59, 3]`, `flip_idx`; `path` tuyệt đối, sửa nếu chuyển thư mục). `--yolo-classes gesture`: mỗi cử chỉ một lớp.
 - `cvat`: `images/`, `annotations.xml` (CVAT for images 1.1: box + mask + 3 skeleton, thuộc tính `gesture`, `subset` = split) và `cvat_labels.json`: dán vào ô *Raw* khi tạo task, upload ảnh, rồi *Upload annotations* chọn "CVAT 1.1".
 
+### Huấn luyện YOLO và so sánh trước / sau — `notebooks/yolo_finetune_compare.ipynb`
+```
+pip install -e .[train]
+jupyter notebook notebooks/yolo_finetune_compare.ipynb
+```
+Xuất dataset (mặc định `out/vn300`) sang YOLO-pose (lớp `traffic_officer`, 59 keypoint, train / val / test), tinh chỉnh YOLO11-pose, rồi cho **YOLO gốc** (lớp `person`) và **YOLO đã học** phát hiện trên **tập dữ liệu của bạn** (`USER_DATA` ở ô cấu hình: thư mục YOLO `images/` + `labels/`, file / thư mục COCO `.json`, hoặc chỉ thư mục ảnh) và so sánh bằng cùng một đoạn code: AP50, AP50–95, precision / recall / F1, phát hiện sai, OKS 17 điểm thân, kèm hình so sánh. Kết quả ở `out/yolo_runs/` (`comparison.csv`, `compare_*.jpg`, `tosdg_officer/weights/best.pt`). Huấn luyện cần GPU để nhanh (PyTorch bản CUDA); biến môi trường `QUICK_TEST=1` chạy thử 1 epoch. Sửa code của notebook trong `tools/make_notebook.py` rồi chạy lại để notebook trong repo không chứa output.
+
 ### `pose-preview` — xem một pose
 ```
 python -m tosdg pose-preview POSE [--hand-l NAME] [--hand-r NAME] [--character ID]

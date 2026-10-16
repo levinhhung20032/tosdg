@@ -14,6 +14,8 @@ dependencies = ["numpy>=1.26", "pillow>=10", "jsonschema>=4.20"]
 gpu = ["moderngl>=5.8"]
 # Photo analysis on import: ground mask (SegFormer, transformers) and reference people (YOLO11, ultralytics).
 detect = ["torch>=2", "transformers>=4.40", "ultralytics>=8.3"]
+# notebooks/yolo_finetune_compare.ipynb: train YOLO on a tosdg dataset and compare it with the stock model.
+train = ["ultralytics>=8.3", "pandas", "matplotlib", "jupyter"]
 
 [project.scripts]
 tosdg = "tosdg.cli:main"
