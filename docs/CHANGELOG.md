@@ -9,6 +9,7 @@ Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết k
   - `size_reference: "people"` (định cỡ theo một người; `auto` thay thế) và `people.plan_from_person`.
   - Panel ẩn "Uniform views" của Studio (bộ ảnh quanh người, trích màu đồng phục từ ảnh, ảnh "ghost"), `studio/appearance.py`, các API `/api/uniform_*`, `/api/upload_uniform_view`, `/files/`.
 - **Giới hạn độ sáng** (D45): khoảng `lighting` trong config có giới hạn (exposure −3..3 EV, cường độ ≥ 0; trước đó `exposure_ev` lớn làm tràn số và dừng chương trình), exposure cuối của mỗi mẫu bị kẹp trong [−2,5; 2] EV, `match_backplate_light` chỉ làm tối tới −2 EV (trước −4: viên cảnh sát gần như đen), và mẫu có viên cảnh sát quá tối / cháy sáng bị loại (`validation.min_officer_level` 12, `max_officer_level` 245, mức sRGB trung bình của các pixel viên cảnh sát).
+- `tools/mirror_commit.py`: chép commit cuối của một bản tosdg (thư mục con trong repo nhóm, hoặc repo riêng) sang bản kia và commit với cùng message / tác giả; không chép lịch sử git.
 - `.gitignore`: `data/` giữ cây thư mục (`.gitkeep`), chỉ bỏ qua nội dung các thư mục con.
 - **Vị trí và hướng quay theo giao lộ** (D43): `officer_yaw_mode: "junction"` — viên cảnh sát đứng giữa ngã ba / ngã tư / bùng binh (lệch ≤ 1 m), quay mặt theo loại giao lộ (ngã tư, bùng binh: về một nhánh; chữ T: về thân chữ T, cả ba nhánh trong tầm nhìn; chữ Y: về một nhánh hoặc thấy ít nhất hai nhánh) và theo cử chỉ (các phía cử chỉ ra lệnh phải là đường). Bùng binh: bục và gậy cầm tay bốc ngẫu nhiên (`roundabout`, luồng `roundabout`). Bố cục giao lộ đặt tay (`backgrounds junction`, thư viện 1.2 khối `junction`). Module mới `src/tosdg/junction.py`; luồng mới `junction`. Metadata 1.8 `background.junction`.
 - **Ánh sáng theo ảnh nền** (D43): `match_backplate_light: true` làm tối viên cảnh sát theo độ sáng ảnh nền quanh chỗ đứng (tới −4 EV); ảnh đêm có ánh đèn đường vàng thay nắng. Ảnh nền đêm / chiều tối được nhận vào thư viện.
@@ -25,7 +26,7 @@ Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết k
 - **Hướng quay theo đường** (D40): `officer_yaw_mode: "road"`: 0 / 90 / 180 / 270° so với hướng xe chạy (hướng nhìn của ảnh + `road_yaw_deg` của ảnh, thư viện 1.2) ± 5°, luồng `road_yaw`; `camera.placement.road_quarter`. Studio: ô *road direction °*.
 - **Studio Random generate** (D40): panel mới, khoá cử chỉ / loại camera / góc nhìn hiện tại / ảnh nền / baton / bục, phần còn lại ngẫu nhiên; chạy nền, xem tiến độ và ảnh nhỏ; ra `out/studio_random/`. API `/api/random_generate`, `/api/random_status`, `GET /gen/<file>`. Config mới `background_ids`, `camera_overrides`.
 - **Bỏ camera CCTV** (`cctv_elevated`) khỏi profile VN, Studio và mọi danh sách; còn 4 loại camera.
-- Bộ test: 264 → 313 (`tests/test_people.py`, `tests/test_calibrate.py`, `tests/test_junction.py`, `tests/test_lighting_bounds.py`).
+- Bộ test: 264 → 316 (`tests/test_people.py`, `tests/test_calibrate.py`, `tests/test_junction.py`, `tests/test_lighting_bounds.py`, `tests/test_mirror.py`).
 
 ## v3.0 — 2026-10-15
 

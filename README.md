@@ -1,6 +1,6 @@
 # Traffic Officer Synthetic Data Generator (`tosdg`)
 
-**Phiên bản v3.1** (2026-10-16) · 313 test · Python ≥ 3.11 · lịch sử thay đổi: [`docs/CHANGELOG.md`](docs/CHANGELOG.md) · tiến độ: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md)
+**Phiên bản v3.1** (2026-10-16) · 316 test · Python ≥ 3.11 · lịch sử thay đổi: [`docs/CHANGELOG.md`](docs/CHANGELOG.md) · tiến độ: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md)
 
 Dữ liệu tổng hợp có thể điều khiển và tái lập, dùng cho bài toán phát hiện cảnh sát giao thông, ước lượng tư thế, nhận dạng cử chỉ
 và hiểu chỉ dẫn giao thông. Ground truth (keypoint, bbox, mask, camera, ý nghĩa của cử chỉ) được **tính từ cảnh mô phỏng, không bao giờ ước lượng**.

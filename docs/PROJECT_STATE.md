@@ -39,7 +39,7 @@ Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn
 **CLI** (`python -m tosdg`): `generate`, `validate`, `reproduce`, `validate-profile`, `fixtures`, `backgrounds import|ground|people|objects|calibrate|set|remove|check`, `overlay`, `export` (COCO / YOLO-pose / CVAT), `pose-preview`, `import-model`, `studio`. Lỗi đầu vào là một dòng `error: ...` với mã thoát 2 (`TOSDG_DEBUG=1` hiện traceback).
 
 ## Kiểm thử
-`python -m unittest discover -s tests -t tests` → **313 test, tất cả đều qua** (~135 giây; renderer GPU tự bỏ qua khi máy không có), gồm:
+`python -m unittest discover -s tests -t tests` → **316 test, tất cả đều qua** (~135 giây; renderer GPU tự bỏ qua khi máy không có), gồm:
 - Smoke E2E: 3 mẫu, đủ file, kiểm tra dataset đạt, sinh lại giống từng byte (cả theo chỉ số), seed khác ⇒ dữ liệu khác.
 - Các ca kiểm tra âm: ảnh trống, thiếu chủ thể, bbox diện tích 0/bị cắt, keypoint ngoài bbox, tay ra hiệu ngoài khung, vi phạm schema, tên file không khớp, file bị sửa/thiếu/thừa; chủ thể ra ngoài khung bị loại và bốc lại.
 - Camera: góc quay khớp công thức đóng của FRotationMatrix; ống kính, viền đen, remap mask.
