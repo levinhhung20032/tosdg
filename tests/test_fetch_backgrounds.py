@@ -3,6 +3,7 @@ Wikimedia Commons API (faked here: no network), downloaded at the indexed width 
 
 Contents:
   FetchTests (5 tests)
+  OptionalPhotoTests (3 tests)
 """
 import json
 import shutil
@@ -93,6 +94,52 @@ class FetchTests(unittest.TestCase):
         rc = fb.fetch(self.lib_dir, get=FakeCommons({"https://up/clear.png": b"not the same photo"}), log=lines.append)
         self.assertEqual(rc, 1)
         self.assertTrue(any("differs from the indexed one" in x for x in lines))
+
+
+class OptionalPhotoTests(unittest.TestCase):
+    """The listed photos are optional: missing ones are skipped by generate / Studio / check, never an error by themselves."""
+
+    def setUp(self):
+        self._td = tempfile.TemporaryDirectory()
+        self.td = Path(self._td.name)
+        self.lib_dir = self.td / "lib"
+        shutil.copytree(fixture_library(), self.lib_dir)
+        lib = BackgroundLibrary(self.lib_dir)
+        for i in ("fx_dusk", "fx_elevated"):
+            lib.path(lib.by_id[i]).unlink()
+
+    def tearDown(self):
+        self._td.cleanup()
+
+    def test_generation_uses_the_photos_that_are_here(self):
+        from helpers import make_config
+        from test_cli import FAST
+        from tosdg.scene import GenerationContext
+        ctx = GenerationContext(make_config(self.td, background_library=str(self.lib_dir), **FAST))
+        self.assertEqual(sorted(b["id"] for b in ctx.backgrounds.index["backgrounds"]), ["fx_day_clear", "fx_day_overcast"])
+        self.assertIn("backgrounds/available", ctx.asset_hashes)                 # the dataset says which photos it could use
+        with self.assertRaisesRegex(ValueError, "not on this machine"):
+            GenerationContext(make_config(self.td, background_library=str(self.lib_dir), schema_version="1.6",
+                                          background_ids=["fx_dusk"], **FAST))
+
+    def test_no_photo_at_all_says_how_to_get_some(self):
+        from helpers import make_config
+        from test_cli import FAST
+        from tosdg.scene import GenerationContext
+        lib = BackgroundLibrary(self.lib_dir)
+        for b in lib.index["backgrounds"]:
+            lib.path(b).unlink(missing_ok=True)
+        with self.assertRaisesRegex(ValueError, "fetch_backgrounds.bat"):
+            GenerationContext(make_config(self.td, background_library=str(self.lib_dir), **FAST))
+
+    def test_check_and_studio(self):
+        from test_cli import run_cli
+        from tosdg.studio.workspace import Workspace
+        rc, out, _ = run_cli("backgrounds", "check", self.lib_dir)
+        self.assertEqual(rc, 0, out)
+        self.assertIn("2 of 4 backgrounds here", out)
+        self.assertEqual(sorted(b["id"] for b in Workspace(self.td / "ws", library=self.lib_dir).list_backgrounds()),
+                         ["fx_day_clear", "fx_day_overcast"])
 
 
 if __name__ == "__main__":

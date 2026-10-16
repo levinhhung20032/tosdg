@@ -235,12 +235,19 @@ class BackgroundLibrary:
     def path(self, entry: dict) -> Path:
         return self.root / entry["file"].replace("\\", "/")
 
-    def integrity_errors(self) -> list[str]:
+    def absent(self) -> list[str]:
+        """Ids of the photos the index lists that are not on this machine (the photos are not in git: fetch_backgrounds.bat)."""
+        return [b["id"] for b in self.index["backgrounds"] if not self.path(b).exists()]
+
+    def integrity_errors(self, missing_photos: bool = True) -> list[str]:
+        """missing_photos False: a listed photo that is not on this machine is not an error (it is optional; see absent)."""
         errs = []
         for b in self.index["backgrounds"]:
             p = self.path(b)
             if not p.exists():
-                errs.append(f"{b['id']}: missing file {p}")
+                if missing_photos:
+                    errs.append(f"{b['id']}: missing file {p} (not downloaded: fetch_backgrounds.bat)")
+                continue
             elif sha256_file(p) != b["sha256"]:
                 errs.append(f"{b['id']}: sha256 mismatch")
             g = b.get("ground")

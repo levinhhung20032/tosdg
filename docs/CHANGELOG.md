@@ -9,6 +9,7 @@ Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết k
   - `size_reference: "people"` (định cỡ theo một người; `auto` thay thế) và `people.plan_from_person`.
   - Panel ẩn "Uniform views" của Studio (bộ ảnh quanh người, trích màu đồng phục từ ảnh, ảnh "ghost"), `studio/appearance.py`, các API `/api/uniform_*`, `/api/upload_uniform_view`, `/files/`.
 - **Giới hạn độ sáng** (D45): khoảng `lighting` trong config có giới hạn (exposure −3..3 EV, cường độ ≥ 0; trước đó `exposure_ev` lớn làm tràn số và dừng chương trình), exposure cuối của mỗi mẫu bị kẹp trong [−2,5; 2] EV, `match_backplate_light` chỉ làm tối tới −2 EV (trước −4: viên cảnh sát gần như đen), và mẫu có viên cảnh sát quá tối / cháy sáng bị loại (`validation.min_officer_level` 12, `max_officer_level` 245, mức sRGB trung bình của các pixel viên cảnh sát).
+- **Ảnh nền mẫu là tuỳ chọn**: 50 ảnh trong `index.json` là ảnh đã dùng khi xây dựng và kiểm thử tool; ảnh có tên mà máy chưa có được `generate`, `validate-profile`, Studio bỏ qua (kèm ghi chú), `backgrounds check` chỉ ghi chú. Không còn ảnh nào thì báo cách lấy (tải, tự upload, `fixtures`). Mã băm tài sản ghi thêm danh sách ảnh dùng được chỉ khi thiếu ảnh (thư viện đủ ảnh giữ mã băm cũ).
 - **`fetch_backgrounds.bat`** / `tools/fetch_backgrounds.py`: tải các ảnh nền có trong `index.json` mà máy chưa có (không nằm trong git) từ Wikimedia Commons theo `ATTRIBUTION.md`, đúng chiều rộng đã chú thích, kiểm tra sha256, dò lại mask thiếu. Thử trên thư viện trống: 50/50 ảnh giống từng byte, 49/50 mask giống hệt (1 lệch 0,28 % pixel, được báo).
 - `tools/mirror_commit.py`: chép commit cuối của một bản tosdg (thư mục con trong repo nhóm, hoặc repo riêng) sang bản kia và commit với cùng message / tác giả; không chép lịch sử git.
 - `.gitignore`: `data/` giữ cây thư mục (`.gitkeep`), chỉ bỏ qua nội dung các thư mục con.
@@ -27,7 +28,7 @@ Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết k
 - **Hướng quay theo đường** (D40): `officer_yaw_mode: "road"`: 0 / 90 / 180 / 270° so với hướng xe chạy (hướng nhìn của ảnh + `road_yaw_deg` của ảnh, thư viện 1.2) ± 5°, luồng `road_yaw`; `camera.placement.road_quarter`. Studio: ô *road direction °*.
 - **Studio Random generate** (D40): panel mới, khoá cử chỉ / loại camera / góc nhìn hiện tại / ảnh nền / baton / bục, phần còn lại ngẫu nhiên; chạy nền, xem tiến độ và ảnh nhỏ; ra `out/studio_random/`. API `/api/random_generate`, `/api/random_status`, `GET /gen/<file>`. Config mới `background_ids`, `camera_overrides`.
 - **Bỏ camera CCTV** (`cctv_elevated`) khỏi profile VN, Studio và mọi danh sách; còn 4 loại camera.
-- Bộ test: 264 → 321 (`tests/test_people.py`, `tests/test_calibrate.py`, `tests/test_junction.py`, `tests/test_lighting_bounds.py`, `tests/test_mirror.py`, `tests/test_fetch_backgrounds.py`).
+- Bộ test: 264 → 324 (`tests/test_people.py`, `tests/test_calibrate.py`, `tests/test_junction.py`, `tests/test_lighting_bounds.py`, `tests/test_mirror.py`, `tests/test_fetch_backgrounds.py`).
 
 ## v3.0 — 2026-10-15
 

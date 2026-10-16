@@ -376,10 +376,15 @@ def cmd_bg_remove(a) -> int:
 def cmd_bg_check(a) -> int:
     from .backgrounds import BackgroundLibrary
     lib = BackgroundLibrary(a.library)
-    errs = lib.integrity_errors()
+    errs = lib.integrity_errors(missing_photos=False)
     for e in errs:
         print("ERROR", e)
-    print(f"{len(lib.index['backgrounds'])} backgrounds, {'OK' if not errs else f'{len(errs)} error(s)'}")
+    absent = lib.absent()
+    if absent:
+        print(f"note: {len(absent)} listed photo(s) not on this machine (optional; fetch_backgrounds.bat downloads them): "
+              + ", ".join(absent[:8]) + (" ..." if len(absent) > 8 else ""))
+    print(f"{len(lib.index['backgrounds']) - len(absent)} of {len(lib.index['backgrounds'])} backgrounds here, "
+          f"{'OK' if not errs else f'{len(errs)} error(s)'}")
     return 1 if errs else 0
 
 

@@ -1,6 +1,6 @@
 # Traffic Officer Synthetic Data Generator (`tosdg`)
 
-**Phiên bản v3.1** (2026-10-16) · 321 test · Python ≥ 3.11 · lịch sử thay đổi: [`docs/CHANGELOG.md`](docs/CHANGELOG.md) · tiến độ: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md)
+**Phiên bản v3.1** (2026-10-16) · 324 test · Python ≥ 3.11 · lịch sử thay đổi: [`docs/CHANGELOG.md`](docs/CHANGELOG.md) · tiến độ: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md)
 
 Dữ liệu tổng hợp có thể điều khiển và tái lập, dùng cho bài toán phát hiện cảnh sát giao thông, ước lượng tư thế, nhận dạng cử chỉ
 và hiểu chỉ dẫn giao thông. Ground truth (keypoint, bbox, mask, camera, ý nghĩa của cử chỉ) được **tính từ cảnh mô phỏng, không bao giờ ước lượng**.
@@ -55,7 +55,9 @@ Tuỳ chọn:
 | `moderngl` (`pip install -e .[gpu]`) | renderer GPU (`mesh_renderer: gpu`, Studio "mesh — GPU") |
 | `torch`, `transformers`, `ultralytics` (`pip install -e .[detect]`) | phân tích ảnh nền khi nhập: mask mặt đường (SegFormer) và người / xe tham chiếu (YOLO11, trọng số tự tải vào `data/models`) |
 
-**Ảnh nền không nằm trong repo** (dung lượng và giấy phép từng ảnh): repo chỉ có `data/backgrounds/index.json` (đường chân trời, giao lộ, người / xe đã dò, tag — đặt tay, không tạo lại được) và `data/backgrounds/ATTRIBUTION.md` (nguồn, tác giả, giấy phép). Tải chúng bằng **`fetch_backgrounds.bat`** (nhấp đúp; hoặc `python tools/fetch_backgrounds.py [--dry-run] [--force] [--no-masks]`): với mỗi ảnh có trong `index.json` mà máy chưa có, lấy trang Wikimedia Commons trong `ATTRIBUTION.md`, tải bản đúng chiều rộng đã chú thích, so sha256 với `index.json`, rồi dò lại mask mặt đường còn thiếu (cần `pip install -e .[detect]`; mask dò lại có thể lệch chút ít so với bản gốc, script báo những ảnh đó). Không bao giờ sửa `index.json`. Ảnh thêm từ nguồn khác (không có dòng trong `ATTRIBUTION.md`) phải chép tay. Chỉ muốn chạy thử: `tosdg fixtures <thư mục>` tạo một thư viện nền tổng hợp nhỏ.
+**Ảnh nền mẫu (tuỳ chọn).** `data/backgrounds/index.json` liệt kê 50 ảnh đường phố Việt Nam (Wikimedia Commons) đã được dùng trong quá trình xây dựng và kiểm thử tool, kèm phần chú thích tay của chúng (đường chân trời, bố cục giao lộ, tag) và người / xe đã dò; `data/backgrounds/ATTRIBUTION.md` ghi nguồn, tác giả và giấy phép từng ảnh. **Bản thân các ảnh không nằm trong repo** (dung lượng, giấy phép). Tải chúng **không bắt buộc**: bạn có thể tải về để tham khảo hoặc dùng luôn, hoặc **tự upload ảnh nền của mình** (Studio → Background → upload, hoặc `tosdg backgrounds import`). Ảnh có tên trong `index.json` mà máy chưa có được `generate`, `validate-profile` và Studio bỏ qua (kèm một dòng ghi chú); `backgrounds check` chỉ ghi chú, không báo lỗi.
+
+Muốn tải: **`fetch_backgrounds.bat`** (nhấp đúp; hoặc `python tools/fetch_backgrounds.py [--dry-run] [--force] [--no-masks]`): với mỗi ảnh có trong `index.json` mà máy chưa có, lấy trang Wikimedia Commons trong `ATTRIBUTION.md`, tải bản đúng chiều rộng đã chú thích, so sha256 với `index.json`, rồi dò lại mask mặt đường còn thiếu (cần `pip install -e .[detect]`; mask dò lại có thể lệch chút ít so với bản gốc, script báo những ảnh đó). Không bao giờ sửa `index.json`. Ảnh thêm từ nguồn khác (không có dòng trong `ATTRIBUTION.md`) phải chép tay. Chỉ muốn chạy thử: `tosdg fixtures <thư mục>` tạo một thư viện nền tổng hợp nhỏ.
 
 Chạy mọi thứ từ thư mục gốc của project (thư mục chứa `pyproject.toml`) và trỏ
 `PYTHONPATH` vào `src`:

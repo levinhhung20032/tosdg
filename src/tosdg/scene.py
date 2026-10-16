@@ -109,6 +109,20 @@ class GenerationContext:
             if unknown:
                 raise ValueError(f"config background_ids: not in the background library {bg}: {unknown}")
             self.backgrounds.index["backgrounds"] = [b for b in self.backgrounds.index["backgrounds"] if b["id"] in cfg["background_ids"]]
+        # The library's photos are not in git: the ones listed but not on this machine are optional and skipped
+        self.absent_backgrounds = self.backgrounds.absent()
+        if self.absent_backgrounds:
+            if cfg.get("background_ids"):
+                raise ValueError(f"config background_ids: {self.absent_backgrounds} not on this machine (download them with "
+                                 "fetch_backgrounds.bat, or upload / import your own photos)")
+            self.backgrounds.index["backgrounds"] = [b for b in self.backgrounds.index["backgrounds"]
+                                                     if b["id"] not in self.absent_backgrounds]
+            if not self.backgrounds.index["backgrounds"]:
+                raise ValueError(f"background library {bg.resolve()}: none of its {len(self.absent_backgrounds)} photos is on this "
+                                 "machine. They are optional: download them with fetch_backgrounds.bat, or add your own "
+                                 "(Studio upload, 'tosdg backgrounds import'), or build test plates with 'tosdg fixtures <dir>'")
+            print(f"note: {len(self.absent_backgrounds)} photo(s) of {bg.resolve()} are listed but not on this machine (optional; "
+                  f"fetch_backgrounds.bat downloads them); using the {len(self.backgrounds.index['backgrounds'])} that are")
         if cfg.get("min_officer_height_px") and cfg.get("size_reference") != "auto":
             raise ValueError("config min_officer_height_px needs \"size_reference\": \"auto\": a bigger officer must "
                              "come with a consistently scaled photo, not alone in front of a photo that stays the same")
@@ -232,6 +246,9 @@ class GenerationContext:
         files += [self.skeleton.source] + sorted((self.root / "poses").rglob("*.json"))
         out = {p.relative_to(self.root).as_posix(): sha256_file(p) for p in files}       # "/" on every OS: the manifest is portable
         out["backgrounds/index.json"] = sha256_file(self.backgrounds.index_path)
+        if self.absent_backgrounds:        # only then: a dataset made with every photo keeps the hash it always had
+            out["backgrounds/available"] = hashlib.sha256(
+                "\n".join(sorted(b["id"] for b in self.backgrounds.index["backgrounds"])).encode()).hexdigest()
         return out
 
     def weights(self, key: str, items: dict) -> dict[str, float]:

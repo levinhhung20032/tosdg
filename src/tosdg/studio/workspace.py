@@ -86,7 +86,9 @@ class Workspace:
         return BackgroundLibrary(self.lib_dir)
 
     def list_backgrounds(self) -> list[dict]:
-        return self._lib().index["backgrounds"]
+        """The library's photos that are on this machine (listed but not downloaded ones are optional: not shown)."""
+        lib = self._lib()
+        return [b for b in lib.index["backgrounds"] if lib.path(b).exists()]
 
     def get_background(self, bg_id: str) -> dict | None:
         return self._lib().by_id.get(bg_id)
