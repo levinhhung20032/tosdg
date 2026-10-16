@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "stop_forward_r",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Tay phải duỗi thẳng ra trước ngang vai, bàn tay duỗi thẳng dựng đứng (ngón hướng lên, song song với thân người, không nghiêng), lòng bàn tay hướng thẳng về trước; tay trái buông xuôi.",
+  "joints": {
+    "hand_r": {
+      "deviation": 0.0,
+      "flexion": -90.0
+    },
+    "lowerarm_l": {
+      "flexion": 10.0
+    },
+    "lowerarm_r": {
+      "flexion": 0.0,
+      "pronation": 90.0
+    },
+    "upperarm_l": {
+      "abduction": 6.0
+    },
+    "upperarm_r": {
+      "abduction": 0.0,
+      "flexion": 90.0
+    }
+  }
+}

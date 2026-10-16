@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "a_pose",
+  "skeleton_family": "ue5_humanoid",
+  "description": "A-pose of the model as it comes from the auto-rigger (the bind pose of the beta model): arms about 20 degrees away from the body, palms out, feet flat.",
+  "joints": {
+    "upperarm_l": {
+      "flexion": 11.3,
+      "abduction": 19.2,
+      "twist": -31.1
+    },
+    "lowerarm_l": {
+      "flexion": 9.2,
+      "pronation": -41.8
+    },
+    "hand_l": {
+      "flexion": 5.1,
+      "deviation": 2.4
+    },
+    "thigh_l": {
+      "flexion": -2.1,
+      "abduction": -0.6,
+      "twist": -1.2
+    },
+    "calf_l": {
+      "flexion": 2.6
+    },
+    "foot_l": {
+      "flexion": -4.7
+    },
+    "upperarm_r": {
+      "flexion": 11.5,
+      "abduction": 23.0,
+      "twist": -43.2
+    },
+    "lowerarm_r": {
+      "flexion": 8.2,
+      "pronation": -32.3
+    },
+    "hand_r": {
+      "flexion": 10.2,
+      "deviation": 5.4
+    },
+    "thigh_r": {
+      "flexion": -2.4,
+      "abduction": 1.1,
+      "twist": 3.7
+    },
+    "calf_r": {
+      "flexion": 3.2
+    },
+    "foot_r": {
+      "flexion": -5.6
+    }
+  }
+}

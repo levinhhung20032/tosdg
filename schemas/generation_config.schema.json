@@ -1,0 +1,400 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Generation config",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "name",
+  "profile",
+  "character",
+  "backend",
+  "master_seed",
+  "num_samples",
+  "resolution",
+  "background_library"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema_version": {
+   "type": "string",
+   "pattern": "^\\d+\\.\\d+$"
+  },
+  "name": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9_\\-]+$"
+  },
+  "profile": {
+   "type": "string"
+  },
+  "character": {
+   "type": "string"
+  },
+  "backend": {
+   "enum": [
+    "proxy",
+    "mesh",
+    "unreal"
+   ]
+  },
+  "master_seed": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "num_samples": {
+   "type": "integer",
+   "minimum": 1
+  },
+  "resolution": {
+   "type": "array",
+   "items": {
+    "type": "integer",
+    "minimum": 16
+   },
+   "minItems": 2,
+   "maxItems": 2
+  },
+  "background_library": {
+   "type": "string"
+  },
+  "gesture_weights": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "number",
+    "minimum": 0
+   },
+   "minProperties": 1
+  },
+  "camera_profile_weights": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "number",
+    "minimum": 0
+   },
+   "minProperties": 1
+  },
+  "uniform_weights": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "number",
+    "minimum": 0
+   },
+   "minProperties": 1
+  },
+  "lighting": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "sun_elevation_deg": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "sun_azimuth_deg": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": -360,
+      "maximum": 360
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "sun_intensity": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "ambient_intensity": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 3
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "color_temperature_k": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": 1500,
+      "maximum": 15000
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "exposure_ev": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": -3,
+      "maximum": 3
+     },
+     "minItems": 2,
+     "maxItems": 2
+    }
+   },
+   "description": "Optional: [min, max] ranges of the sun + sky lighting drawn per sample. Bounded so that no value can blow up the render (exposure_ev -3..3, intensities >= 0); the final exposure of a sample is also clamped (scene.EXPOSURE_RANGE) and a sample whose officer comes out nearly black or white is rejected (validation.min/max_officer_level)."
+  },
+  "officer_yaw_deg": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 2,
+   "maxItems": 2
+  },
+  "baton": {
+   "type": "object",
+   "additionalProperties": false,
+   "description": "Optional prop: the officer holds a baton in one hand (fingers close around it; see src/tosdg/baton.py). Off by default: the baton then hangs from the belt at the place the model's fit gives (belt_baton).",
+   "properties": {
+    "enabled": {
+     "type": "boolean"
+    },
+    "hand": {
+     "enum": [
+      "l",
+      "r"
+     ]
+    },
+    "length_cm": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "radius_cm": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "handle_cm": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    }
+   }
+  },
+  "validation": {
+   "type": "object",
+   "additionalProperties": false,
+   "properties": {
+    "min_bbox_height_px": {
+     "type": "number",
+     "minimum": 1
+    },
+    "min_keypoints_in_frame_frac": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    },
+    "require_signal_arm_in_frame": {
+     "type": "boolean"
+    },
+    "max_bbox_edge_touch": {
+     "type": "boolean"
+    },
+    "min_image_std": {
+     "type": "number",
+     "minimum": 0
+    },
+    "side_ambiguity_margin_deg": {
+     "type": "number",
+     "minimum": 0
+    },
+    "min_officer_level": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 255,
+     "description": "Mean sRGB level (0-255) of the officer's pixels below which a sample is rejected (too dark to see). Default 12."
+    },
+    "max_officer_level": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 255,
+     "description": "Mean sRGB level of the officer's pixels above which a sample is rejected (blown out). Default 245."
+    }
+   }
+  },
+  "max_attempts_per_sample": {
+   "type": "integer",
+   "minimum": 1
+  },
+  "max_pose_tries": {
+   "type": "integer",
+   "minimum": 1
+  },
+  "uniform_brightness_range": {
+   "$comment": "[lo, hi] multiplier on the albedo of the uniform's cloth, drawn per sample from its own RNG stream; [1, 1] = off. Needs backend 'mesh'.",
+   "type": "array",
+   "items": {
+    "type": "number",
+    "minimum": 0.3,
+    "maximum": 2.0
+   },
+   "minItems": 2,
+   "maxItems": 2
+  },
+  "image_format": {
+   "enum": [
+    "png",
+    "jpg"
+   ],
+   "description": "Optional (config 1.3+): file format of the rgb image of every sample. png = lossless (default), jpg = smaller (quality 95, no chroma subsampling). Masks are always png."
+  },
+  "podium": {
+   "type": "object",
+   "additionalProperties": false,
+   "description": "Optional prop (config 1.2+): each sample stands on the profile's traffic podium (profiles/<CC>/props/podium.glb) with this probability, drawn from its own RNG stream 'podium'. 'mesh' backend only. Absent / 0 = never.",
+   "properties": {
+    "probability": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    }
+   }
+  },
+  "min_officer_height_px": {
+   "type": "integer",
+   "minimum": 8,
+   "description": "Optional (config 1.5+): the officer is at least this many pixels tall. The camera distance is capped from the camera's focal length and the posed officer's height (closer than the camera profile's range when needed), and the rendered bbox must be at least this tall unless validation.min_bbox_height_px says otherwise. Off: the draws and images are unchanged."
+  },
+  "mesh_renderer": {
+   "enum": [
+    "cpu",
+    "gpu"
+   ],
+   "description": "Optional (config 1.4+), backend 'mesh' only: cpu = numpy software renderer (default, runs anywhere), gpu = OpenGL 4.3 renderer on the graphics card (moderngl): the model's normal/roughness maps, soft sun shadows, image-based light, ambient occlusion, the officer's shadow on the ground. Same geometry, mask and ground truth."
+  },
+  "size_reference": {
+   "enum": [
+    "horizon",
+    "auto"
+   ],
+   "description": "Optional (config 1.6): how big the officer is against the photo. horizon (default) = the photo's horizon is aligned with the camera's. auto = the virtual camera is the camera that took the photo, told from objects of known height in it (calibrate.py): at least 3 people (all ~165 cm), else people + vehicles (+ barriers marked by hand), else the horizon (camera height from the objects, else camera_height_cm); it stands as high, is pitched so its horizon is the photo's, and the officer's distance is chosen so they fit the frame. The detector (people.py) runs once, before sampling, on photos not searched yet. A sample whose size cannot be made consistent is rejected (size_reference). min_officer_height_px needs auto."
+  },
+  "officer_yaw_mode": {
+   "enum": [
+    "free",
+    "road",
+    "junction"
+   ],
+   "description": "Optional (config 1.6): free (default) = officer_yaw_deg. road = the officer faces 0 / 90 / 180 / 270 degrees from the road direction (the photo's view direction turned by the background's road_yaw_deg) plus road_yaw_jitter_deg. junction (needs size_reference auto) = on a photo with a junction (library key junction) the officer stands in its middle (within 1 m) and faces: cross / roundabout one of the roads, T the stem (the three roads in view), Y one road or two roads in view; among those, the facings whose sides are roads for the sides the gesture talks to (instructions other than NONE), then those seen from the camera profile's azimuth range. Other photos: along / across the road, chosen the same way. See junction.py."
+  },
+  "road_yaw_jitter_deg": {
+   "type": "array",
+   "items": {
+    "type": "number"
+   },
+   "minItems": 2,
+   "maxItems": 2,
+   "description": "Optional (config 1.6): [min, max] jitter of officer_yaw_mode road (default [-5, 5])."
+  },
+  "background_ids": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   },
+   "minItems": 1,
+   "description": "Optional (config 1.6): only these backgrounds of the library (Studio random generate with the background locked)."
+  },
+  "camera_overrides": {
+   "type": "object",
+   "additionalProperties": false,
+   "description": "Optional (config 1.6): fixed [min, max] ranges replacing the chosen camera profile's (Studio random generate locks).",
+   "properties": {
+    "distance_cm": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "height_cm": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "azimuth_deg": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "focal_length_mm": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "aim_height_cm": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "roll_deg": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "sensor_width_mm": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "exclusiveMinimum": 0
+     },
+     "minItems": 2,
+     "maxItems": 2
+    }
+   }
+  },
+  "lens_distortion": {
+   "type": "boolean",
+   "description": "Optional (config 1.6): false = no lens distortion and no black border for any camera profile (pinhole images). Default true."
+  },
+  "roundabout": {
+   "type": "object",
+   "additionalProperties": false,
+   "description": "Optional (config 1.6), officer_yaw_mode junction: at a roundabout the officer stands on the podium (mesh backend) and holds the baton with these probabilities (default 0.5 each; stream roundabout).",
+   "properties": {
+    "podium_probability": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    },
+    "baton_probability": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    }
+   }
+  },
+  "match_backplate_light": {
+   "type": "boolean",
+   "description": "Optional (config 1.6): true = the officer is darkened to the photo around them (night, dusk, shade): exposure change log2(luminance / 0.2) in [-4, 0] EV (log-average luminance around the officer and of the whole photo); photos tagged night also get a weak warm street-lamp light instead of the sun. Default false."
+  }
+ },
+ "$comment": "1.1: backend 'mesh' (skinned uniform mesh, software renderer) and uniform_brightness_range. 1.0 configs stay valid. 1.4: mesh_renderer (cpu | gpu). 1.5: min_officer_height_px. 1.6: size_reference, officer_yaw_mode, road_yaw_jitter_deg, background_ids, camera_overrides."
+}

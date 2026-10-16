@@ -1,0 +1,36 @@
+{
+ "schema_version": "1.1",
+ "country": "VN",
+ "authority": "CSGT - Cảnh sát giao thông (traffic police)",
+ "description": "Vietnam traffic-police hand signals. Directions in instructions are relative to the officer's body.",
+ "regulation": {
+  "id": "VN-road-traffic-hand-signals",
+  "sources": [
+   {
+    "title": "Luật Giao thông đường bộ 2008, Điều 10 khoản 2 (hand signals); carried into Luật Trật tự, an toàn giao thông đường bộ 2024",
+    "url": "https://hoatieu.vn/phap-luat/hieu-lenh-cua-nguoi-dieu-khien-giao-thong-162689"
+   },
+   {
+    "title": "QCVN 41:2019/BGTVT Điều 7 (thứ tự ưu tiên hiệu lệnh)",
+    "url": "https://hethongphapluat.com/quy-chuan-ky-thuat-quoc-gia-qcvn-41-2019-bgtvt-ve-bao-hieu-duong-bo/dieu-7"
+   }
+  ],
+  "verified": false,
+  "notes": "Hiệu lệnh dựng theo infographic LuatVietnam 'Cách nhận biết hiệu lệnh của cảnh sát giao thông' (theo QCVN 41:2019/BGTVT) và Luật GTĐB 2008 Đ10; chưa được đối chiếu với văn bản gốc hiện hành, số điều của luật 2024 cần được người có chuyên môn rà soát.",
+  "instruction_vocabulary": [
+   "STOP",
+   "PROCEED",
+   "TURN_RIGHT",
+   "PROCEED_ANY_DIRECTION",
+   "NONE",
+   "SPEED_UP",
+   "SLOW_DOWN",
+   "TURN_LEFT"
+  ]
+ },
+ "files": {
+  "gestures": "gestures.json",
+  "uniforms": "uniforms.json",
+  "camera_profiles": "camera_profiles.json"
+ }
+}

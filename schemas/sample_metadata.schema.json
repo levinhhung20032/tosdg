@@ -1,0 +1,695 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Per-sample metadata",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema_version",
+  "sample_id",
+  "index",
+  "seed",
+  "generator",
+  "config",
+  "assets_sha256",
+  "files",
+  "image",
+  "profile",
+  "officer",
+  "camera",
+  "background",
+  "lighting",
+  "traffic_control"
+ ],
+ "properties": {
+  "schema_version": {
+   "enum": [
+    "1.0",
+    "1.1",
+    "1.2",
+    "1.3",
+    "1.4",
+    "1.5",
+    "1.6",
+    "1.7",
+    "1.8"
+   ]
+  },
+  "sample_id": {
+   "type": "string"
+  },
+  "index": {
+   "type": "integer",
+   "minimum": 0
+  },
+  "seed": {
+   "type": "object",
+   "required": [
+    "master_seed",
+    "sample_seed",
+    "attempt",
+    "attempt_seed"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "master_seed": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "sample_seed": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "attempt": {
+     "type": "integer",
+     "minimum": 0
+    },
+    "attempt_seed": {
+     "type": "integer",
+     "minimum": 0
+    }
+   }
+  },
+  "generator": {
+   "type": "object",
+   "required": [
+    "name",
+    "version",
+    "backend"
+   ]
+  },
+  "config": {
+   "type": "object",
+   "required": [
+    "name",
+    "sha256"
+   ],
+   "properties": {
+    "sha256": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    }
+   }
+  },
+  "assets_sha256": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "files": {
+   "type": "object",
+   "required": [
+    "rgb",
+    "mask"
+   ],
+   "additionalProperties": {
+    "type": "string"
+   }
+  },
+  "image": {
+   "type": "object",
+   "required": [
+    "width",
+    "height"
+   ],
+   "properties": {
+    "width": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "height": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "format": {
+     "enum": [
+      "png",
+      "jpg"
+     ],
+     "description": "File format of the rgb image (v1.5+; earlier samples are always png). The mask is always png."
+    }
+   }
+  },
+  "profile": {
+   "type": "object",
+   "required": [
+    "country",
+    "authority",
+    "regulation_id",
+    "regulation_verified"
+   ]
+  },
+  "officer": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "instance_id",
+    "character",
+    "uniform",
+    "world_position",
+    "world_yaw_deg",
+    "gesture",
+    "pose",
+    "bbox",
+    "keypoints_2d",
+    "keypoints_3d_world",
+    "visibility_model"
+   ],
+   "properties": {
+    "instance_id": {
+     "type": "integer"
+    },
+    "character": {
+     "type": "string"
+    },
+    "uniform": {
+     "type": "string"
+    },
+    "world_position": {
+     "type": "array",
+     "items": {
+      "type": "number"
+     },
+     "minItems": 3,
+     "maxItems": 3
+    },
+    "world_yaw_deg": {
+     "type": "number"
+    },
+    "gesture": {
+     "type": "object",
+     "required": [
+      "id",
+      "label",
+      "signalling",
+      "pose_variant",
+      "hand_variants",
+      "signal_arms",
+      "pose_tries"
+     ]
+    },
+    "pose": {
+     "type": "object",
+     "additionalProperties": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "number"
+      }
+     }
+    },
+    "bbox": {
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "xyxy",
+      "xywh",
+      "source",
+      "truncated",
+      "mask_area_px"
+     ],
+     "properties": {
+      "xyxy": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 4,
+       "maxItems": 4
+      },
+      "xywh": {
+       "type": "array",
+       "items": {
+        "type": "integer"
+       },
+       "minItems": 4,
+       "maxItems": 4
+      },
+      "source": {
+       "const": "instance_mask"
+      },
+      "full_xyxy": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 4,
+       "maxItems": 4,
+       "description": "Unclipped projected extent of the body capsules; may extend beyond the image (v1.2+)."
+      },
+      "full_source": {
+       "const": "capsule_extent"
+      },
+      "truncated": {
+       "type": "boolean"
+      },
+      "mask_area_px": {
+       "type": "integer",
+       "minimum": 1
+      }
+     }
+    },
+    "keypoints_2d": {
+     "type": "object",
+     "required": [
+      "coco17"
+     ],
+     "additionalProperties": {
+      "type": "object",
+      "required": [
+       "names",
+       "uv",
+       "depth_cm",
+       "in_frame"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "names": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "minItems": 1
+       },
+       "uv": {
+        "type": "array",
+        "items": {
+         "oneOf": [
+          {
+           "type": "null"
+          },
+          {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          }
+         ]
+        }
+       },
+       "depth_cm": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        }
+       },
+       "in_frame": {
+        "type": "array",
+        "items": {
+         "type": "boolean"
+        }
+       },
+       "occluded": {
+        "type": "array",
+        "items": {
+         "type": "boolean"
+        },
+        "description": "1.8: in the frame but hidden by the officer's own body (collision capsules) or the held baton; false outside the frame."
+       }
+      }
+     }
+    },
+    "keypoints_3d_world": {
+     "type": "object",
+     "required": [
+      "coco17"
+     ],
+     "additionalProperties": {
+      "type": "array",
+      "items": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 3,
+       "maxItems": 3
+      }
+     }
+    },
+    "visibility_model": {
+     "type": "string"
+    },
+    "uniform_brightness": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "baton": {
+     "type": "object",
+     "description": "Held baton prop (v1.3+). enabled=false when none.",
+     "required": [
+      "enabled"
+     ],
+     "properties": {
+      "enabled": {
+       "type": "boolean"
+      },
+      "hand": {
+       "enum": [
+        "l",
+        "r"
+       ]
+      },
+      "mode": {
+       "enum": [
+        "across",
+        "along"
+       ]
+      },
+      "length_cm": {
+       "type": "number"
+      },
+      "radius_cm": {
+       "type": "number"
+      },
+      "handle_cm": {
+       "type": "number"
+      },
+      "grip_closure": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 1
+      },
+      "thumb_closure": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 1
+      },
+      "handle_world": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 3,
+       "maxItems": 3
+      },
+      "tip_world": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 3,
+       "maxItems": 3
+      },
+      "handle_uv": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "tip_uv": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      },
+      "in_frame": {
+       "type": "array",
+       "items": {
+        "type": "boolean"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      }
+     }
+    },
+    "podium": {
+     "type": "object",
+     "description": "Traffic podium the officer stands on (v1.4+). enabled=false when none. The standing surface is the officer's z=0; the podium reaches below it. The instance mask / bbox are the officer only (a podium in front of the officer hides it).",
+     "required": [
+      "enabled"
+     ],
+     "properties": {
+      "enabled": {
+       "type": "boolean"
+      },
+      "diameter_cm": {
+       "type": "number"
+      },
+      "depth_cm": {
+       "type": "number"
+      },
+      "rim_cm": {
+       "type": "number"
+      }
+     }
+    }
+   }
+  },
+  "camera": {
+   "type": "object",
+   "required": [
+    "profile",
+    "position",
+    "pitch",
+    "yaw",
+    "roll",
+    "focal_length_mm",
+    "sensor_width_mm",
+    "width",
+    "height",
+    "fx",
+    "fy",
+    "cx",
+    "cy",
+    "K",
+    "R_world_from_camera",
+    "observer_role",
+    "placement"
+   ],
+   "properties": {
+    "lens": {
+     "type": "object",
+     "description": "v1.6+: radial lens distortion (Brown k1, k2; keypoints / bboxes / masks are in the DISTORTED image) and the lit image circle (fraction of the half-diagonal; 0 = whole frame; pixels outside are black and never in the mask).",
+     "required": [
+      "model",
+      "k1",
+      "k2",
+      "image_circle_frac"
+     ],
+     "properties": {
+      "model": {
+       "const": "brown_radial_k1k2"
+      },
+      "k1": {
+       "type": "number"
+      },
+      "k2": {
+       "type": "number"
+      },
+      "image_circle_frac": {
+       "type": "number",
+       "minimum": 0
+      }
+     }
+    }
+   }
+  },
+  "background": {
+   "type": "object",
+   "required": [
+    "id",
+    "sha256",
+    "tags",
+    "composition"
+   ],
+   "properties": {
+    "ground_check": {
+     "description": "1.7: were the officer's feet checked against the backplate's standable-ground mask (road / sidewalk)? ok = on the ground as drawn; shifted = the crop was moved sideways to put them there; not_visible = no foot point inside the picture; no_mask = the background has no ground mask (not checked).",
+     "type": "object",
+     "additionalProperties": false,
+     "required": [
+      "status",
+      "points"
+     ],
+     "properties": {
+      "status": {
+       "enum": [
+        "ok",
+        "shifted",
+        "not_visible",
+        "no_mask"
+       ]
+      },
+      "points": {
+       "type": "integer",
+       "minimum": 0
+      }
+     }
+    },
+    "size_reference": {
+     "description": "1.8 (config size_reference auto): how the photo was scaled: calibrated = the virtual camera is the photo's camera told by calibrate.py: method people | objects | horizon, its height and horizon row (fraction of the photo height), the objects it was measured from, the pitch that puts the horizon on that row and the photo zoom (camera_locked: a Studio camera lock kept the camera, only the horizon was aligned).",
+     "type": "object",
+     "required": [
+      "mode"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "mode": {
+       "enum": [
+        "horizon",
+        "calibrated"
+       ]
+      },
+      "camera_height_cm": {
+       "type": "number"
+      },
+      "method": {
+       "enum": [
+        "people",
+        "objects",
+        "horizon"
+       ]
+      },
+      "horizon_y_frac": {
+       "type": "number"
+      },
+      "objects_used": {
+       "type": "integer",
+       "minimum": 0
+      },
+      "camera_height_from": {
+       "enum": [
+        "objects",
+        "manual",
+        "default"
+       ]
+      },
+      "pitch_deg": {
+       "type": "number"
+      },
+      "zoom": {
+       "type": "number",
+       "minimum": 1
+      },
+      "camera_locked": {
+       "type": "boolean"
+      }
+     }
+    },
+    "junction": {
+     "type": "object",
+     "description": "1.8 (officer_yaw_mode junction): type (cross / T / Y / roundabout / straight), arms_azimuth_deg = the roads in the officer's frame (0 = in front, + = right), road_sides = the officer's sides that are roads, required_sides / required_met = the gesture's sides that must be roads and those that are, in_view = roads within +-110 degrees of the facing; at a junction also at_center, offset_cm (from its middle), roads.",
+     "required": [
+      "type",
+      "arms_azimuth_deg",
+      "road_sides",
+      "required_sides",
+      "required_met"
+     ]
+    },
+    "scene": {
+     "type": "object",
+     "description": "Metadata 1.0-1.7 only: traffic light / signs annotated on the photo (no longer used)."
+    }
+   }
+  },
+  "lighting": {
+   "type": "object",
+   "required": [
+    "sun_elevation_deg",
+    "sun_azimuth_deg",
+    "sun_intensity",
+    "ambient_intensity",
+    "color_temperature_k",
+    "exposure_ev",
+    "sun_direction"
+   ]
+  },
+  "traffic_control": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "observer_role",
+    "observer_azimuth_deg",
+    "approach_side",
+    "approach_side_ambiguous"
+   ],
+   "properties": {
+    "observer_role": {
+     "enum": [
+      "road_user",
+      "infrastructure"
+     ]
+    },
+    "observer_azimuth_deg": {
+     "type": "number"
+    },
+    "approach_side": {
+     "enum": [
+      "front",
+      "back",
+      "left",
+      "right"
+     ]
+    },
+    "approach_side_ambiguous": {
+     "type": "boolean"
+    },
+    "precedence": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "description": "Metadata 1.0-1.7 only (traffic lights / signs of the photo, no longer annotated)."
+    },
+    "signals": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "object",
+      "required": [
+       "type",
+       "instruction_for_observer"
+      ],
+      "properties": {
+       "type": {
+        "enum": [
+         "officer_gesture",
+         "traffic_light",
+         "traffic_sign",
+         "road_marking"
+        ]
+       },
+       "instruction_for_observer": {
+        "type": [
+         "string",
+         "null"
+        ]
+       }
+      }
+     },
+     "description": "Metadata 1.0-1.7 only (traffic lights / signs of the photo, no longer annotated)."
+    },
+    "effective_instruction": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "Metadata 1.0-1.7 only (traffic lights / signs of the photo, no longer annotated)."
+    },
+    "effective_source": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "Metadata 1.0-1.7 only (traffic lights / signs of the photo, no longer annotated)."
+    },
+    "conflict": {
+     "type": "boolean",
+     "description": "Metadata 1.0-1.7 only (traffic lights / signs of the photo, no longer annotated)."
+    },
+    "instruction_for_observer": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "description": "1.8: the gesture's instruction for the side the camera is on (null for an infrastructure camera)."
+    }
+   }
+  }
+ },
+ "$comment": "1.1: officer.uniform_brightness (factor applied to the cloth albedo, 1.0 = unchanged) 1.8: background.size_reference; camera.placement.road_quarter (officer_yaw_mode road). 1.8 also: keypoints_2d.<set>.occluded (self-occlusion)."
+}

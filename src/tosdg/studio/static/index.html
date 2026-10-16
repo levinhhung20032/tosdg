@@ -1,0 +1,1161 @@
+<!doctype html>
+<!--
+tosdg studio: one page (CSS, HTML, JS). Contents, in file order:
+  <style>   styles
+  <header>, <aside> (left panels), <main> (camera / plan / profile views), right-hand readouts, help modal
+  <script>  helpers · state · camera math (mirrors camera.py) · evaluation loop (+ 3D model in the camera view)
+            · undo / redo · multi-window sync · left panels (officer, camera, background + horizon, pose, model)
+            · right-panel readouts · drawing: camera view (+ Alt+click joint gizmo)
+            · drawing: plan + profile views · interaction (mouse / keys) · toolbar + header · header buttons,
+            help, tip, keyboard shortcuts · boot
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tosdg studio</title>
+<style>
+:root{--bg:#14171c;--panel:#1c2027;--panel2:#232831;--line:#2f3642;--text:#e6e9ee;--dim:#9aa3b2;--acc:#4fa3ff;--ok:#4cc38a;--bad:#ff6b6b;--warn:#f2b84b;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font:13px/1.4 system-ui,Segoe UI,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
+header h1{font-size:15px;margin:0;font-weight:600}
+header .sp{flex:1}
+#status{color:var(--dim);font-size:12px}
+main{display:grid;grid-template-columns:330px minmax(420px,1fr) 320px;height:calc(100% - 45px)}
+aside{overflow-y:auto;padding:8px;background:var(--panel);border-right:1px solid var(--line)}
+aside.right{border-right:0;border-left:1px solid var(--line)}
+section.center{overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+details{background:var(--panel2);border:1px solid var(--line);border-radius:6px;margin-bottom:8px}
+summary{cursor:pointer;padding:7px 10px;font-weight:600;user-select:none}
+details>div{padding:4px 10px 10px}
+.row{display:grid;grid-template-columns:96px 1fr 62px;gap:6px;align-items:center;margin:3px 0}
+.row label{color:var(--dim);font-size:12px}
+.row.two{grid-template-columns:96px 1fr 1fr}
+.line{display:flex;gap:6px;align-items:center;margin:5px 0;flex-wrap:wrap}
+input[type=number],input[type=text],select{background:#12151a;border:1px solid var(--line);color:var(--text);border-radius:4px;padding:3px 5px;min-width:0;width:100%}
+select{padding-right:22px;text-overflow:ellipsis}
+input[type=range]{width:100%;accent-color:var(--acc)}
+button{background:#2a3140;border:1px solid #3a4456;color:var(--text);border-radius:5px;padding:4px 9px;cursor:pointer}
+button:hover{background:#344057}button.primary{background:#245c9c;border-color:#2f73bd}
+button.danger{border-color:#7a3a3a}
+button:disabled{opacity:.5;cursor:default}
+.toolbar{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;color:var(--dim)}
+.toolbar label{display:flex;gap:4px;align-items:center;cursor:pointer}
+.check-list{display:flex;flex-direction:column;gap:6px;margin:6px 0;color:var(--dim)}
+.check-list .check-line{display:flex;gap:4px;align-items:center;cursor:pointer}
+.gesture-edit{border:1px solid var(--line, #3a4050);border-radius:6px;padding:6px 8px;margin:6px 0;display:flex;flex-direction:column;gap:6px}
+.canvases{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+canvas{display:block;width:100%;background:#0e1014;border:1px solid var(--line);border-radius:6px;touch-action:none}
+#cam{cursor:crosshair}
+.cap{color:var(--dim);font-size:11px;margin:2px 0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:4px 0}
+.kv span:nth-child(odd){color:var(--dim)}
+.pill{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;background:#2a3140}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+ul.plain{margin:4px 0;padding-left:16px}
+.thumbs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:52px;gap:6px;margin:6px 0;padding:6px;max-height:calc(3 * 52px + 2 * 6px);overflow-y:auto;position:relative;background:#12151a;border:1px solid var(--line);border-radius:6px}
+.thumbs .thumb{width:auto}
+.gen-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:6px 0;max-height:240px;overflow-y:auto}
+.gen-grid img{width:100%;border-radius:3px;cursor:zoom-in;display:block}
+.thumb{width:72px;border:2px solid transparent;border-radius:4px;cursor:pointer;overflow:hidden;background:#000;position:relative}
+.thumb.sel{border-color:var(--acc)}.thumb img{display:block;width:100%;height:48px;object-fit:cover}
+.thumb span{position:absolute;left:0;right:0;bottom:0;background:#000a;font-size:10px;padding:0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+table{border-collapse:collapse;width:100%}td,th{padding:2px 3px;text-align:left;font-weight:400}
+th{color:var(--dim);font-size:11px}
+#toasts{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:6px;z-index:60;max-width:440px}
+.toast{background:#3a1f22;border:1px solid #7a3a3a;padding:8px 30px 8px 12px;border-radius:6px;position:relative;box-shadow:0 4px 14px #0009;animation:pop .15s ease-out}
+.toast.ok{background:#1d3a2b;border-color:#2f7a55}.toast.info{background:#1f2b3d;border-color:#35527a}
+.toast button{position:absolute;right:3px;top:2px;background:none;border:0;color:var(--dim);padding:0 6px;font-size:16px}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#busy{color:var(--warn);font-size:12px;display:none}
+#ctx{position:fixed;z-index:70;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:4px;min-width:200px;box-shadow:0 6px 22px #000b}
+#ctx[hidden],#helpModal[hidden]{display:none}
+#ctx button{display:block;width:100%;text-align:left;background:none;border:0;padding:7px 10px;border-radius:4px}
+#ctx button:hover{background:#344057}#ctx button.danger{color:var(--bad)}
+#ctx .ctxhead{color:var(--dim);font-size:11px;padding:4px 10px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tip{background:#1f2b3d;border:1px solid #35527a;border-radius:6px;padding:7px 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#cfe0f5}
+.tip[hidden]{display:none}.tip button{padding:1px 8px;font-size:12px;margin-left:auto}.tip button+button{margin-left:0}
+#helpModal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:30}
+.helpgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}.helpgrid h4{margin:10px 0 4px;color:var(--acc);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+@media (max-width:760px){.helpgrid{grid-template-columns:1fr}}
+kbd{background:#12151a;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;font:11px monospace}
+table.keys td{padding:3px 8px 3px 0;vertical-align:top}ol.plain{margin:4px 0;padding-left:18px}
+.dropping{outline:2px dashed var(--acc);outline-offset:-3px;background:#4fa3ff14}
+.thumb{outline-offset:1px}.thumb:hover{border-color:#4fa3ff80}
+.thumb .more{position:absolute;top:2px;right:2px;padding:0 5px;line-height:16px;font-size:12px;border-radius:3px;background:#000b;color:#fff;border:0;cursor:pointer;opacity:.75}
+.thumb .more:hover,.thumb .more:focus{opacity:1}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+summary::marker{color:var(--acc)}
+#renderBox{display:none;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px}
+#renderBox img{max-width:100%;display:block;margin-top:6px;border-radius:4px}
+.hint{color:var(--dim);font-size:11px}
+.info{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;margin-left:6px;border:1px solid var(--dim);border-radius:50%;color:var(--dim);font:italic 700 10px/1 Georgia,serif;cursor:help;user-select:none;vertical-align:middle;flex:none}
+.info:hover,.info:focus{color:var(--acc);border-color:var(--acc);outline:0}
+#infotip{position:fixed;z-index:80;max-width:340px;background:#0e1014;border:1px solid var(--line);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;line-height:1.45;white-space:pre-line;box-shadow:0 6px 22px #000b;pointer-events:none;display:none}
+.mbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;max-width:94vw;max-height:94vh;overflow:auto}
+.swatches{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;margin:6px 0}
+.swatches label{display:flex;align-items:center;gap:6px;color:var(--dim);font-size:12px}
+.swatches input[type=color]{width:34px;height:22px;padding:0;border:1px solid var(--line);background:none}
+.swatches small{color:var(--dim);margin-left:auto}
+.view{display:flex;flex-direction:column;min-width:0}
+.vh{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.vh .sp{flex:1}.vh button{padding:2px 7px;font-size:12px}
+.stage{position:relative;line-height:0}
+.hud{position:absolute;left:8px;top:8px;right:8px;pointer-events:none;color:#fff;font:11px/1.35 system-ui,sans-serif;text-shadow:0 1px 3px #000,0 0 2px #000;line-height:1.35}
+#hudCam{top:auto;bottom:8px}
+.view:fullscreen,body.single .view{background:var(--bg);padding:8px;height:100vh;width:100vw}
+.view:fullscreen .stage,body.single .stage{display:flex;align-items:center;justify-content:center;flex:1;min-height:0}
+.view:fullscreen canvas,body.single canvas{flex:none}
+.view:fullscreen .hud,body.single .hud{font-size:13px}
+body.single header,body.single aside,body.single #renderBox,body.single .vh .hint,body.single [data-act=pop]{display:none!important}
+body.single main{display:block;height:100vh}
+body.single section.center{padding:0;height:100vh;overflow:hidden;gap:0}
+body.single .canvases{display:block}
+body.single section.center>.view,body.single .canvases>.view{display:none}
+body.single.single-cam #vcam,body.single.single-plan #vplan,body.single.single-prof #vprof{display:flex}
+@media (max-width:1100px){main{grid-template-columns:300px 1fr}aside.right{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>tosdg studio</h1><span id="status">loading…</span><span id="busy">⏳ working…</span><span class="sp"></span>
+  <button id="btnResetAll" title="Reset pose, officer position and camera to their defaults (undo brings it back)">⟲ Reset all</button>
+  <button id="btnUndo" title="Undo the last pose / camera / officer change (Ctrl+Z)" disabled>↶ Undo</button>
+  <button id="btnRedo" title="Redo (Ctrl+Y)" disabled>↷ Redo</button>
+  <button id="btnRender" class="primary" title="Render with the project's proxy backend over the composed backplate (R)">Render preview</button>
+  <button id="btnScene" title="Write the current setup to data/studio/scenes/">Save scene</button>
+  <button id="btnHelp" title="All mouse controls and keyboard shortcuts (?)">? Help</button>
+</header>
+<main>
+<aside id="left">
+  <details open data-k="officer"><summary>Officer</summary><div id="pOfficer"></div></details>
+  <details open data-k="camera"><summary>Camera</summary><div id="pCamera"></div></details>
+  <details open data-k="background"><summary>Background (2D plate)</summary><div id="pBg"></div></details>
+  <details open data-k="pose"><summary>Pose &amp; gesture</summary><div id="pPose"></div></details>
+  <details open data-k="model"><summary>Officer model (3D)</summary><div id="pModel"></div></details>
+  <details open data-k="random"><summary>Random generate</summary><div id="pRandom"></div></details>
+</aside>
+<section class="center">
+  <div class="view" id="vcam" data-view="cam">
+    <div class="vh"><b>Camera view</b><span class="sp"></span><span class="info" tabindex="0" data-tip="Drag a pink dot to pose the officer.&#10;Left-drag on empty space: move the officer on the ground (the camera and the background stay put).&#10;Right-drag: spin the officer in place around its neck.&#10;Wheel: zoom the picture around the mouse (view only, the camera does not change); double-click resets.&#10;Right-click a background photo to delete it. Drop photos on the Background or Uniform panel to upload.&#10;All controls: Help button.">i</span><button data-act="full" title="Full screen (F; Esc to leave)">⛶ Full screen</button><button data-act="pop" title="Open this view in its own window; stays in sync">⧉ Pop out</button></div>
+    <div class="toolbar" id="toolbar"></div>
+    <div class="stage"><canvas id="cam"></canvas><div class="hud" id="hudCam"></div></div>
+    <div class="cap" id="camCap"></div>
+  </div>
+  <div class="canvases">
+    <div class="view" id="vplan" data-view="plan">
+      <div class="vh"><b>Plan view</b><span class="info" tabindex="0" data-tip="Top-down, +X up. Drag the camera, its aim handle, the officer, the facing dot or any joint.&#10;Wheel = zoom this view, double-click = reset.">i</span><span class="sp"></span><button data-act="full" title="Full screen (Esc to leave)">⛶ Full screen</button><button data-act="pop" title="Open this view in its own window; stays in sync">⧉ Pop out</button></div>
+      <div class="stage"><canvas id="plan"></canvas><div class="hud">blue = camera · yellow = aim · green = officer facing · square = officer · pink = joints</div></div>
+          </div>
+    <div class="view" id="vprof" data-view="prof">
+      <div class="vh"><b>Profile view</b><span class="info" tabindex="0" data-tip="Side view along the camera's heading; the officer is anchored at the right.&#10;Wheel = zoom this view, double-click = reset.">i</span><span class="sp"></span><button data-act="full" title="Full screen (Esc to leave)">⛶ Full screen</button><button data-act="pop" title="Open this view in its own window; stays in sync">⧉ Pop out</button></div>
+      <div class="stage"><canvas id="prof"></canvas><div class="hud">blue = camera (height / distance) · yellow = tilt · pink = joints (depth, height)</div></div>
+          </div>
+  </div>
+  <div id="renderBox"><b>Render preview</b> <span class="hint" id="renderInfo"></span><img id="renderImg" alt="render"> <div class="line"><button id="btnSavePng" title="Save this render as a PNG file (lossless)">⬇ PNG</button><button id="btnSaveJpg" title="Save this render as a JPG file (smaller)">⬇ JPG</button></div></div>
+</section>
+<aside class="right" id="right">
+  <details open data-k="render"><summary>Render preview options</summary><div id="rRender"></div></details>
+  <details open data-k="fov"><summary>Field of view &amp; framing</summary><div id="rFov"></div></details>
+  <details open data-k="check"><summary>Generator check</summary><div id="rCheck"></div></details>
+  <details open data-k="gesture"><summary>Gesture match</summary><div id="rGesture"></div></details>
+  <details open data-k="joint"><summary>Selected joint</summary><div id="rJoint"></div></details>
+  <details data-k="warn"><summary>Pose warnings</summary><div id="rWarn"></div></details>
+</aside>
+</main>
+<div id="helpModal" hidden>
+  <div class="mbox" style="max-width:760px">
+    <div class="vh"><b>Controls &amp; shortcuts</b><span class="sp"></span><button id="helpClose">✕ Close (Esc)</button></div>
+    <div class="helpgrid">
+      <div><h4>Mouse — camera view</h4>
+        <ul class="plain"><li><b>Drag a pink dot</b>: pose the officer (limits are enforced). Yellow = selected joint.</li><li><b>Drag the blue square</b> (feet): move the officer.</li>
+        <li><b>Wheel</b> (camera view): zoom the picture around the mouse; the camera is not changed. Double-click resets.</li><li><b>Alt + click a joint</b> (wrist, knee, elbow …): a rotation gizmo with one coloured ring per axis (X red, Y green, Z blue; a wrist has three). Drag a ring to turn the joint clockwise or back; joint limits, the wrist's elliptical range and self-collisions stop the motion. <b>Esc</b>, or a normal click on another joint, leaves the mode.</li><li><b>Hold left mouse</b> on empty space: orbit the camera around the officer. <b>Hold right mouse</b>: look around (the officer may leave the frame).</li></ul>
+        <h4>Mouse — plan / profile views</h4>
+        <ul class="plain"><li>Drag the <b>blue dot</b> (camera), <b>yellow dot</b> (aim / tilt), <b>green dot</b> (officer facing) or any joint (depth).</li><li><b>Wheel</b>: zoom the view. <b>Double-click</b>: reset the zoom.</li></ul>
+        <h4>Mouse — lists</h4>
+        <ul class="plain"><li><b>Right-click a background photo</b>: delete it (asks to confirm).</li><li>Drop image files on the Background panel to upload.</li></ul></div>
+      <div><h4>Keyboard</h4>
+        <table class="keys"><tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Undo (pose, camera, officer)</td></tr><tr><td><kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Redo (also <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>)</td></tr>
+        <tr><td><kbd>F</kbd></td><td>Camera view full screen</td></tr><tr><td><kbd>R</kbd></td><td>Render preview</td></tr><tr><td><kbd>Home</kbd></td><td>Reset the camera</td></tr>
+        <tr><td><kbd>?</kbd></td><td>This help</td></tr><tr><td><kbd>Esc</kbd></td><td>Leave the joint rotation mode (Alt+click); close dialogs / menus</td></tr></table>
+        <h4>Typical workflow</h4>
+        <ol class="plain"><li>Upload a background photo and drag its horizon line.</li><li>Pick a camera profile, then adjust distance / height.</li><li>Pose the officer (presets, or drag the dots).</li>
+        <li>Check <b>Generator check</b> (right) and <b>Render preview</b>.</li><li><b>Save to poses</b> (photos you upload are already in the generator's background library).</li></ol></div>
+    </div>
+  </div>
+</div>
+<div id="toasts"></div>
+<div id="ctx" hidden></div>
+
+<script>
+"use strict";
+// ============================================================ helpers
+const $ = (s, r = document) => r.querySelector(s);
+const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v); }
+  for (const k of kids.flat()) if (k != null) e.append(k.nodeType ? k : document.createTextNode(k)); return e; };
+// (i) icons: long guidance lives in the tooltip. secInfo() puts one in a panel's header; its text is the join of the panel's tips.
+const info = t => el('span', { class: 'info', tabindex: 0, 'data-tip': t }, 'i');
+const secInfo = (p, key, t) => { const sm = p.closest('details').querySelector('summary'); (sm._tips ||= {})[key] = t; let i = sm.querySelector('.info'); if (!i) { i = info(''); sm.append(i); } i.dataset.tip = Object.values(sm._tips).join('\n\n'); return document.createDocumentFragment(); };
+const resetInfo = p => { const sm = p.closest('details').querySelector('summary'); sm._tips = {}; sm.querySelector('.info')?.remove(); };
+{ const tipEl = document.createElement('div'); tipEl.id = 'infotip'; document.body.append(tipEl);
+  const show = i => { tipEl.textContent = i.dataset.tip || ''; tipEl.style.display = 'block'; const r = i.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    tipEl.style.left = Math.max(6, Math.min(innerWidth - w - 6, r.left - 6)) + 'px'; tipEl.style.top = (r.bottom + 6 + h > innerHeight ? Math.max(6, r.top - h - 6) : r.bottom + 6) + 'px'; };
+  const hide = () => { tipEl.style.display = 'none'; };
+  document.addEventListener('mouseover', e => { const i = e.target.closest?.('.info'); if (i) show(i); });
+  document.addEventListener('mouseout', e => { if (e.target.closest?.('.info')) hide(); });
+  document.addEventListener('focusin', e => { const i = e.target.closest?.('.info'); if (i) show(i); });
+  document.addEventListener('focusout', e => { if (e.target.closest?.('.info')) hide(); });
+  document.addEventListener('click', e => { if (e.target.closest?.('.info')) e.preventDefault(); }); } // do not toggle the panel / checkbox when clicking an (i)
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const rad = d => d * Math.PI / 180, deg = r => r * 180 / Math.PI;
+const wrap180 = a => { a = ((a + 180) % 360 + 360) % 360 - 180; return a === -180 ? 180 : a; };
+const fmt = (v, n = 1) => (v == null || !isFinite(v)) ? '–' : (+v).toFixed(n);
+// Messages stack in the corner, can be dismissed, and keep their colour: red = problem (stays longer), green = done, blue = info.
+function toast(msg, kind = 'error') {
+  const box = $('#toasts'), t = el('div', { class: 'toast' + (kind === 'error' ? '' : ' ' + kind), role: kind === 'error' ? 'alert' : 'status' }, msg, el('button', { title: 'dismiss', onclick: () => t.remove() }, '×'));
+  box.append(t); while (box.children.length > 4) box.firstChild.remove(); setTimeout(() => t.remove(), kind === 'error' ? 10000 : 6500);
+}
+const toast_ok = msg => toast(msg, 'ok');
+// "working…" shows in the header only when something takes longer than ~0.4 s (uploads, colour extraction)
+let pending = 0, busyTimer;
+function busy(d) { pending += d; clearTimeout(busyTimer); if (pending > 0) busyTimer = setTimeout(() => { $('#busy').style.display = 'inline'; document.body.style.cursor = 'progress'; }, 400); else { $('#busy').style.display = 'none'; document.body.style.cursor = ''; } }
+async function api(path, body) {
+  busy(1);
+  try {
+    const r = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Studio': '1' }, body: JSON.stringify(body || {}) });
+    const data = await r.json().catch(() => ({ error: 'bad response' }));
+    if (!r.ok) throw new Error(data.error || r.statusText);
+    return data;
+  } finally { busy(-1); }
+}
+async function upload(path, file) {
+  busy(1);
+  try {
+    const r = await fetch(path, { method: 'POST', headers: { 'X-Studio': '1', 'Content-Type': 'application/octet-stream' }, body: file });
+    const data = await r.json().catch(() => ({ error: 'bad response' }));
+    if (!r.ok) throw new Error(data.error || r.statusText);
+    return data;
+  } finally { busy(-1); }
+}
+// Right-click menu (one shared element). Items: { label, danger, run }. An item may call showCtx again to ask for confirmation.
+function showCtx(x, y, title, items) {
+  const m = $('#ctx'); m.replaceChildren(el('div', { class: 'ctxhead' }, title), ...items.map(it => el('button', { class: (it.danger ? 'danger ' : '') + (it.focus ? 'focus' : ''), onclick: ev => { ev.stopPropagation(); it.run(); } }, it.label)));
+  m.hidden = false; m.style.left = Math.max(4, Math.min(x, innerWidth - 230)) + 'px'; m.style.top = Math.max(4, Math.min(y, innerHeight - 40 - items.length * 34)) + 'px';
+  (m.querySelector('button.focus') || m.querySelector('button'))?.focus(); // confirmation menus put the keyboard focus on Cancel, so a stray Enter cannot delete
+}
+const hideCtx = () => { $('#ctx').hidden = true; };
+// Tell the server this page is open (every 5 s) and when it is closed, so `tosdg studio --exit-on-close` can stop with the last tab.
+// A retired page (see retire) stops pinging, so a stale tab left open does not keep a newer Studio alive.
+let retired = false;
+const presence = (() => { const cid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  return path => { if (retired && path === '/api/ping') return; fetch(path, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'X-Studio': '1' }, body: JSON.stringify({ id: cid }) }).catch(() => {}); }; })();
+presence('/api/ping'); setInterval(() => presence('/api/ping'), 5000);
+addEventListener('pageshow', () => presence('/api/ping')); addEventListener('pagehide', () => presence('/api/bye'));
+addEventListener('click', hideCtx); addEventListener('scroll', hideCtx, true); addEventListener('blur', hideCtx); addEventListener('resize', hideCtx);
+// a file dropped outside a drop zone must not make the browser navigate away from the Studio
+addEventListener('dragover', e => e.preventDefault()); addEventListener('drop', e => e.preventDefault());
+function wireDrop(box, onFiles) {
+  const has = e => [...(e.dataTransfer?.types || [])].includes('Files');
+  box.addEventListener('dragover', e => { if (has(e)) { e.preventDefault(); box.classList.add('dropping'); } });
+  box.addEventListener('dragleave', e => { if (e.target === box || !box.contains(e.relatedTarget)) box.classList.remove('dropping'); });
+  box.addEventListener('drop', e => { e.preventDefault(); box.classList.remove('dropping'); const fs = [...e.dataTransfer.files].filter(f => /^image\//.test(f.type) || /\.(png|jpe?g|webp|bmp|gif|tiff?)$/i.test(f.name)); if (fs.length) onFiles(fs); else toast('Drop PNG, JPG/JPEG, WebP, BMP, GIF or TIFF images.'); });
+}
+const guard = fn => async (...a) => { try { return await fn(...a); } catch (e) { toast(e.message || String(e)); } };
+
+// ============================================================ state
+const S = { init: null, pose: {}, officer: {}, camera: {}, bgId: null, ev: null, selJoint: 'upperarm_r',
+  bgImg: null, bgKey: '', drag: null, hover: null, viewZoom: { plan: 1, prof: 1, cam: 1 }, camPan: { fx: 0, fy: 0 }, model: { img: null, key: '' },
+  ui: { capsules: true, bones: true, handles: true, hands: false, spine: true, guides: true, rulers: true, horizon: true, bbox: true, bg: true,
+    previewUniform: '', renderer: 'mesh', uniBrightness: 1.0, model3d: true, face: true, axes: true, alignAxis: null, baton: { enabled: false, hand: 'r', mode: 'across' }, podium: false } };
+let camType = 'default'; // which entry of the camera list is in force: 'default', a camera type id, or 'custom' (the user changed a camera setting by hand)
+const officerZ = () => (S.ev && S.ev.officer_z) || 0;   // set by the server (it knows the model's shoe depth); 0 without a podium   // the podium is on the ground, the officer stands on it
+const scene = () => ({ pose: S.pose, officer: { ...S.officer, z: officerZ() }, camera: S.camera, baton: S.ui.baton, podium: !!S.ui.podium, profile_uniform: baseUniform().id });
+const bgEntry = () => S.init.backgrounds.find(b => b.id === S.bgId) || null;
+
+// ============================================================ camera math (client mirror of camera.py, from the eval summary)
+// Radial lens distortion (mirror of lens.Lens.distort): pinhole pixel -> pixel in the final image; null beyond the usable radius.
+function distortUV(u, v, c = S.ev.camera) {
+  const L = c.lens; if (!L || (!L.k1 && !L.k2)) return [u, v];
+  const x = (u - c.cx) / c.fx, y = (v - c.cy) / c.fx, r2 = x * x + y * y, rl = L.r_limit == null ? Infinity : L.r_limit;
+  if (r2 > rl * rl) return null;
+  const f = 1 + L.k1 * r2 + L.k2 * r2 * r2; return [c.cx + c.fx * x * f, c.cy + c.fx * y * f];
+}
+function project(p) {
+  const c = S.ev.camera, R = c.R, d = [p[0] - c.position[0], p[1] - c.position[1], p[2] - c.position[2]];
+  const depth = R[0][0] * d[0] + R[1][0] * d[1] + R[2][0] * d[2];
+  const right = R[0][1] * d[0] + R[1][1] * d[1] + R[2][1] * d[2];
+  const up = R[0][2] * d[0] + R[1][2] * d[1] + R[2][2] * d[2];
+  if (depth <= 1) return null;
+  return distortUV(c.cx + c.fx * right / depth, c.cy - c.fx * up / depth, c);
+}
+function lookAngles(eye, target) { const d = [target[0] - eye[0], target[1] - eye[1], target[2] - eye[2]];
+  return { yaw: deg(Math.atan2(d[1], d[0])), pitch: deg(Math.atan2(d[2], Math.hypot(d[0], d[1]))) }; }
+// The camera computed straight from the current parameters (mirror of studio/core.make_camera). Handles and the plan/profile
+// views use THIS, never the last server answer: that answer arrives after the pointer has already moved on, and feeding stale
+// values back into a drag is what made the aim/camera handles jitter.
+function liveCam(o = S.officer) {
+  const c = S.camera, az = rad(o.yaw_deg + c.azimuth_deg), eye = [o.x + c.distance_cm * Math.cos(az), o.y + c.distance_cm * Math.sin(az), c.height_cm];
+  const base = lookAngles(eye, [o.x, o.y, c.aim_height_cm]), sensorH = c.sensor_width_mm * c.height / c.width;
+  return { position: eye, base, yaw: base.yaw + c.yaw_offset_deg, pitch: base.pitch + c.pitch_offset_deg,
+    hfov_deg: deg(2 * Math.atan(c.sensor_width_mm / (2 * c.focal_length_mm))), vfov_deg: deg(2 * Math.atan(sensorH / (2 * c.focal_length_mm))) };
+}
+const MIN_DIST = 50, MAX_DIST = 3000; // keep in step with MIN/MAX_DISTANCE_CM in core.py
+const baseLook = () => liveCam().base; // look-at angles for the current orbit parameters (without the manual offsets)
+// Move/rotate the officer while keeping the camera fixed in the world (the camera is stored relative to the officer).
+// `oldOfficer` is where the officer was BEFORE this change: the sliders write the new value into S.officer first, so without it
+// the "fixed" camera would be computed from the already-moved officer and would simply follow it (no visible change).
+let camAnchor = null; // the world camera being held while the officer moves: {eye, yaw, pitch, key}; key = the camera + officer values it was left with
+function setOfficerKeepCamera(newOfficer, oldOfficer = S.officer) {
+  const o = newOfficer, keyOf = of => JSON.stringify([S.camera, of]);
+  // Hold the SAME world camera for a whole drag (not the last, possibly pulled-in, one): dragging back inside the limit then restores the original view exactly.
+  let a = camAnchor && camAnchor.key === keyOf(oldOfficer) ? camAnchor : null;
+  if (!a) { const c = liveCam(oldOfficer); a = { eye: c.position, yaw: c.yaw, pitch: c.pitch }; }
+  const dx = a.eye[0] - o.x, dy = a.eye[1] - o.y, d = Math.hypot(dx, dy), dist = clamp(d, MIN_DIST, MAX_DIST);
+  const ang = d > 1e-6 ? Math.atan2(dy, dx) : rad(o.yaw_deg + S.camera.azimuth_deg);
+  const eye = [o.x + dist * Math.cos(ang), o.y + dist * Math.sin(ang), a.eye[2]]; // too far: the camera is pulled in towards the officer, orientation unchanged
+  S.camera.distance_cm = dist; S.camera.azimuth_deg = wrap180(deg(ang) - o.yaw_deg);
+  const la = lookAngles(eye, [o.x, o.y, S.camera.aim_height_cm]);
+  S.camera.yaw_offset_deg = wrap180(a.yaw - la.yaw); S.camera.pitch_offset_deg = a.pitch - la.pitch;
+  Object.assign(S.officer, o); S.officerPrev = { ...o }; // in place: the Officer sliders hold a reference to this object
+  camAnchor = { eye: a.eye, yaw: a.yaw, pitch: a.pitch, key: keyOf(S.officerPrev) };
+}
+
+// ============================================================ evaluation loop
+let evalBusy = false, evalDirty = false, saveTimer;
+function requestEval() {
+  evalDirty = true; if (!evalBusy) runEval(); scheduleSave(); scheduleBackplate(); historySoon();
+  if (S.ev) { drawPlan(); drawProf(); } // these only depend on the (instantly known) camera, so show the move without waiting for the server
+}
+async function runEval() {
+  evalBusy = true;
+  try { while (evalDirty) { evalDirty = false; const first = !S.ev; S.ev = await api('/api/eval', scene()); autoBorderSync(); if (first) { scheduleBackplate(); scheduleModel(); } redraw(); readoutsSoon(); broadcast(); } }
+  catch (e) { toast(e.message); }
+  evalBusy = false;
+}
+let roLast = 0, roTimer; // the side panels rebuild their DOM; do that at most ~8x/s while dragging
+function readoutsSoon() { clearTimeout(roTimer); const wait = 120 - (performance.now() - roLast); if (wait <= 0) { roLast = performance.now(); readouts(); } else roTimer = setTimeout(() => { roLast = performance.now(); readouts(); }, wait); }
+// ---- the 3D uniform inside the camera view: capsules while you drag (instant), the skinned mesh as soon as things settle
+const wantsModel = () => !!(S.ui.model3d && S.init && baseUniform().has_mesh && ['mesh', 'gpu'].includes(S.ui.renderer));
+const defaultRenderer = () => (S.init?.gpu?.available ? 'gpu' : 'mesh');   // the GPU renderer when this machine has one
+const modelKey = () => JSON.stringify([S.pose, S.officer, S.camera, S.ui.uniBrightness, baseUniform().id, S.ui.baton, !!S.ui.podium, S.ui.renderer]);
+const modelFresh = () => wantsModel() && S.model.img && S.model.key === modelKey();
+let modelTimer, modelBusy = false;
+function scheduleModel() { clearTimeout(modelTimer); if (wantsModel()) modelTimer = setTimeout(refreshModel, 220); }
+async function refreshModel() {
+  if (!S.ev) { scheduleModel(); return; }   // the first evaluation is not back yet: try again, do not drop the request
+  if (!wantsModel() || modelBusy || modelFresh()) return;
+  modelBusy = true; const key = modelKey();
+  try {
+    const r = await fetch('/api/model_layer', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Studio': '1' },
+      body: JSON.stringify({ ...scene(), profile_uniform: baseUniform().id, brightness: S.ui.uniBrightness, renderer: S.ui.renderer }) });
+    if (!r.ok) throw new Error((await r.json()).error);
+    const img = new Image(); img.src = URL.createObjectURL(await r.blob()); await img.decode();
+    S.model = { img, key }; redraw();
+  } catch (e) { S.ui.model3d = false; toast('3D uniform in the camera view is off: ' + e.message); }
+  finally { modelBusy = false; if (wantsModel() && !modelFresh()) scheduleModel(); }   // the pose moved while we were drawing: go again
+}
+function scheduleSave() { scheduleModel(); clearTimeout(saveTimer); saveTimer = setTimeout(() => { if (retired) return; broadcast(); api('/api/state', { pose: S.pose, officer: S.officer, camera: S.camera, bgId: S.bgId, ui: S.ui }).catch(() => {}); }, 600); }
+
+// ============================================================ undo / redo (pose, officer and camera)
+// A step is committed ~0.45 s after the last change, so one slider drag or one skeleton drag is ONE undo step.
+const H = { stack: [], i: -1, timer: null };
+const snapshot = () => JSON.stringify({ pose: S.pose, officer: S.officer, camera: S.camera, camType });
+function updateHistoryButtons() { $('#btnUndo').disabled = H.i <= 0; $('#btnRedo').disabled = H.i >= H.stack.length - 1; }
+function historyCommit() {
+  clearTimeout(H.timer); const s = snapshot(); if (H.stack[H.i] === s) return;
+  H.stack = H.stack.slice(0, H.i + 1); H.stack.push(s); if (H.stack.length > 150) H.stack.shift(); H.i = H.stack.length - 1; updateHistoryButtons();
+}
+function historySoon() { clearTimeout(H.timer); H.timer = setTimeout(historyCommit, 450); }
+function restoreHistory(i) {
+  const s = JSON.parse(H.stack[i]); H.i = i; S.pose = s.pose; Object.assign(S.officer, s.officer); Object.assign(S.camera, s.camera); camType = s.camType || 'custom'; S.officerPrev = { ...S.officer }; // in place: the sliders hold these objects
+  syncCam(); updateHistoryButtons(); requestEval(); // the debounced commit then sees an unchanged snapshot and adds nothing
+}
+function resetAll() {
+  const d = S.init.defaults, keep = { width: S.camera.width, height: S.camera.height };
+  S.pose = JSON.parse(JSON.stringify(d.pose)); Object.assign(S.officer, d.officer); S.officerPrev = { ...S.officer }; Object.assign(S.camera, d.camera, keep); camType = 'default';
+  syncCam(); syncers.forEach(f => f()); requestEval(); historyCommit(); toast('Pose, officer and camera reset (Ctrl+Z to undo).', 'info');
+}
+function undo() { historyCommit(); if (H.i > 0) restoreHistory(H.i - 1); else toast('Nothing to undo.', 'info'); }
+function redo() { clearTimeout(H.timer); if (H.i < H.stack.length - 1) restoreHistory(H.i + 1); else toast('Nothing to redo.', 'info'); }
+
+// ============================================================ multi-window sync (pop-out views share state over a BroadcastChannel)
+const VIEW = new URLSearchParams(location.search).get('view'), SINGLE = ['cam', 'plan', 'prof'].includes(VIEW);
+const WIN = Math.random().toString(36).slice(2), chan = typeof BroadcastChannel === 'function' ? new BroadcastChannel('tosdg-studio') : null;
+function broadcast() { if (!chan || !S.ev || retired) return; chan.postMessage({ type: 'state', from: WIN, boot: S.init.boot, pose: S.pose, officer: S.officer, camera: S.camera, bgId: S.bgId, ui: S.ui,
+  selJoint: S.selJoint, ev: S.ev, backgrounds: S.init.backgrounds }); }
+function adopt(m) {
+  const uiChanged = JSON.stringify(m.ui) !== JSON.stringify(S.ui), bgChanged = m.bgId !== S.bgId || JSON.stringify(m.backgrounds) !== JSON.stringify(S.init.backgrounds);
+  // officer / camera / ui are updated IN PLACE: the sliders in the side panels hold references to these objects
+  Object.assign(S.officer, m.officer); Object.assign(S.camera, m.camera); Object.assign(S.ui, m.ui);
+  Object.assign(S, { pose: m.pose, selJoint: m.selJoint, ev: m.ev, bgId: m.bgId });
+  S.officerPrev = { ...S.officer };
+  S.init.backgrounds = m.backgrounds;
+  if (!SINGLE) { syncers.forEach(s => s()); if (uiChanged) buildToolbar(); if (bgChanged) buildBg(); readoutsSoon(); }
+  redraw(); scheduleBackplate(); scheduleModel();
+}
+// Every page says 'boot' with its server run's id when it loads. A page of an OLDER run (start_studio.bat restarted the Studio
+// and opened a new tab) retires; messages from other runs are never adopted, so a stale tab cannot overwrite the new one.
+if (chan) chan.onmessage = e => { const m = e.data; if (!m || m.from === WIN || !S.init || retired) return;
+  if (m.boot !== S.init.boot) { if (m.type === 'boot' && m.boot > S.init.boot) retire(); return; }
+  if (m.type === 'hello') { if (S.ev) broadcast(); } else if (m.type === 'state') adopt(m); };
+function retire() {
+  retired = true; clearTimeout(saveTimer); presence('/api/bye'); chan.close();
+  window.close(); // allowed for pop-outs and for a tab the Studio opened itself (one history entry); otherwise the page says so
+  setTimeout(() => document.body.replaceChildren(el('div', { style: 'height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--dim)' },
+    el('b', { style: 'color:var(--text);font-size:15px' }, 'The Studio was restarted in a new tab.'), 'This tab is out of date; you can close it.')), 300);
+}
+let bpTimer;
+function scheduleBackplate() { clearTimeout(bpTimer); bpTimer = setTimeout(guard(refreshBackplate), 120); }
+async function refreshBackplate() {
+  if (!S.bgId || !S.ev) { S.bgImg = null; redraw(); return; }
+  const c = S.ev.camera, key = [S.bgId, bgEntry()?.horizon_y_frac, c.width, c.height, c.horizon_v.toFixed(1), c.pitch.toFixed(2), c.focal_length_mm, c.sensor_width_mm, JSON.stringify(c.lens)].join('|')   // the photo is distorted with the lens: any lens change needs a new plate;
+  if (key === S.bgKey) return;
+  const r = await fetch('/api/backplate', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Studio': '1' }, body: JSON.stringify({ bg_id: S.bgId, ...scene() }) });
+  if (!r.ok) throw new Error((await r.json()).error);
+  const img = new Image(); img.src = URL.createObjectURL(await r.blob()); await img.decode();
+  S.bgImg = img; S.bgKey = key; redraw();
+}
+
+// ============================================================ left panels
+function numField(parent, label, obj, key, min, max, step, onchange) {
+  const num = el('input', { type: 'number', min, max, step }), rng = el('input', { type: 'range', min, max, step });
+  const sync = () => { num.value = +(+obj[key]).toFixed(3); rng.value = obj[key]; };
+  const set = v => { if (!isFinite(v)) return; obj[key] = v; sync(); (onchange || requestEval)(); };
+  num.addEventListener('change', () => set(+num.value)); rng.addEventListener('input', () => set(+rng.value));
+  parent.append(el('div', { class: 'row' }, el('label', {}, label), rng, num)); sync();
+  return sync;
+}
+let syncers = [];
+function buildOfficer() {
+  const p = $('#pOfficer'); p.replaceChildren(); resetInfo(p);
+  const changed = () => { setOfficerKeepCamera({ ...S.officer }, S.officerPrev); syncCam(); requestEval(); };
+  syncers.push(numField(p, 'x (cm)', S.officer, 'x', -3000, 3000, 1, changed));
+  syncers.push(numField(p, 'y (cm)', S.officer, 'y', -3000, 3000, 1, changed));
+  syncers.push(numField(p, 'yaw (°)', S.officer, 'yaw_deg', -180, 180, 1, changed));
+  p.append(el('div', { class: 'line' }, el('button', { title: 'Put the officer back at the origin facing forward (the camera stays where it is)', onclick: () => { Object.assign(S.officer, S.init.defaults.officer); changed(); } }, '↺ reset officer position')),
+    secInfo(p, 'a', 'Moving or turning the officer keeps the camera where it is in the world, so the officer moves in the picture.'));
+}
+// Default view: officer at the centre facing the camera, camera at neck height 4 m away (the defaults), picture shaped like the background so the whole photo is visible.
+function applyDefaultView(bg) {
+  const d = S.init.defaults, cam = { ...d.camera };
+  if (bg && bg.width > 0 && bg.height > 0) { const k = 1280 / Math.max(bg.width, bg.height); cam.width = Math.max(16, Math.round(bg.width * k)); cam.height = Math.max(16, Math.round(bg.height * k)); }
+  // Pitch offset stays 0; the aim height is raised/lowered so the camera horizon falls on the photo's own horizon row. The photo then needs no zoom or shift to line up, so all of it shows.
+  if (bg && bg.horizon_y_frac > 0 && bg.horizon_y_frac < 1) {
+    const fx = cam.focal_length_mm / cam.sensor_width_mm * cam.width, yd = (bg.horizon_y_frac - 0.5) * cam.height / fx;
+    let t = yd; for (let i = 0; i < 30; i++) { const f1 = 1 + cam.lens_k1 * t * t + cam.lens_k2 * t ** 4, d1 = 1 + 3 * cam.lens_k1 * t * t + 5 * cam.lens_k2 * t ** 4; t = clamp(t - (t * f1 - yd) / Math.max(d1, 0.05), -3, 3); } // undo the lens: the pinhole horizon that lands on the photo's horizon
+    cam.aim_height_cm = clamp(cam.height_cm + cam.distance_cm * t, 0, 250);
+  }
+  Object.assign(S.officer, d.officer); S.officerPrev = { ...S.officer }; Object.assign(S.camera, cam); camAnchor = null; camType = 'default';
+}
+function resetCamera() { const keep = { width: S.camera.width, height: S.camera.height }; Object.assign(S.camera, S.init.defaults.camera, keep); camType = 'default'; syncCam(); requestEval(); }
+// A camera setting changed by the user: the list switches to "Custom" (the placement is no longer that of the type shown).
+function markCustom() { if (camType !== 'custom') { camType = 'custom'; syncCam(); } }
+function buildCamera() {
+  const p = $('#pCamera'); p.replaceChildren(); resetInfo(p);
+  const TYPE_LABEL = { driver_eye: 'Driver (person driving a car)', motorbike_rider: 'Motorbike rider', dashcam: 'Car dashcam', roadside: 'Roadside camera' };
+  const typeOrder = ['driver_eye', 'motorbike_rider', 'dashcam', 'roadside'], rank = id => { const i = typeOrder.indexOf(id); return i < 0 ? 99 : i; };
+  const sel = el('select', { title: 'Default = the starting view (neck height, 4 m, no distortion). The camera types are realistic set-ups with their own lens. Custom = you changed a setting.' },
+    el('option', { value: 'default' }, 'Default'), [...S.init.camera_profiles].sort((a, b) => rank(a.id) - rank(b.id)).map(c => el('option', { value: c.id }, TYPE_LABEL[c.id] || c.id)), el('option', { value: 'custom' }, 'Custom'));
+  const mid = r => (r[0] + r[1]) / 2;
+  const applyDefault = () => { applyDefaultView(bgEntry()); syncCam(); requestEval(); };
+  const apply = rnd => {
+    if (sel.value === 'default') { applyDefault(); return; }
+    const c = S.init.camera_profiles.find(x => x.id === sel.value); if (!c) { toast('Pick Default or a camera type (driver, motorbike rider, car dashcam, roadside) first; then "mid" and "random" use its ranges.'); return; } const v = r => rnd ? r[0] + Math.random() * (r[1] - r[0]) : mid(r);
+    Object.assign(S.camera, { distance_cm: clamp(v(c.distance_cm), MIN_DIST, MAX_DIST), height_cm: v(c.height_cm), azimuth_deg: rnd ? v(c.azimuth_deg) : 0, focal_length_mm: v(c.focal_length_mm), sensor_width_mm: c.sensor_width_mm, aim_height_cm: v(c.aim_height_cm || [100, 100]), roll_deg: rnd ? v(c.roll_deg || [0, 0]) : 0, yaw_offset_deg: 0, pitch_offset_deg: 0,
+      lens_k1: +v((c.lens || {}).k1 || [0, 0]).toFixed(4), lens_k2: +v((c.lens || {}).k2 || [0, 0]).toFixed(4), lens_circle: 0, lens_border_auto: 1 }); // each type brings its own lens; its black border then follows the lens (auto)
+    camType = c.id; syncCam(); requestEval(); };
+  syncers.push(() => { sel.value = camType; });
+  sel.value = camType;
+  sel.addEventListener('change', () => { if (sel.value === 'custom') { camType = 'custom'; return; } apply(false); }); // choosing an entry applies it straight away
+  p.append(el('div', { class: 'line' }, sel, el('button', { onclick: () => apply(false), title: 'Default view, or the mid-range values of the camera type shown (placement, focal length and lens)' }, 'mid'), el('button', { onclick: () => apply(true), title: 'Random sample inside the profile ranges' }, 'random'),
+    el('button', { onclick: resetCamera, title: 'Back to the default camera (Home)' }, '↺ reset')));
+  const f = (l, k, a, b, s) => syncers.push(numField(p, l, S.camera, k, a, b, s, () => { markCustom(); requestEval(); }));
+  f('distance (cm)', 'distance_cm', MIN_DIST, MAX_DIST, 10); f('azimuth (°)', 'azimuth_deg', -180, 180, 1); f('height (cm)', 'height_cm', 20, 1500, 5);
+  f('lens k1 (− barrel)', 'lens_k1', -1, 0.5, 0.005); f('lens k2', 'lens_k2', -0.3, 0.4, 0.005); syncers.push(numField(p, 'black border (0 = off)', S.camera, 'lens_circle', 0, 1.2, 0.01, () => { S.camera.lens_border_auto = 0; markCustom(); syncCam(); requestEval(); })); // moving it by hand switches auto off
+  { const auto = el('input', { type: 'checkbox', onchange: () => { S.camera.lens_border_auto = auto.checked ? 1 : 0; markCustom(); requestEval(); } });
+    syncers.push(() => { auto.checked = !!S.camera.lens_border_auto; });
+    p.append(el('label', { class: 'line', title: 'On: the black border follows k1, k2, focal length and picture size by itself. Off (or when you drag the border slider): you set it.' }, auto, ' auto black border')); }
+  f('aim height (cm)', 'aim_height_cm', 0, 250, 5); f('yaw offset (°)', 'yaw_offset_deg', -45, 45, 0.5); f('pitch offset (°)', 'pitch_offset_deg', -45, 45, 0.5); f('roll (°)', 'roll_deg', -30, 30, 0.5);
+  f('focal (mm)', 'focal_length_mm', 2, 200, 0.5); f('sensor w (mm)', 'sensor_width_mm', 3, 60, 0.01);
+  const res = el('select', {}, [[640, 360], [1280, 720], [1920, 1080], [1024, 1024], [720, 1280]].map(([w, h]) => el('option', { value: w + 'x' + h }, `${w} × ${h}`)));
+  res.value = S.camera.width + 'x' + S.camera.height; if (res.value === '') { res.append(el('option', { value: S.camera.width + 'x' + S.camera.height }, `${S.camera.width} × ${S.camera.height}`)); res.value = S.camera.width + 'x' + S.camera.height; }
+  res.addEventListener('change', () => { const [w, h] = res.value.split('x').map(Number); S.camera.width = w; S.camera.height = h; markCustom(); requestEval(); });
+  syncers.push(() => { const v = S.camera.width + 'x' + S.camera.height; if (![...res.options].some(o => o.value === v)) res.append(el('option', { value: v }, `${S.camera.width} × ${S.camera.height}`)); res.value = v; }); // follows undo/redo and pop-out sync
+  p.append(el('div', { class: 'row two' }, el('label', {}, 'resolution'), Object.assign(res, { style: 'grid-column: span 2' }))); // spans both value columns so the text clears the dropdown arrow
+  p.append(secInfo(p, 'a', 'Azimuth is in the officer frame: 0 = in front, +90 = officer\'s right (same as the camera profiles).'));
+}
+const syncCam = () => syncers.forEach(s => s());
+
+// ---- render preview options: which renderer, and the (random) brightness of the uniform cloth
+function buildRenderOpts() {
+  const p = $('#rRender'); p.replaceChildren(); resetInfo(p);
+  const hasMesh = !!baseUniform().has_mesh;
+  const gpu = S.init?.gpu || {};
+  const sel = el('select', { title: 'GPU = skinned 3D uniform drawn on the graphics card (normal/roughness maps, soft shadows, sky light; mesh_renderer "gpu" of the generator); CPU = the same mesh, numpy software renderer; capsule = the shaded-capsule proxy backend (fast, for testing)' },
+    ...(hasMesh && gpu.available ? [el('option', { value: 'gpu' }, 'mesh — 3D uniform, GPU (best)')] : []),
+    ...(hasMesh ? [el('option', { value: 'mesh' }, 'mesh — 3D uniform, CPU')] : []), el('option', { value: 'proxy' }, hasMesh ? 'capsule — test backend' : 'capsule (no 3D mesh for this model)'));
+  const allowed = [...(hasMesh && gpu.available ? ['gpu'] : []), ...(hasMesh ? ['mesh'] : []), 'proxy'];
+  if (!allowed.includes(S.ui.renderer)) S.ui.renderer = hasMesh ? defaultRenderer() : 'proxy';
+  if (gpu.available && hasMesh && !S.ui.gpuOffered) { if (S.ui.renderer === 'mesh') S.ui.renderer = 'gpu'; S.ui.gpuOffered = true; }   // once: a saved 'mesh' predates the GPU choice
+  sel.value = S.ui.renderer;
+  sel.addEventListener('change', () => { S.ui.renderer = sel.value; scheduleSave(); broadcast(); });
+  p.append(el('div', { class: 'row two' }, el('label', {}, 'renderer'), Object.assign(sel, { style: 'grid-column: span 2' })));
+  syncers.push(numField(p, 'cloth brightness', S.ui, 'uniBrightness', 0.7, 1.3, 0.01, () => { scheduleSave(); broadcast(); }));
+  p.append(el('div', { class: 'line' },
+    el('button', { title: 'Draw a random brightness in the range the generator config uses (default ±10 %)', onclick: () => { S.ui.uniBrightness = +(0.9 + Math.random() * 0.2).toFixed(3); syncers.forEach(f => f()); scheduleSave(); broadcast(); } }, '🎲 random ±10 %'),
+    el('button', { onclick: () => { S.ui.uniBrightness = 1; syncers.forEach(f => f()); scheduleSave(); broadcast(); } }, '↺ 1.00')),
+    hasMesh ? secInfo(p, 'a', 'Multiplies the colour of the cloth (shirt, trousers, kepi crown); belts, shoes, skin and badges keep their colour. In generator configs: uniform_brightness_range [lo, hi], drawn per sample and recorded in the metadata. The camera view shows the 3D uniform when you stop dragging (toolbar: 3D uniform) and capsules while you drag; Render preview (R) draws the full image over the real background.') : el('div', { class: 'hint' }, 'This uniform has no 3D mesh, so Render preview uses the capsule proxy.'));
+}
+
+const uploadBackgrounds = guard(async files => {
+  let n = 0;
+  for (const f of files) { const r = await upload(`/api/upload_background?name=${encodeURIComponent(f.name)}`, f); S.init.backgrounds.push(r.background); S.bgId = r.background.id; n++; }
+  applyDefaultView(bgEntry()); syncCam(); syncers.forEach(f => f()); historyCommit();
+  S.bgKey = ''; buildBg(); scheduleBackplate(); requestEval(); broadcast();
+  toast_ok(`${n} photo${n > 1 ? 's' : ''} added.`);
+});
+function selectBg(id) { S.bgId = id; S.bgKey = ''; buildBg(); buildRandom(); scheduleBackplate(); scheduleSave(); broadcast(); }
+const deleteBackground = guard(async id => {
+  const r = await api('/api/background_delete', { id }); S.init.backgrounds = r.backgrounds;
+  if (S.bgId === id) { S.bgId = S.init.backgrounds[0]?.id || null; S.bgKey = ''; S.bgImg = null; }
+  buildBg(); scheduleBackplate(); redraw(); scheduleSave(); broadcast();
+  toast(`Deleted background "${id}" from the background library: the generator no longer uses it.`, 'info');
+});
+// right-click a background photo: use it / delete it (with a confirmation step in the menu)
+function backgroundMenu(e, b) {
+  e.preventDefault(); e.stopPropagation(); const x = e.clientX, y = e.clientY;
+  showCtx(x, y, b.id, [{ label: 'Use as background', run: () => { hideCtx(); selectBg(b.id); } },
+    { label: '🗑 Delete this background…', danger: true, run: () => showCtx(x, y, `Delete "${b.id}" for good? The generator stops using it too.`, [{ label: 'Yes, delete it', danger: true, run: () => { hideCtx(); deleteBackground(b.id); } }, { label: 'Cancel', run: hideCtx, focus: true }]) }]);
+}
+function buildBg() {
+  const p = $('#pBg'), keepScroll = p.querySelector('.thumbs')?.scrollTop || 0; p.replaceChildren(); resetInfo(p);
+  const file = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/webp,image/bmp,image/gif,image/tiff,.jpg,.jpeg,.png,.webp,.bmp,.gif,.tif,.tiff', multiple: true });
+  file.addEventListener('change', () => { const fs = [...file.files]; file.value = ''; uploadBackgrounds(fs); });
+  p.append(el('div', { class: 'line' }, file));
+  const th = el('div', { class: 'thumbs' });
+  for (const b of S.init.backgrounds) th.append(el('div', { class: 'thumb' + (b.id === S.bgId ? ' sel' : ''), title: `${b.id} (${b.width}×${b.height}) — click to use, right-click for more`, tabindex: 0,
+      onclick: () => selectBg(b.id), oncontextmenu: e => backgroundMenu(e, b), onkeydown: e => { if (e.key === 'Enter') selectBg(b.id); else if (e.key === 'Delete') backgroundMenu({ preventDefault() {}, stopPropagation() {}, clientX: e.target.getBoundingClientRect().left, clientY: e.target.getBoundingClientRect().bottom }, b); } },
+    el('img', { src: '/bg/' + b.file, alt: b.id }), el('span', {}, b.id),
+    el('button', { class: 'more', title: 'More: use, delete…', 'aria-label': `More actions for ${b.id}`, onclick: e => backgroundMenu(e, b) }, '⋯')));
+  p.append(th);
+  // the box shows 3 rows of 3; keep the scroll position across rebuilds and bring the selected photo into view
+  th.scrollTop = keepScroll;
+  const sel = th.querySelector('.sel');
+  if (sel && (sel.offsetTop < th.scrollTop || sel.offsetTop + sel.offsetHeight > th.scrollTop + th.clientHeight)) th.scrollTop = sel.offsetTop - 6;
+  if (S.init.backgrounds.length) p.append(secInfo(p, 'photos', 'Click a photo to use it · right-click (or press Delete) to remove it · you can also drop image files on this panel.'));
+  const b = bgEntry();
+  if (!b) { p.append(secInfo(p, 'plate', `Upload one or more 2D photos (PNG, JPG/JPEG, WebP, BMP, GIF, TIFF; WebP and the others are stored as JPG) with the button above, or drop them on this panel. They go straight into the background library (${S.init.library_dir}) that the generator draws from, and are shown behind the camera view exactly as the generator would crop and scale them.`)); return; }
+  // horizon editor
+  const cv = el('canvas', { width: 300, height: 180 }); cv.style.cursor = 'ns-resize'; p.append(cv, secInfo(p, 'horizon', 'Drag the line to mark the horizon in the photo. The generator aligns it with the camera horizon.'));
+  const img = new Image(); img.src = '/bg/' + b.file;
+  const draw = () => { const g = cv.getContext('2d'), s = Math.min(cv.width / b.width, cv.height / b.height), w = b.width * s, h = b.height * s, x0 = (cv.width - w) / 2, y0 = (cv.height - h) / 2;
+    g.clearRect(0, 0, cv.width, cv.height); g.drawImage(img, x0, y0, w, h);
+    if (b.horizon_y_frac != null) { const y = y0 + b.horizon_y_frac * h; g.strokeStyle = '#ffd166'; g.lineWidth = 2; g.beginPath(); g.moveTo(x0, y); g.lineTo(x0 + w, y); g.stroke(); g.fillStyle = '#ffd166'; g.fillText('horizon ' + b.horizon_y_frac.toFixed(3), x0 + 4, y - 4); }
+    return { y0, h }; };
+  img.onload = draw;
+  const setH = guard(async e => { const r = cv.getBoundingClientRect(), { y0, h } = draw(); const y = (e.clientY - r.top) * cv.height / r.height; b.horizon_y_frac = clamp((y - y0) / h, 0.01, 0.99); draw(); });
+  let down = false; cv.addEventListener('pointerdown', e => { down = true; cv.setPointerCapture(e.pointerId); setH(e); });
+  cv.addEventListener('pointermove', e => down && setH(e));
+  cv.addEventListener('pointerup', guard(async () => { down = false; await api('/api/background_update', { id: b.id, horizon_y_frac: b.horizon_y_frac }); S.bgKey = ''; scheduleBackplate(); }));
+  p.append(el('div', { class: 'line' }, el('button', { onclick: guard(async () => { b.horizon_y_frac = null; await api('/api/background_update', { id: b.id, horizon_y_frac: null }); S.bgKey = ''; buildBg(); scheduleBackplate(); }) }, 'clear horizon')));
+  const tags = el('input', { type: 'text', value: (b.tags || []).join(','), placeholder: 'tags, comma separated (ground_level, day …)', title: 'Camera profiles pick photos by tag: ground_level (dashcam, driver, motorbike, roadside)' });
+  const road = el('input', { type: 'number', min: -180, max: 180, step: 1, value: b.road_yaw_deg || 0, title: 'Direction of the traffic in this photo, relative to the view (degrees, + = to the right; 0 = the road runs along the view). The officer turns 0 / 90 / 180 / 270° from it ("officer turn: road").' });
+  const camH = el('input', { type: 'number', min: 30, max: 1000, step: 1, value: b.camera_height_cm || (b.tags || []).includes('dashcam') ? (b.camera_height_cm || 125) : 155, title: 'Height of the camera that took this photo (cm). With a reliable horizon the virtual camera is put at this height, so the officer has the size of a person standing there.' });
+  const ppl = (b.people?.found || []), nStand = ppl.filter(q => q.kind === 'standing').length;
+  const reliable = b.horizon_y_frac != null && b.horizon_source === 'manual';
+  p.append(el('div', { class: 'row two' }, el('label', {}, 'road direction °'), Object.assign(road, { style: 'grid-column: span 2' })),
+    el('div', { class: 'row two' }, el('label', {}, 'camera height cm'), Object.assign(camH, { style: 'grid-column: span 2' })),
+    el('div', { class: 'hint' }, reliable ? 'horizon: set by hand (reliable) — the officer is sized from it' : b.horizon_y_frac != null ? 'horizon: automatic estimate (not reliable) — drag it to the true eye-level horizon, or the officer is sized from the people in the photo' : 'horizon: none — drag it in, or the officer is sized from the people in the photo'),
+    ...(b.people ? [el('div', { class: 'hint' }, `reference people: ${ppl.length} (${nStand} standing, ${ppl.length - nStand} on a bike)`)] : []));
+  p.append(el('div', { class: 'line' }, tags), el('div', { class: 'line' }, el('button', { class: 'primary', title: 'Save the tags, the road direction and the camera height of this photo in the background library',
+    onclick: guard(async () => { const r = await api('/api/background_update', { id: b.id, tags: tags.value.split(',').map(t => t.trim()).filter(Boolean), road_yaw_deg: +road.value || 0, camera_height_cm: +camH.value || null }); Object.assign(b, r.background); toast_ok(`saved "${b.id}": ${b.tags.join(', ') || 'no tags'}` + (b.ground ? ` · road/sidewalk ${Math.round(b.ground.standable_frac * 100)}% of the photo` : ` · no ground mask: the officer's feet are not checked on it`)); }) }, 'save')));
+}
+// ---- random generate: a batch with some values locked to the Studio scene, the rest drawn by the generator
+const RND = { gesture: 'random', camera_type: 'random', lockCamera: false, background: 'random', baton: false, podium: 0,
+  turn: 'junction', people: true, minHeight: 0, lens: true, n: 20, seed: Math.floor(Math.random() * 1e6), renderer: 'gpu' };
+let rndPoll = null;
+function buildRandom() {
+  const p = $('#pRandom'); p.replaceChildren(); resetInfo(p);
+  const row = (label, input) => el('div', { class: 'row two' }, el('label', {}, label), Object.assign(input, { style: 'grid-column: span 2' }));
+  const sel = (key, opts, onchange) => { const s = el('select', {}, opts.map(([v, t]) => el('option', { value: v }, t))); s.value = String(RND[key]);
+    s.addEventListener('change', () => { RND[key] = typeof RND[key] === 'number' ? +s.value : s.value; onchange && onchange(); }); return s; };
+  const chk = (key, label, onchange) => { const b = el('input', { type: 'checkbox', checked: !!RND[key], onchange: () => { RND[key] = b.checked; onchange && onchange(); } }); return el('label', { class: 'line' }, b, ' ' + label); };
+  const num = (key, min, max) => { const i = el('input', { type: 'number', min, max, step: 1, value: RND[key] }); i.addEventListener('change', () => { RND[key] = Math.round(+i.value) || 0; }); return i; };
+  p.append(
+    row('gesture', sel('gesture', [['random', 'random'], ...S.init.gestures.map(g => [g.id, g.label])])),
+    row('camera type', sel('camera_type', [['random', 'random'], ...S.init.camera_profiles.map(c => [c.id, c.id])])),
+    chk('lockCamera', 'lock the camera to this view (distance, height, angle, focal length)', buildRandom),
+    row('background', sel('background', [['random', 'random (all photos)'], ...(S.bgId ? [[S.bgId, 'this photo: ' + S.bgId]] : [])])),
+    row('officer turn', sel('turn', [['junction', 'junction: in its middle, facing its roads'], ['road', '0 / 90 / 180 / 270° from the road'], ...(RND.lockCamera ? [['studio', 'as in this view']] : [])])),
+    row('baton', sel('baton', [['false', 'on the belt'], ['true', 'held (right hand)']])),
+    row('podium', sel('podium', [['0', 'never'], ['0.15', 'sometimes (15 %)'], ['1', 'always']])),
+    chk('people', 'consistent size (reliable horizon, else the people in the photo)', buildRandom),
+    ...(RND.people && !RND.lockCamera ? [row('min height px', num('minHeight', 0, 2000))] : []),
+    chk('lens', 'lens distortion and black border'),
+    row('samples', num('n', 1, 500)), row('seed', num('seed', 0, 2147483647)),
+    ...(S.init.gpu?.available ? [row('renderer', sel('renderer', [['gpu', 'GPU'], ['cpu', 'CPU']]))] : []));
+  if (RND.turn === 'studio' && !RND.lockCamera) RND.turn = 'junction';
+  const status = el('div', { class: 'hint', id: 'rndStatus' }), grid = el('div', { class: 'gen-grid', id: 'rndGrid' });
+  p.append(el('div', { class: 'line' }, el('button', { class: 'primary', onclick: startRandom }, '▶ start random generate')), status, grid,
+    secInfo(p, 'random', 'Locked values come from this Studio scene; everything set to "random" is drawn by the generator from the camera profiles, gestures and photos, like `tosdg generate`. With "0 / 90 / 180 / 270° from the road" the officer always faces along or across the traffic (+ up to 5°). "Size from people" scales the photo so that a person standing or riding in it is as tall as the officer (x 0.9-1.1); min height then zooms the whole scene, not only the officer. Output: out/studio_random/<time>/ (images, masks, labels, manifest).'));
+}
+const startRandom = guard(async () => {
+  const body = { num_samples: RND.n, seed: RND.seed, resolution: [S.camera.width, S.camera.height], gesture: RND.gesture, camera_type: RND.camera_type,
+    background: RND.background, baton: RND.baton === true || RND.baton === 'true', podium_probability: +RND.podium, officer_turn: RND.turn,
+    size_from_people: RND.people, min_officer_height_px: RND.people ? RND.minHeight : 0, lens: RND.lens, renderer: RND.renderer };
+  if (RND.lockCamera) { const c = S.camera; body.camera_lock = { distance_cm: c.distance_cm, height_cm: c.height_cm, azimuth_deg: c.azimuth_deg, focal_length_mm: c.focal_length_mm, aim_height_cm: c.aim_height_cm, roll_deg: c.roll_deg, sensor_width_mm: c.sensor_width_mm }; }
+  showRandom(await api('/api/random_generate', body));
+  clearInterval(rndPoll); rndPoll = setInterval(guard(async () => { const r = await api('/api/random_status', {}); showRandom(r); if (!r.running) { clearInterval(rndPoll); r.error ? toast('random generate: ' + r.error) : toast_ok(`random generate: ${r.samples.length} sample(s) in ${r.out_dir}`); } }), 1500);
+});
+function showRandom(r) {
+  const st = $('#rndStatus'), grid = $('#rndGrid'); if (!st) return;
+  st.textContent = !r.name ? '' : r.running ? `running ${r.done} / ${r.total}${r.failed ? `, ${r.failed} failed` : ''} …` : r.error ? 'error: ' + r.error : `done: ${r.samples.length} / ${r.total} → ${r.out_dir}`;
+  grid.replaceChildren(...(r.samples || []).map(f => el('img', { src: '/gen/' + f, loading: 'lazy', title: f, onclick: () => window.open('/gen/' + f, '_blank') })));
+}
+function buildPose() {
+  const p = $('#pPose'); p.replaceChildren(); resetInfo(p);
+  const body = el('select', {}, S.init.poses.body.map(i => el('option', { value: i }, i))), hl = el('select', {}, S.init.poses.hands.map(i => el('option', { value: i }, i))), hr = hl.cloneNode(true);
+  body.value = 'neutral_stand'; hl.value = hr.value = 'relaxed';
+  const apply = guard(async (b, l, r) => { const res = await api('/api/pose_preset', { body: b, hands: { l, r } }); S.pose = res.pose; requestEval(); });
+  p.append(el('div', { class: 'row two' }, el('label', {}, 'body pose'), Object.assign(body, { style: 'grid-column: span 2' })), el('div', { class: 'row two' }, el('label', {}, 'left hand'), Object.assign(hl, { style: 'grid-column: span 2' })), el('div', { class: 'row two' }, el('label', {}, 'right hand'), Object.assign(hr, { style: 'grid-column: span 2' })),
+    el('div', { class: 'line' }, el('button', { class: 'primary', onclick: () => apply(body.value, hl.value, hr.value) }, 'apply preset')));
+  const g = el('select', {}, el('option', { value: '' }, '— load a gesture variant —'), S.init.gestures.flatMap(g => g.variants.map(v => el('option', { value: g.id + '|' + v.id }, `${g.label} / ${v.id}`))));
+  g.addEventListener('change', () => { if (!g.value) return; const [gid, vid] = g.value.split('|'), v = S.init.gestures.find(x => x.id === gid).variants.find(x => x.id === vid);
+    const top = o => Object.entries(o || { relaxed: 1 }).sort((a, b) => b[1] - a[1])[0][0]; apply(v.pose, top(v.hands.l), top(v.hands.r));
+    S.gestureEdit = { gesture: gid, variant: vid, label: S.init.gestures.find(x => x.id === gid).label, pose: v.pose }; g.value = ''; buildPose(); });
+  p.append(el('div', { class: 'line' }, g, el('button', { onclick: () => { S.gestureEdit = null; apply('neutral_stand', 'relaxed', 'relaxed'); buildPose(); } }, 'reset')));
+  // edit a gesture: load a variant above, change the pose, then save it over the gesture's own pose file
+  const ge = S.gestureEdit;
+  if (ge) { const mirror = el('input', { type: 'checkbox', checked: true }), twin = /_[lr]$/.test(ge.pose) ? ge.pose.slice(0, -1) + (ge.pose.endsWith('_l') ? 'r' : 'l') : null;
+    const save = async force => { const r = await api('/api/save_gesture_pose', { gesture: ge.gesture, variant: ge.variant, pose: S.pose, mirror: mirror.checked, force });
+      S.init.poses = r.poses; toast_ok('saved ' + r.saved.join(', ') + (r.warnings.length ? ' (with warnings)' : '')); requestEval(); };
+    p.append(el('div', { class: 'gesture-edit' },
+      el('div', { class: 'hint' }, `editing ${ge.label} / ${ge.variant} — pose file poses/body/${ge.pose}.json`),
+      ...(twin ? [el('label', { class: 'hint', title: `also write the mirror image to ${twin}.json (the other side of this gesture)` }, mirror, ` mirror to ${twin}`)] : []),
+      el('div', { class: 'line' },
+        el('button', { class: 'primary', title: 'Overwrite the pose file of this gesture with the current pose (the old file goes to poses/body/.backup/). The pose must stay a valid example of the gesture.',
+          onclick: async () => { try { await save(false); } catch (e) { if (!/save anyway/.test(e.message)) { toast(e.message); return; } if (confirm(e.message + ' Save it anyway?')) await guard(save)(true); } } }, 'save over the gesture'),
+        el('button', { onclick: () => { S.gestureEdit = null; buildPose(); } }, 'stop editing'))));
+  }
+  const tg = (label, key) => el('label', { class: 'check-line' }, el('input', { type: 'checkbox', ...(S.ui[key] ? { checked: true } : {}), onchange: e => { S.ui[key] = e.target.checked; redraw(); scheduleSave(); } }), ' ' + label);
+  p.append(el('div', { class: 'check-list' }, tg('hand keypoints', 'hands'), tg('face keypoints', 'face'), tg('spine / neck handles', 'spine')));   // one per line
+  p.append(secInfo(p, 'a', 'Drag any dot in the camera, plan or profile view. Limits are enforced. The camera view drags in the screen plane; use the plan / profile views to move joints in depth.'));
+  // save
+  const sid = el('input', { type: 'text', placeholder: 'new pose id (a-z 0-9 _ -)' }), kind = el('select', {}, [['body', 'body pose'], ['hand|l', 'left hand pose'], ['hand|r', 'right hand pose']].map(([v, t]) => el('option', { value: v }, t))), ow = el('input', { type: 'checkbox' });
+  p.append(el('div', { class: 'line' }, sid), el('div', { class: 'line' }, kind, el('label', {}, ow, 'overwrite')),
+    el('div', { class: 'line' }, el('button', { onclick: guard(async () => { const [k, side] = kind.value.split('|'); const r = await api('/api/save_pose', { id: sid.value.trim(), kind: k, side, pose: S.pose, overwrite: ow.checked, description: 'authored in tosdg studio' });
+      S.init.poses = r.poses; toast_ok('saved ' + r.saved); buildPose(); }) }, 'save to poses/'), el('span', { class: 'hint' }, 'writes a pose file (physical pose only, no gesture meaning)')));
+}
+
+// ---- the officer model: a GLB of a person already wearing the uniform (photo -> uniform dressing is future work)
+const uploadModel = guard(async file => {
+  if (!/\.glb$/i.test(file.name)) { toast('Upload a .glb file (binary glTF 2.0) of a person in uniform.'); return; }
+  $('#status').textContent = 'importing model… (a large model can take a minute)';
+  try {
+    const r = await upload('/api/upload_model?name=' + encodeURIComponent(file.name), file);
+    S.init.profile_uniforms = r.profile_uniforms; S.init.models = r.models; S.ui.previewUniform = ''; S.model = {}; S.ui.model3d = true; S.ui.renderer = defaultRenderer();
+    buildModelPanel(); buildRenderOpts(); redraw(); scheduleModel(); scheduleSave();
+    const m = r.model;
+    toast_ok(`Model "${m.id}" is now the officer (${m.vertices} vertices). ` + (m.skin === 'model' ? 'Its own skeleton and skin weights were used.' : 'It had no usable skeleton, so it was rigged to the project skeleton.'));
+  } finally { $('#status').textContent = 'ready · data/studio'; }
+});
+// Holding a baton: the fingers of that hand close around it (a fist, loosened only as much as the baton needs).
+// The baton is held across the fist = perpendicular to the fingers (arm forward -> baton straight up).
+// Standing on the traffic podium: it is on the ground (z = 0) and the officer stands on its top (officerZ()).
+function podiumControls() {
+  const box = el('input', { type: 'checkbox', checked: !!S.ui.podium, onchange: () => { S.ui.podium = box.checked; requestEval(); scheduleModel(); scheduleSave(); redraw(); } });
+  return el('div', { style: 'margin:6px 0;padding:6px 0;border-top:1px solid var(--line)' },
+    el('label', { class: 'line', style: 'cursor:pointer' }, box, el('b', {}, ' Standing on a podium'), info('Puts the officer on the junction traffic podium (profiles/VN/props/podium.glb). The podium stands on the ground and the officer on top of it, so the officer is higher above the ground. Camera height and aim height are measured from the ground, not from the feet of the officer. The 3D model is drawn when you stop dragging.')));
+}
+function batonControls() {
+  const b = S.ui.baton = { enabled: false, hand: 'r', ...(S.ui.baton || {}), mode: 'across' };   // only the across-the-fist grip is offered (a saved 'along' is reset)
+  const change = () => { requestEval(); scheduleModel(); scheduleSave(); redraw(); buildModelPanel(); };
+  const box = el('input', { type: 'checkbox', checked: b.enabled, onchange: () => { b.enabled = box.checked; change(); } });
+  const sel = (key, opts) => { const s = el('select', { onchange: () => { b[key] = s.value; change(); } }, opts.map(([v, l]) => el('option', { value: v, selected: b[key] === v }, l))); return s; };
+  const ev = S.ev && S.ev.baton;
+  return el('div', { style: 'margin:6px 0;padding:6px 0;border-top:1px solid var(--line)' },
+    el('label', { class: 'line', style: 'cursor:pointer' }, box, el('b', {}, ' Holding a baton'), info('Off: the hands keep the poses of the gesture and the baton hangs from the belt. On: that hand closes around the 3D baton and the baton leaves the belt (one baton in the picture either way).')),
+    b.enabled ? el('div', { class: 'line' }, 'hand ', sel('hand', [['r', 'right'], ['l', 'left']])) : '',
+    b.enabled ? el('div', { class: 'hint' }, ev ? `grip: fist closed to ${Math.round((ev.closure ?? 0) * 100)}% (${ev.mode === 'along' ? 'loosened so the baton does not pass through the fingers' : 'across the fist'})` + (ev.collisions.length ? ' · ⚠ baton touches the body' : '') : '') : '',
+    '');
+}
+const useModel = guard(async id => {
+  $('#status').textContent = 'switching model…';
+  try {
+    const r = await api('/api/model_activate', { id });
+    S.init.profile_uniforms = r.profile_uniforms; S.init.models = r.models; S.ui.previewUniform = ''; S.model = {}; S.ui.model3d = true; S.ui.renderer = defaultRenderer();
+    buildModelPanel(); buildRenderOpts(); redraw(); scheduleModel(); scheduleSave(); toast_ok(`Model "${r.model.id}" is now the active model.`);
+  } finally { $('#status').textContent = 'ready · data/studio'; }
+});
+function buildModelPanel() {
+  const p = $('#pModel'), u = baseUniform();
+  const file = el('input', { type: 'file', accept: '.glb', hidden: true });
+  file.addEventListener('change', () => { const f = file.files[0]; file.value = ''; if (f) uploadModel(f); });
+  p.replaceChildren(
+    el('div', { class: 'line' }, el('b', {}, u ? u.id : 'no model'), el('span', { class: 'hint' }, u && u.has_mesh ? '  active · 3D mesh' : '')),
+    el('div', { class: 'hint' }, u ? u.description : 'Upload a GLB of a person wearing the uniform.'),
+    el('div', { class: 'line' }, el('button', { class: 'primary', onclick: () => file.click(), title: 'GLB with a texture, without a baton of its own (the baton is added by the tool: in the hand, or on the belt). If it carries a skeleton with UE5 bone names (pelvis, spine_01 … hand_l …) that skeleton and its skin weights are used; otherwise it is rigged automatically.' }, 'Upload model (.glb)'), file),
+    secInfo(p, 'drop', 'Or drop a .glb file on this panel. Each upload becomes the active model used by the preview and by `tosdg generate`.'),
+    batonControls(), podiumControls(),
+    el('div', { class: 'hint', style: 'margin-top:6px' }, 'Saved models (click one to make it the active model):'),
+    el('div', {}, (S.init.models || []).map(m => el('div', { class: 'line' },
+      el('button', { disabled: m.active, onclick: () => useModel(m.id), title: m.active ? 'Already the active model' : 'Use this saved model' }, m.active ? '✓ ' + m.id : m.id),
+      el('span', { class: 'hint' }, m.active ? '  active' : (m.registered ? '' : '  saved GLB, will be re-imported'))))));
+  p.parentElement.classList.toggle('dropping', false);
+}
+const wireModelDrop = () => { const box = $('#pModel'); const has = e => [...(e.dataTransfer?.types || [])].includes('Files');
+  box.addEventListener('dragover', e => { if (has(e)) { e.preventDefault(); box.classList.add('dropping'); } });
+  box.addEventListener('dragleave', () => box.classList.remove('dropping'));
+  box.addEventListener('drop', e => { e.preventDefault(); box.classList.remove('dropping'); const f = [...e.dataTransfer.files].find(x => /\.glb$/i.test(x.name)); if (f) uploadModel(f); else toast('Drop a .glb file.'); }); };
+// ============================================================ right panel readouts
+function readouts() {
+  const ev = S.ev, c = ev.camera; if (!ev) return;
+  const kv = rows => el('div', { class: 'kv' }, rows.flatMap(([k, v]) => [el('span', {}, k), el('span', {}, v)]));
+  $('#rFov').replaceChildren(kv([['horizontal FOV', fmt(c.hfov_deg) + '°'], ['vertical FOV', fmt(c.vfov_deg) + '°'], ['diagonal FOV', fmt(c.dfov_deg) + '°'], ['35 mm equiv.', fmt(c.equiv_35mm_focal, 0) + ' mm'],
+    ['camera pos (cm)', c.position.map(v => fmt(v, 0)).join(', ')], ['pitch / yaw / roll', `${fmt(c.pitch)}° / ${fmt(c.yaw)}° / ${fmt(c.roll)}°`], ['horizon row', fmt(c.horizon_v, 0) + ' px'],
+    ['officer height', fmt(ev.bbox_height_px, 0) + ' px'], ['scale at officer', fmt(ev.px_per_cm_at_officer, 2) + ' px/cm'], ['approach side', ev.approach_side]]));
+  const labels = { subject_in_front: 'officer in front of camera', enough_keypoints_in_frame: 'at least 25% of the 17 keypoints in frame (the officer may be partly outside)', bbox_height_ok: 'bbox height ≥ 24 px', bbox_edge_ok: 'bbox may extend past the image edge' };
+  const chk = $('#rCheck'); chk.replaceChildren(el('div', { class: ev.generator_would_accept_view ? 'ok' : 'bad' }, ev.generator_would_accept_view ? '✓ generator would keep this view' : '✗ generator would reject this view'),
+    el('ul', { class: 'plain' }, Object.entries(ev.checks).map(([k, v]) => el('li', { class: v ? 'ok' : 'bad' }, (v ? '✓ ' : '✗ ') + labels[k]))), el('div', { class: 'hint' }, 'Approximation from capsule extents; "Render preview" gives the exact mask-based bbox.'));
+  const gm = $('#rGesture'); gm.replaceChildren();
+  const ok = ev.gesture_matches.filter(m => m.ok);
+  if (ok.length) ok.forEach(m => gm.append(el('div', {}, el('b', { class: 'ok' }, '✓ ' + m.label), ` (${m.variant})`, el('div', { class: 'hint' }, `for a viewer on the ${ev.approach_side}: ${m.instruction_for_side}`))));
+  else gm.append(el('div', { class: 'warn' }, 'No defined gesture matches this pose.'));
+  gm.append(el('details', {}, el('summary', {}, 'closest misses'), ev.gesture_matches.filter(m => !m.ok).map(m => el('div', { class: 'hint' }, m.label + ': ' + (m.failures[0] || '')))));
+  buildJointPanel();
+  const w = $('#rWarn'); w.replaceChildren(); const items = [...ev.limit_errors.map(x => ['bad', 'limit ' + x]), ...ev.collisions.map(x => ['warn', 'collision ' + x])];
+  w.append(items.length ? el('ul', { class: 'plain' }, items.map(([c, t]) => el('li', { class: c }, t))) : el('div', { class: 'ok' }, 'No limit violations or self-collisions.'));
+  $('#camCap').textContent = `${c.width}×${c.height}  ·  HFOV ${fmt(c.hfov_deg)}°  ·  VFOV ${fmt(c.vfov_deg)}°  ·  f=${S.camera.focal_length_mm}mm  ·  officer ${fmt(ev.bbox_height_px, 0)} px tall`;
+}
+function buildJointPanel() {
+  const box = $('#rJoint'); const jn = S.selJoint, J = S.init.skeleton.joints.find(j => j.name === jn);
+  const sel = el('select', {}, S.init.skeleton.joints.filter(j => j.dofs.length && !/_(0[123])_[lr]$/.test(j.name) || /^(spine|neck|head|clav|upper|lower|hand|thigh|calf|foot)/.test(j.name)).filter(j => j.dofs.length).map(j => el('option', { value: j.name }, j.name)));
+  sel.value = jn; sel.addEventListener('change', () => { S.selJoint = sel.value; buildJointPanel(); redraw(); });
+  box.replaceChildren(el('div', { class: 'line' }, sel));
+  if (!J) return;
+  for (const d of J.dofs) { const cur = S.pose[jn]?.[d.name] ?? 0, num = el('input', { type: 'number', min: d.min, max: d.max, step: 0.5, value: +cur.toFixed(2) }), rng = el('input', { type: 'range', min: d.min, max: d.max, step: 0.5, value: cur });
+    const set = v => { (S.pose[jn] ||= {})[d.name] = clamp(v, d.min, d.max); num.value = +(+S.pose[jn][d.name]).toFixed(2); rng.value = S.pose[jn][d.name]; requestEval(); };
+    num.addEventListener('change', () => set(+num.value)); rng.addEventListener('input', () => set(+rng.value));
+    box.append(el('div', { class: 'row' }, el('label', {}, d.name), rng, num), el('div', { class: 'hint', style: 'margin:-2px 0 2px 102px' }, `limits ${d.min}° … ${d.max}°`)); }
+}
+
+// ============================================================ drawing: camera view
+const cam = $('#cam'), plan = $('#plan'), prof = $('#prof');
+const hex = rgb => '#' + rgb.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+const unhex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+function baseUniform() { const l = S.init.profile_uniforms; return l.find(u => u.id === S.ui.previewUniform) || l[0]; }
+// region -> [r,g,b] used to paint the capsule model and the proxy render: the profile uniform, overridden by colours
+// estimated from the officer photos when "use on the model" is on.
+function modelColors() { return { ...baseUniform().proxy_colors }; }
+const viewOf = cv => cv.closest('.view');
+const isBig = cv => SINGLE ? viewOf(cv).dataset.view === VIEW : document.fullscreenElement === viewOf(cv); // full screen or its own window: use all the space
+function fitCanvas(cv, aspect, maxCssH, fillWhenBig) {
+  const view = viewOf(cv); let w, h;
+  if (isBig(cv)) { // everything in the view except the canvas stage keeps its height; the stage gets the rest
+    const others = [...view.children].filter(ch => !ch.classList.contains('stage')).reduce((a, ch) => a + ch.offsetHeight, 0);
+    const aw = view.clientWidth - 16, ah = Math.max(80, view.clientHeight - 16 - others - 6);
+    if (fillWhenBig) { w = aw; h = ah; } else { w = Math.min(aw, ah * aspect); h = w / aspect; }
+  } else { w = viewOf(cv).clientWidth; h = w / aspect; if (maxCssH && h > maxCssH) { h = maxCssH; w = h * aspect; } }
+  w = Math.max(w, 40); h = Math.max(h, 40); const dpr = devicePixelRatio || 1; cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  const pw = Math.round(w * dpr), ph = Math.round(h * dpr); if (cv.width !== pw) cv.width = pw; if (cv.height !== ph) cv.height = ph; return cv.width; }
+const hidden = cv => !cv.offsetParent && !isBig(cv); // a view that is not shown in this window (pop-out shows one view)
+function handleList(picking = false) { // handles shown in the camera view; picking = only those a click can tell apart
+  const ev = S.ev, out = [];
+  const add = (id, label, joint, offset, w, uv) => uv && out.push({ id, label, joint, offset, w, uv });
+  ev.keypoints.coco17.forEach((k, i) => { if (i < 5 && !S.ui.face) return; add('coco17:' + k.name, k.name, k.joint, k.offset, k.w, k.uv); });   // COCO 0-4 = nose, eyes, ears: the 'face keypoints' toggle
+  // finger handles are drawn always, but picked only when the hand is big enough on screen to tell them apart: 21 dots in a few
+  // pixels make a drag grab a fingertip instead of the hand (the wrist stays draggable through coco17); zoom in (wheel) to pick them
+  const screenPx = ev.camera.width ? (cam.width / ev.camera.width) * S.viewZoom.cam / (devicePixelRatio || 1) : 1;
+  const handPx = side => { const uv = ev.keypoints['hand21_' + side].map(k => k.uv).filter(Boolean); if (uv.length < 2) return 0;
+    const xs = uv.map(u => u[0]), ys = uv.map(u => u[1]); return Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) * screenPx; };
+  if (S.ui.hands) for (const side of ['l', 'r']) if (!picking || handPx(side) >= 48) for (const k of ev.keypoints['hand21_' + side]) add('hand' + side + ':' + k.name, k.name, k.joint, k.offset, k.w, k.uv);
+  if (S.ui.spine) for (const j of ['spine_02', 'neck_01']) add('joint:' + j, j, j, [0, 0, 0], ev.joints[j].w, ev.joints[j].uv);
+  const pel = ev.joints.pelvis; out.push({ id: 'root', label: 'move officer (ground)', joint: null, w: [S.officer.x, S.officer.y, officerZ()], uv: project([S.officer.x, S.officer.y, officerZ()]) || [-99, -99], root: true, pelvisUv: pel.uv });
+  return out;
+}
+// ---- Alt+click a joint: rotation gizmo. One ring per rotation axis of the joint, coloured by its local axis (X red, Y green, Z blue).
+// Drag a ring to turn the joint about that axis (clockwise / counter-clockwise as seen on the ring); the physics rules (joint limits,
+// the wrist's elliptical range, no new self-collision) are applied by the server. Esc, or a normal click on another joint, leaves the mode.
+const AXIS_COLOUR = { x: '#ff4d4d', y: '#3ddc5f', z: '#4d8dff' };
+function leaveRot() { // leave the rotation mode (Esc, or a normal click on another joint): drop the gizmo, any ring drag and the ring cursor
+  S.rot = null; S.rotDrag = null; S.rotInfo = null; S.hoverRing = null; cam.style.cursor = ''; }
+function rotAxes(jn) { // the axes of the gizmo: the joint's own DOFs, plus the forearm's roll for a wrist (the wrist turns about three axes)
+  const J = S.init.skeleton.joints, ev = S.ev, out = [], j = J.find(x => x.name === jn); if (!j || !ev.dof_axes) return out;
+  const add = (owner, d) => { const w = ev.dof_axes[owner.name]?.[d.name]; if (w) out.push({ owner: owner.name, dof: d.name, axis: d.axis, sign: d.sign, min: d.min, max: d.max, w, i: out.length }); };
+  for (const d of j.dofs) add(j, d);
+  if (/^hand_[lr]$/.test(jn)) { const pj = J.find(x => x.name === j.parent); for (const d of pj.dofs) if (d.name === 'pronation') add(pj, d); }
+  return out;
+}
+const rotRadius = jn => /^(hand|thumb|index|middle|ring|pinky)/.test(jn) ? 10 : 15;   // cm
+const ringR = (jn, ax) => rotRadius(jn) * (1 + 0.3 * (ax.i || 0));   // each ring its own size: same-size rings around one centre cross each other and a click caught the wrong one
+function ringBasis(w) { const a = w, t = Math.abs(a[2]) > 0.9 ? [1, 0, 0] : [0, 0, 1];
+  let u = [a[1] * t[2] - a[2] * t[1], a[2] * t[0] - a[0] * t[2], a[0] * t[1] - a[1] * t[0]]; const n = Math.hypot(...u); u = u.map(x => x / n);
+  return [u, [a[1] * u[2] - a[2] * u[1], a[2] * u[0] - a[0] * u[2], a[0] * u[1] - a[1] * u[0]]]; }   // u, v with u x v = axis (right-handed)
+function ringPoint(c, R, ax, t) { const [u, v] = ringBasis(ax.w); return [0, 1, 2].map(i => c[i] + R * (Math.cos(t) * u[i] + Math.sin(t) * v[i])); }
+function ringPoly(c, R, ax, n = 72) { const pts = []; for (let i = 0; i <= n; i++) { const uv = project(ringPoint(c, R, ax, i / n * 2 * Math.PI)); pts.push(uv); } return pts; }
+function ringDist(c, R, ax, pImg) { const pts = ringPoly(c, R, ax); let best = 1e9; // distance (image px) from a point to the projected ring
+  for (let i = 0; i + 1 < pts.length; i++) { const a = pts[i], b = pts[i + 1]; if (!a || !b) continue; const dx = b[0] - a[0], dy = b[1] - a[1], l2 = dx * dx + dy * dy || 1;
+    const t = clamp(((pImg[0] - a[0]) * dx + (pImg[1] - a[1]) * dy) / l2, 0, 1); best = Math.min(best, Math.hypot(pImg[0] - a[0] - t * dx, pImg[1] - a[1] - t * dy)); }
+  return best; }
+function ringParam(c, R, ax, pImg) { let best = 0, bd = 1e9; // parameter (radians) of the ring point whose projection is nearest to the pointer
+  for (let i = 0; i < 180; i++) { const t = i / 180 * 2 * Math.PI, uv = project(ringPoint(c, R, ax, t)); if (!uv) continue; const d = Math.hypot(uv[0] - pImg[0], uv[1] - pImg[1]); if (d < bd) { bd = d; best = t; } }
+  return best; }
+function ringHit(p) { // the gizmo ring under a canvas pointer position, or null
+  if (!S.rot || !S.ev) return null; const k = cam.width / S.ev.camera.width, pImg = [p[0] / k, p[1] / k], c = S.ev.joints[S.rot.joint].w;
+  let best = null, bd = 12 * (devicePixelRatio || 1) / k; for (const ax of rotAxes(S.rot.joint)) { const d = ringDist(c, ringR(S.rot.joint, ax), ax, pImg); if (d < bd) { bd = d; best = ax; } }
+  return best; }
+// Screen direction (image px per cm of arc) in which the FRONT edge of a ring (its point nearest the camera) moves when the joint turns
+// by +angle; null when the ring faces the camera (then the pointer's angle around the ring is used). Dragging a ring seen at an angle
+// or edge-on (a thin ellipse / a line) by the angle of the nearest ring point barely moved, or jumped between its two sides.
+function ringFrontTangent(c, R, w) {
+  const cp = S.ev.camera.position, vc = [cp[0] - c[0], cp[1] - c[1], cp[2] - c[2]], L = Math.hypot(...vc), v = vc.map(x => x / L), vw = v[0] * w[0] + v[1] * w[1] + v[2] * w[2];
+  if (Math.abs(vw) > 0.8) return null;
+  let n = v.map((x, i) => x - vw * w[i]); const nl = Math.hypot(...n); n = n.map(x => x / nl);
+  const tg = [w[1] * n[2] - w[2] * n[1], w[2] * n[0] - w[0] * n[2], w[0] * n[1] - w[1] * n[0]], front = c.map((x, i) => x + R * n[i]);
+  const a = project(front), b = project(front.map((x, i) => x + tg[i]));
+  if (!a || !b) return null; const s = [b[0] - a[0], b[1] - a[1]]; return Math.hypot(...s) > 1e-3 ? s : null; }
+const wrapPi = a => { a = (a + Math.PI) % (2 * Math.PI); if (a < 0) a += 2 * Math.PI; return a - Math.PI; };
+function drawGizmo(g, k) {
+  if (!S.rot || !S.ev) return; const jn = S.rot.joint, c = S.ev.joints[jn].w, R = rotRadius(jn), cuv = S.ev.joints[jn].uv; if (!cuv) return; g.save(); g.lineCap = 'round';
+  const axes = rotAxes(jn); let row = 0;
+  for (const ax of axes) { const active = S.rotDrag?.ax.owner === ax.owner && S.rotDrag?.ax.dof === ax.dof, hov = !active && S.hoverRing === ax.owner + '.' + ax.dof, col = AXIS_COLOUR[ax.axis];
+    const Ra = ringR(jn, ax), poly = ringPoly(c, Ra, ax); g.strokeStyle = col; g.globalAlpha = active || hov ? 1 : 0.85; g.lineWidth = (active ? 4.5 : hov ? 3.5 : 2.5) / k; g.beginPath(); let pen = false;
+    for (const p of poly) { if (!p) { pen = false; continue; } if (!pen) { g.moveTo(p[0], p[1]); pen = true; } else g.lineTo(p[0], p[1]); } g.stroke();
+    const tip = project([0, 1, 2].map(i => c[i] + ax.w[i] * Ra * 1.25)), tail = project([0, 1, 2].map(i => c[i] - ax.w[i] * Ra * 0.3)); // the axis itself
+    if (tip && tail) { g.lineWidth = 1.6 / k; g.globalAlpha = 0.9; g.beginPath(); g.moveTo(tail[0], tail[1]); g.lineTo(tip[0], tip[1]); g.stroke(); g.fillStyle = col; g.beginPath(); g.arc(tip[0], tip[1], 3.2 / k, 0, 7); g.fill(); }
+    g.globalAlpha = 1; const val = S.pose[ax.owner]?.[ax.dof] ?? 0; g.fillStyle = col; g.font = `${11 / k}px sans-serif`;
+    g.fillText(`${ax.dof} ${val.toFixed(1)}°  [${ax.min}…${ax.max}]`, cuv[0] + 16 / k, cuv[1] + (18 + 14 * row++) / k); }
+  const info = S.rotInfo; g.font = `${11 / k}px sans-serif`; g.fillStyle = info?.limited_by ? '#ff8a8a' : '#ffffffcc';
+  g.fillText(info?.limited_by ? `limited: ${info.limited_by}` : `${jn}: drag a ring to turn it · Esc to leave`, cuv[0] + 16 / k, cuv[1] + (18 + 14 * row + 6) / k);
+  g.beginPath(); g.arc(cuv[0], cuv[1], 4 / k, 0, 7); g.strokeStyle = '#fff'; g.lineWidth = 1.5 / k; g.stroke(); g.restore();
+}
+// The lens' black border: everything outside the lit image circle (fraction of the half-diagonal) is black in the final image.
+// With "auto black border" on, the slider shows (and the server uses) the border that follows k1, k2, focal length and picture size.
+function autoBorderSync() {
+  if (!S.camera.lens_border_auto || !S.ev || !S.ev.camera) return;
+  const v = S.ev.camera.lens ? +S.ev.camera.lens.circle.toFixed(3) : 0;
+  if (S.camera.lens_circle !== v) { S.camera.lens_circle = v; syncCam(); }
+}
+function drawLensMask(g, W, H, c) {
+  if (!c.lens) return; const half = Math.hypot(W, H) / 2, reach = c.lens.r_reach ? c.lens.r_reach * c.fx : Infinity, rad0 = Math.min(c.lens.circle > 0 ? c.lens.circle * half : Infinity, reach); // too strong a distortion also blacks out what the lens cannot reach
+  if (!(rad0 < half * 1.0005)) return;
+  g.save(); g.fillStyle = '#000'; g.beginPath(); g.rect(-4 * W, -4 * H, 9 * W, 9 * H); g.arc(W / 2, H / 2, rad0, 0, 2 * Math.PI, true); g.fill('evenodd'); g.restore();
+}
+function drawCam() {
+  if (!S.ev || hidden(cam)) return; const ev = S.ev, c = ev.camera, W = c.width, H = c.height, cw = fitCanvas(cam, W / H, innerHeight * 0.8), z = S.viewZoom.cam, k = cw / W * z, tx = S.camPan.fx * cam.width, ty = S.camPan.fy * cam.height, g = cam.getContext('2d');   // z/tx/ty: view-only zoom of the picture (wheel), the camera is not touched
+  $('#hudCam').textContent = `${wantsModel() ? (modelFresh() ? '3D uniform  ·  ' : '3D uniform updating…  ·  ') : ''}HFOV ${fmt(c.hfov_deg)}°  ·  VFOV ${fmt(c.vfov_deg)}°  ·  ${fmt(S.camera.focal_length_mm, 1)} mm  ·  distance ${fmt(S.camera.distance_cm, 0)} cm  ·  azimuth ${fmt(S.camera.azimuth_deg, 0)}°  ·  height ${fmt(S.camera.height_cm, 0)} cm  ·  officer ${fmt(ev.bbox_height_px, 0)} px tall`;
+  g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, cam.width, cam.height);
+  g.save(); g.setTransform(z, 0, 0, z, tx, ty);
+  if (S.ui.bg && S.bgImg) g.drawImage(S.bgImg, 0, 0, cam.width, cam.height); else { const gr = g.createLinearGradient(0, 0, 0, cam.height), hv = clamp(c.horizon_v / H, 0, 1); gr.addColorStop(0, '#2b3a52'); gr.addColorStop(hv, '#56677f'); gr.addColorStop(Math.min(1, hv + 0.001), '#3b3f45'); gr.addColorStop(1, '#2a2d32'); g.fillStyle = gr; g.fillRect(0, 0, cam.width, cam.height); }
+  g.restore();
+  g.save(); g.translate(tx, ty); g.scale(k, k); const lw = 1 / k;
+  if (S.ui.guides) { g.strokeStyle = '#ffffff30'; g.lineWidth = lw; g.beginPath(); for (const f of [1 / 3, 2 / 3]) { g.moveTo(W * f, 0); g.lineTo(W * f, H); g.moveTo(0, H * f); g.lineTo(W, H * f); } g.stroke();
+    g.strokeStyle = '#ffffff55'; g.beginPath(); g.moveTo(W / 2 - 10 / k, H / 2); g.lineTo(W / 2 + 10 / k, H / 2); g.moveTo(W / 2, H / 2 - 10 / k); g.lineTo(W / 2, H / 2 + 10 / k); g.stroke(); }
+  if (S.ui.horizon) { g.strokeStyle = '#ffd166'; g.setLineDash([8 / k, 6 / k]); g.lineWidth = 1.5 / k; g.beginPath(); { let pen = false; const v0 = c.cy + c.fx * Math.tan(rad(c.pitch)); for (let i = 0; i <= 64; i++) { const q = distortUV(W * i / 64, v0, c); if (!q) { pen = false; continue; } if (pen) g.lineTo(q[0], q[1]); else g.moveTo(q[0], q[1]); pen = true; } } g.stroke(); g.setLineDash([]); g.fillStyle = '#ffd166'; g.font = `${11 / k}px sans-serif`; g.fillText('horizon', 4 / k, c.horizon_v - 4 / k); }
+  if (S.ui.rulers) { g.fillStyle = '#ffffffcc'; g.strokeStyle = '#ffffffaa'; g.font = `${10 / k}px sans-serif`; g.lineWidth = lw; g.textAlign = 'center';
+    const step = c.hfov_deg > 60 ? 10 : 5, hmax = c.hfov_deg / 2; for (let a = -Math.floor(hmax / step) * step; a <= hmax; a += step) { const u = c.cx + c.fx * Math.tan(rad(a)); g.beginPath(); g.moveTo(u, 0); g.lineTo(u, (a % (2 * step) ? 6 : 10) / k); g.stroke(); if (a % (2 * step) === 0) g.fillText(a + '°', u, 22 / k); }
+    g.textAlign = 'left'; const vmax = c.vfov_deg / 2, vs = c.vfov_deg > 40 ? 10 : 5; // vertical ruler relative to the optical axis, horizon-independent
+    for (let a = -Math.floor(vmax / vs) * vs; a <= vmax; a += vs) { const v = c.cy - c.fx * Math.tan(rad(a)); g.beginPath(); g.moveTo(0, v); g.lineTo(8 / k, v); g.stroke(); if (a % (2 * vs) === 0) g.fillText(a + '°', 12 / k, v + 3 / k); } g.textAlign = 'start'; }
+  const MC = modelColors(), mesh3d = modelFresh();
+  if (!mesh3d) drawPodiumCam(g, k);
+  if (mesh3d) g.drawImage(S.model.img, 0, 0, W, H);
+  else if (S.ui.capsules) for (const s of [...ev.segments].sort((a, b) => b.depth - a.depth)) { g.fillStyle = hex(MC[s.region] || [170, 170, 170]) + 'b0'; g.strokeStyle = '#00000060'; g.lineWidth = lw;
+    const dx = s.b[0] - s.a[0], dy = s.b[1] - s.a[1], n = Math.hypot(dx, dy) || 1, px = -dy / n, py = dx / n; g.beginPath(); g.moveTo(s.a[0] + px * s.ra, s.a[1] + py * s.ra); g.lineTo(s.b[0] + px * s.rb, s.b[1] + py * s.rb); g.lineTo(s.b[0] - px * s.rb, s.b[1] - py * s.rb); g.lineTo(s.a[0] - px * s.ra, s.a[1] - py * s.ra); g.closePath(); g.fill();
+    for (const [p, r] of [[s.a, s.ra], [s.b, s.rb]]) { g.beginPath(); g.arc(p[0], p[1], r, 0, 7); g.fill(); } }
+  drawLensMask(g, W, H, c);                                                  // black border of the lens: over the photo and the model, under the overlays
+  if (S.ui.bones) { const J = S.init.skeleton.joints, jj = ev.joints; g.strokeStyle = '#ffffffd0'; g.lineWidth = 1.6 / k; g.beginPath();
+    const isFinger = n => /thumb|index|middle|ring|pinky/.test(n);
+    for (const j of J) { if (!j.parent || j.virtual || isFinger(j.name) && !S.ui.hands) continue; const a = jj[j.parent].uv, b = jj[j.name].uv; if (a && b) { g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); } } g.stroke();
+    g.strokeStyle = '#ff5fd2'; g.lineWidth = 2 / k; g.beginPath(); for (const [i, j] of S.init.skeleton.coco_edges) { if (!S.ui.face && (i < 5 || j < 5)) continue; const a = ev.keypoints.coco17[i].uv, b = ev.keypoints.coco17[j].uv; if (a && b) { g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); } } g.stroke(); }
+  if (ev.baton && ev.baton.uv[0] && ev.baton.uv[1]) { const [a, b] = ev.baton.uv; g.save(); g.strokeStyle = '#ffb000'; g.lineWidth = Math.max(2 / k, ev.baton.radius_cm * c.fx / Math.max(ev.baton.depth[0], 1) * 2); g.lineCap = 'round'; g.globalAlpha = wantsModel() ? 0 : 0.9; g.beginPath(); g.moveTo(a[0], a[1]); g.lineTo(b[0], b[1]); g.stroke(); g.restore(); }
+  if (S.ui.bbox && ev.bbox) { g.strokeStyle = ev.generator_would_accept_view ? '#00e5ff' : '#ff6b6b'; g.lineWidth = 1.5 / k; g.strokeRect(ev.bbox[0], ev.bbox[1], ev.bbox[2] - ev.bbox[0], ev.bbox[3] - ev.bbox[1]); }
+  if (S.ui.handles) for (const h of handleList()) { const act = S.drag?.id === h.id, hov = S.hover === h.id, r = (h.root ? 8 : 5.5) / k * (act || hov ? 1.35 : 1);
+    g.beginPath(); if (h.root) { g.rect(h.uv[0] - r, h.uv[1] - r, 2 * r, 2 * r); } else g.arc(h.uv[0], h.uv[1], r, 0, 7);
+    g.fillStyle = h.root ? '#4fa3ff' : (h.joint === S.selJoint ? '#ffd166' : '#ff5fd2'); g.fill(); g.strokeStyle = '#000'; g.lineWidth = 1.2 / k; g.stroke();
+    if (act || hov) { g.fillStyle = '#fff'; g.font = `${12 / k}px sans-serif`; g.fillText(h.label, h.uv[0] + 10 / k, h.uv[1] - 8 / k); } }
+  drawGizmo(g, k);
+  g.restore();
+  drawAxesGizmo();
+}
+// Simple podium (cylinder) in the camera view while the 3D model layer is not shown (e.g. while dragging); the layer draws the real model.
+function drawPodiumCam(g, k) {
+  const P = S.init.podium; if (!S.ui.podium || !P || !officerZ()) return; const R = P.diameter_cm / 2, o = S.officer, N = 40, eye = viewFrames().eye;
+  const pt = (i, z) => { const a = i / N * 2 * Math.PI; return [o.x + R * Math.cos(a), o.y + R * Math.sin(a), z]; };
+  const top = [], bot = []; for (let i = 0; i < N; i++) { top.push(project(pt(i, P.depth_cm))); bot.push(project(pt(i, 0))); }   // on the ground, the officer on top
+  if (top.some(p => !p) || bot.some(p => !p)) return;
+  const quads = []; for (let i = 0; i < N; i++) { const j = (i + 1) % N, m = pt(i + 0.5, P.depth_cm / 2); quads.push({ i, j, d: Math.hypot(m[0] - eye[0], m[1] - eye[1], m[2] - eye[2]) }); }
+  g.save(); g.lineWidth = 1 / k; g.lineJoin = 'round'; g.strokeStyle = '#2b303a';
+  for (const q of quads.sort((a, b) => b.d - a.d)) { g.fillStyle = q.i % 2 ? '#9aa3b2' : '#8d96a6'; g.beginPath(); g.moveTo(...top[q.i]); g.lineTo(...top[q.j]); g.lineTo(...bot[q.j]); g.lineTo(...bot[q.i]); g.closePath(); g.fill(); g.stroke(); }
+  g.fillStyle = '#c7cdd8'; g.beginPath(); top.forEach((p, i) => i ? g.lineTo(...p) : g.moveTo(...p)); g.closePath(); g.fill(); g.stroke(); g.restore();
+}
+// ============================================================ drawing: plan + profile views
+function viewFrames() {
+  const c = liveCam(), o = [S.officer.x, S.officer.y], eye = c.position, D = Math.hypot(eye[0] - o[0], eye[1] - o[1]);
+  return { c, o, eye, D };
+}
+const frozen = { plan: null, prof: null };
+function planParams() { const { eye, o, D } = viewFrames(), ext = Math.max(D * 0.75 + 150, 400) / S.viewZoom.plan;
+  return { mx: (eye[0] + o[0]) / 2, my: (eye[1] + o[1]) / 2, sc: Math.min(plan.width, plan.height) / (2 * ext) }; }
+function planXf() { // world (x,y) -> canvas px, +X up, +Y right
+  const { mx, my, sc } = frozen.plan || planParams();
+  return { f: (x, y) => [plan.width / 2 + (y - my) * sc, plan.height / 2 - (x - mx) * sc], inv: (px, py) => [mx + (plan.height / 2 - py) / sc, my + (px - plan.width / 2) / sc], sc };
+}
+function profParams() { // side view along the camera heading, anchored on the officer so dragging the camera is stable
+  const { c, eye, D } = viewFrames(), yaw = rad(c.yaw), smin = -(D * 1.15 + 120), smax = 160, zmax = Math.max(eye[2] * 1.15, 260);
+  const sc0 = Math.min(prof.width * 0.92 / (smax - smin), prof.height * 0.88 / zmax), sc = sc0 * S.viewZoom.prof; // zoom about the officer's feet
+  return { fx: Math.cos(yaw), fy: Math.sin(yaw), ox: S.officer.x, oy: S.officer.y, sc, x0: prof.width * 0.04 - smin * sc0, gy: prof.height * 0.93 };
+}
+function profXf() { // world point -> (s along heading from the officer, z) -> canvas px
+  const P = frozen.prof || profParams(), { fx, fy, ox, oy, sc, x0, gy } = P;
+  const s_of = p => (p[0] - ox) * fx + (p[1] - oy) * fy, l_of = p => (p[0] - ox) * -fy + (p[1] - oy) * fx;
+  return { f: p => [x0 + s_of(p) * sc, gy - p[2] * sc], s_of, l_of, sc, x0, gy, inv: (px, py, lat) => { const s = (px - x0) / sc; return [ox + s * fx - lat * fy, oy + s * fy + lat * fx, (gy - py) / sc]; } };
+}
+function drawPlan() {
+  if (!S.ev || hidden(plan)) return; fitCanvas(plan, 1.15, innerHeight * 0.62, true); const g = plan.getContext('2d'), X = planXf(), { c, eye } = viewFrames(); g.clearRect(0, 0, plan.width, plan.height);
+  const dpr = devicePixelRatio || 1; g.lineWidth = dpr; g.font = `${10 * dpr}px sans-serif`;
+  const [cx0, cy0] = X.f(S.officer.x, S.officer.y); g.strokeStyle = '#2a303a'; g.fillStyle = '#6b7484';
+  for (let r = 250; r < 8000; r += 250) { const rr = r * X.sc; if (rr > plan.width * 1.2) break; g.beginPath(); g.arc(cx0, cy0, rr, 0, 7); g.stroke(); if (r % 500 === 0) g.fillText(r / 100 + ' m', cx0 + rr * 0.707 + 2, cy0 - rr * 0.707); }
+  if (officerZ() && S.init.podium) { g.fillStyle = '#9aa3b255'; g.strokeStyle = '#cfd6e4'; g.beginPath(); g.arc(cx0, cy0, S.init.podium.diameter_cm / 2 * X.sc, 0, 7); g.fill(); g.stroke(); }   // podium
+  // FOV wedge
+  const yaw = rad(c.yaw), hf = rad(c.hfov_deg / 2), L = Math.max(viewFrames().D * 1.3, 500), e = X.f(eye[0], eye[1]);
+  const corner = a => X.f(eye[0] + L * Math.cos(yaw + a), eye[1] + L * Math.sin(yaw + a));
+  const [l, r] = [corner(-hf), corner(hf)]; g.fillStyle = '#4fa3ff22'; g.strokeStyle = '#4fa3ffaa'; g.beginPath(); g.moveTo(...e); g.lineTo(...l); g.lineTo(...r); g.closePath(); g.fill(); g.stroke();
+  const tip = X.f(eye[0] + L * 0.9 * Math.cos(yaw), eye[1] + L * 0.9 * Math.sin(yaw)); g.setLineDash([4 * dpr, 4 * dpr]); g.beginPath(); g.moveTo(...e); g.lineTo(...tip); g.stroke(); g.setLineDash([]);
+  g.fillStyle = '#fff'; g.beginPath(); g.arc(...e, 7 * dpr, 0, 7); g.fillStyle = '#4fa3ff'; g.fill(); g.strokeStyle = '#000'; g.stroke(); g.fillStyle = '#4fa3ff'; g.fillText('camera ' + fmt(c.hfov_deg, 0) + '° HFOV', e[0] + 10 * dpr, e[1] - 8 * dpr);
+  g.fillStyle = '#ffd166'; g.beginPath(); g.arc(...tip, 5 * dpr, 0, 7); g.fill(); g.stroke();
+  // officer skeleton
+  g.strokeStyle = '#ffffffc0'; g.beginPath(); const jj = S.ev.joints; for (const j of S.init.skeleton.joints) { if (!j.parent || j.virtual || /thumb|index|middle|ring|pinky/.test(j.name)) continue; g.moveTo(...X.f(jj[j.parent].w[0], jj[j.parent].w[1])); g.lineTo(...X.f(jj[j.name].w[0], jj[j.name].w[1])); } g.stroke();
+  const ar = rad(S.officer.yaw_deg), fwd = X.f(S.officer.x + 90 * Math.cos(ar), S.officer.y + 90 * Math.sin(ar)); g.strokeStyle = '#4cc38a'; g.lineWidth = 2 * dpr; g.beginPath(); g.moveTo(cx0, cy0); g.lineTo(...fwd); g.stroke(); g.lineWidth = dpr;
+  g.fillStyle = '#4cc38a'; g.beginPath(); g.arc(...fwd, 6 * dpr, 0, 7); g.fill(); g.stroke(); g.fillText('facing', fwd[0] + 8 * dpr, fwd[1]);
+  g.fillStyle = '#4fa3ff'; g.beginPath(); g.rect(cx0 - 6 * dpr, cy0 - 6 * dpr, 12 * dpr, 12 * dpr); g.fill(); g.stroke();
+  for (const h of planHandles()) if (h.kind === 'kp') { const act = S.drag?.id === h.id; g.fillStyle = h.joint === S.selJoint ? '#ffd166' : '#ff5fd2'; g.beginPath(); g.arc(...h.px, (act ? 6 : 4) * dpr, 0, 7); g.fill(); g.stroke(); }
+}
+function planHandles() {
+  const X = planXf(), { c, eye } = viewFrames(), L = Math.max(viewFrames().D * 1.3, 500), yaw = rad(c.yaw), out = [];
+  out.push({ id: 'p:cam', kind: 'cam', px: X.f(eye[0], eye[1]) });
+  out.push({ id: 'p:aim', kind: 'aim', px: X.f(eye[0] + L * 0.9 * Math.cos(yaw), eye[1] + L * 0.9 * Math.sin(yaw)) });
+  const ar = rad(S.officer.yaw_deg); out.push({ id: 'p:yaw', kind: 'yaw', px: X.f(S.officer.x + 90 * Math.cos(ar), S.officer.y + 90 * Math.sin(ar)) });
+  out.push({ id: 'p:officer', kind: 'officer', px: X.f(S.officer.x, S.officer.y) });
+  for (const h of kpHandles()) out.push({ ...h, id: 'p:' + h.id, kind: 'kp', px: X.f(h.w[0], h.w[1]) });
+  return out;
+}
+function kpHandles() { const ev = S.ev, out = [];
+  ev.keypoints.coco17.forEach((k, i) => { if (i < 5 && !S.ui.face) return; out.push({ id: 'coco17:' + k.name, label: k.name, joint: k.joint, offset: k.offset, w: k.w }); });   // COCO 0-4 = nose, eyes, ears (the face keypoints)
+  if (S.ui.hands) for (const s of ['l', 'r']) for (const k of ev.keypoints['hand21_' + s]) out.push({ id: 'hand' + s + ':' + k.name, label: k.name, joint: k.joint, offset: k.offset, w: k.w });
+  if (S.ui.spine) for (const j of ['spine_02', 'neck_01']) out.push({ id: 'joint:' + j, label: j, joint: j, offset: [0, 0, 0], w: ev.joints[j].w });
+  return out; }
+function drawProf() {
+  if (!S.ev || hidden(prof)) return; fitCanvas(prof, 1.15, innerHeight * 0.62, true); const g = prof.getContext('2d'), X = profXf(), { c, eye, D } = viewFrames(), dpr = devicePixelRatio || 1; g.clearRect(0, 0, prof.width, prof.height); g.lineWidth = dpr; g.font = `${10 * dpr}px sans-serif`;
+  g.strokeStyle = '#59606d'; g.beginPath(); g.moveTo(0, X.gy); g.lineTo(prof.width, X.gy); g.stroke(); g.fillStyle = '#6b7484';
+  if (officerZ() && S.init.podium) { const P = S.init.podium, c0 = X.f([S.officer.x, S.officer.y, 0]), hw = P.diameter_cm / 2 * X.sc; g.fillStyle = '#9aa3b2'; g.strokeStyle = '#cfd6e4'; g.fillRect(c0[0] - hw, c0[1] - P.depth_cm * X.sc, 2 * hw, P.depth_cm * X.sc); g.strokeRect(c0[0] - hw, c0[1] - P.depth_cm * X.sc, 2 * hw, P.depth_cm * X.sc); g.fillStyle = '#6b7484'; }   // podium
+  for (let m = -60; m <= 20; m += 5) { const x = X.x0 + m * 100 * X.sc; if (x < 0 || x > prof.width) continue; g.beginPath(); g.moveTo(x, X.gy); g.lineTo(x, X.gy + 4 * dpr); g.stroke(); g.fillText(m === 0 ? 'officer' : Math.abs(m) + ' m', x - 8 * dpr, X.gy + 14 * dpr); }
+  const camPx = X.f(eye), pitch = rad(c.pitch), vf = rad(c.vfov_deg / 2), L = (D * 1.15 + 120), tip = a => [camPx[0] + L * Math.cos(a) * X.sc, camPx[1] - L * Math.sin(a) * X.sc];
+  g.fillStyle = '#4fa3ff22'; g.strokeStyle = '#4fa3ffaa'; g.beginPath(); g.moveTo(...camPx); g.lineTo(...tip(pitch - vf)); g.lineTo(...tip(pitch + vf)); g.closePath(); g.fill(); g.stroke();
+  const at = tip(pitch); g.setLineDash([4 * dpr, 4 * dpr]); g.beginPath(); g.moveTo(...camPx); g.lineTo(...at); g.stroke(); g.setLineDash([]);
+  g.fillStyle = '#4fa3ff'; g.beginPath(); g.arc(...camPx, 7 * dpr, 0, 7); g.fill(); g.strokeStyle = '#000'; g.stroke(); g.fillText(`camera ${fmt(eye[2], 0)} cm · VFOV ${fmt(c.vfov_deg, 0)}°`, camPx[0] + 10 * dpr, camPx[1] - 8 * dpr);
+  g.fillStyle = '#ffd166'; g.beginPath(); g.arc(...profAim().px, 5 * dpr, 0, 7); g.fill(); g.stroke();
+  g.strokeStyle = '#ffffffc0'; g.beginPath(); const jj = S.ev.joints; for (const j of S.init.skeleton.joints) { if (!j.parent || j.virtual || /thumb|index|middle|ring|pinky/.test(j.name)) continue; g.moveTo(...X.f(jj[j.parent].w)); g.lineTo(...X.f(jj[j.name].w)); } g.stroke();
+  for (const h of kpHandles()) { const act = S.drag?.id === 'f:' + h.id; g.fillStyle = h.joint === S.selJoint ? '#ffd166' : '#ff5fd2'; g.beginPath(); g.arc(...X.f(h.w), (act ? 6 : 4) * dpr, 0, 7); g.fill(); g.stroke(); }
+}
+function profAim() { const X = profXf(), { c, eye, D } = viewFrames(), L = D * 0.6 + 100, pitch = rad(c.pitch); return { px: [X.f(eye)[0] + L * Math.cos(pitch) * X.sc, X.f(eye)[1] - L * Math.sin(pitch) * X.sc] }; }
+
+function redraw() { drawCam(); drawPlan(); drawProf(); }
+
+// ============================================================ interaction
+let dragQueued = null, dragBusy = false;
+async function pumpDrag() {
+  if (dragBusy) return; dragBusy = true;
+  try { while (dragQueued) { const body = dragQueued; dragQueued = null; const r = await api('/api/drag', { ...scene(), ...body }); if (r.unreachable) continue;
+    if (r.officer) setOfficerKeepCamera(r.officer); S.pose = r.pose; if (r.angle) { S.rotInfo = r.angle; const d = S.rotDrag; if (d && r.angle.limited_by && d.ax.owner === r.angle.joint && d.ax.dof === r.angle.dof) { d.v0 = r.angle.value; d.acc = 0; } } /* at a limit: re-anchor the ring drag there, so turning back moves the joint at once */ S.ev = r.eval || await api('/api/eval', scene()); autoBorderSync(); redraw(); readoutsSoon(); syncers.forEach(s => s()); scheduleSave(); historySoon(); broadcast(); } }
+  catch (e) { toast(e.message); } dragBusy = false;
+}
+const rawPtr = (cv, e) => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; };
+function ptr(cv, e) { const p = rawPtr(cv, e); if (cv !== cam) return p; const z = S.viewZoom.cam; return [(p[0] - S.camPan.fx * cam.width) / z, (p[1] - S.camPan.fy * cam.height) / z]; }
+function nearest(list, p, getXY, maxPx) { let best = null, bd = maxPx; for (const h of list) { const xy = getXY(h); if (!xy) continue; const d = Math.hypot(xy[0] - p[0], xy[1] - p[1]); if (d < bd) { bd = d; best = h; } } return best; }
+function wireCanvas(cv, pick, move, key) {
+  cv.addEventListener('pointerdown', e => { if (!S.ev) return; const p = ptr(cv, e), h = pick(p); if (!h) return;
+    if (e.altKey && h.joint) { S.rot = { joint: h.joint }; S.rotInfo = null; S.rotDrag = null; S.selJoint = h.joint; buildJointPanel(); redraw(); return; }   // Alt+click: rotation gizmo of this joint
+    if (S.rot && h.joint !== S.rot.joint) leaveRot();                                                    // a normal click on another joint leaves the mode
+    S.drag = h; if (key) frozen[key] = key === 'plan' ? planParams() : profParams(); if (h.joint) { S.selJoint = h.joint; buildJointPanel(); } cv.setPointerCapture(e.pointerId); redraw(); });
+  cv.addEventListener('pointermove', e => { if (!S.ev) return; const p = ptr(cv, e); if (S.drag) { move(S.drag, p, e); } else { const h = pick(p); const id = h?.id || null; if (id !== S.hover) { S.hover = id; cv.style.cursor = h ? 'grab' : (cv === cam ? 'crosshair' : 'default'); redraw(); } } });
+  const end = () => { if (S.drag) { S.drag = null; S.dragPlane = null; if (key) frozen[key] = null; redraw(); } }; cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+}
+// camera view
+wireCanvas(cam, p => { if (S.rot && ringHit(p)) return null; const k = cam.width / S.ev.camera.width; return nearest(S.ui.handles ? handleList(true) : [], p, h => h.uv && [h.uv[0] * k, h.uv[1] * k], 14 * (devicePixelRatio || 1) / S.viewZoom.cam); },
+  (h, p, e) => { const k = cam.width / S.ev.camera.width, uv = [p[0] / k, p[1] / k];
+    const plane = !h.root && e && (e.ctrlKey || e.metaKey) ? dragPlaneAxis() : null;   // Ctrl: keep the joint on the plane across the aligned axis
+    S.dragPlane = plane;
+    dragQueued = h.root ? { mode: 'officer', target: { type: 'camera', uv } } : { mode: 'joint', joint: h.joint, offset: h.offset, target: { type: 'camera', uv, ...(plane ? { plane } : {}) } }; pumpDrag(); });
+// ---- Oxyz axes in the corner of the camera view (the officer's frame: X forward, Y right, Z up). Click X / Y / Z: the camera looks
+// along that axis (click again: from the other side; Z = from above). Ctrl+drag a joint: it moves on the plane across the aligned axis
+// (its coordinate on that axis stays), instead of on the screen plane, which drifts towards / away from a camera that looks at an angle.
+const AXIS_RGB = { x: '#ff4d4d', y: '#3ddc5f', z: '#4d8dff' };
+function officerAxes() { const a = rad(S.officer.yaw_deg); return { x: [Math.cos(a), Math.sin(a), 0], y: [-Math.sin(a), Math.cos(a), 0], z: [0, 0, 1] }; }
+function camFrameOf(v) { const R = S.ev.camera.R; return { depth: R[0][0] * v[0] + R[1][0] * v[1] + R[2][0] * v[2], right: R[0][1] * v[0] + R[1][1] * v[1] + R[2][1] * v[2], up: R[0][2] * v[0] + R[1][2] * v[1] + R[2][2] * v[2] }; }
+function dragPlaneAxis() { // the aligned axis, else the officer axis closest to the viewing direction
+  if (S.ui.alignAxis) return S.ui.alignAxis;
+  const A = officerAxes(); let best = 'x', bd = -1; for (const k of 'xyz') { const d = Math.abs(camFrameOf(A[k]).depth); if (d > bd) { bd = d; best = k; } } return best; }
+function axesLayout() { const dpr = devicePixelRatio || 1, L = 34 * dpr, cx = 18 * dpr + L, cy = cam.height - 18 * dpr - L, A = officerAxes(), out = [];
+  for (const k of 'xyz') { const f = camFrameOf(A[k]); out.push({ k, depth: f.depth, tip: [cx + f.right * L, cy - f.up * L] }); }
+  return { cx, cy, L, dpr, axes: out }; }
+function drawAxesGizmo() {
+  if (!S.ui.axes || !S.ev || hidden(cam)) return; const g = cam.getContext('2d'), { cx, cy, L, dpr, axes } = axesLayout();
+  if (S.ui.alignAxis) { const lc = liveCam(), y = rad(lc.yaw), pt = rad(lc.pitch), v = [Math.cos(pt) * Math.cos(y), Math.cos(pt) * Math.sin(y), Math.sin(pt)], ax = officerAxes()[S.ui.alignAxis];
+    if (Math.abs(v[0] * ax[0] + v[1] * ax[1] + v[2] * ax[2]) < 0.85) S.ui.alignAxis = null; }   // the camera was moved off the axis (live parameters, not the last server answer)
+  g.save(); g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#00000066'; g.beginPath(); g.arc(cx, cy, L + 14 * dpr, 0, 7); g.fill();
+  for (const a of [...axes].sort((p, q) => q.depth - p.depth)) {               // far axes first, near ones on top
+    const on = S.ui.alignAxis === a.k, col = AXIS_RGB[a.k]; g.strokeStyle = col; g.globalAlpha = a.depth > 0.3 ? 0.55 : 1; g.lineWidth = 2.5 * dpr;
+    g.beginPath(); g.moveTo(cx, cy); g.lineTo(a.tip[0], a.tip[1]); g.stroke();
+    g.fillStyle = col; g.beginPath(); g.arc(a.tip[0], a.tip[1], (on ? 9 : 7) * dpr, 0, 7); g.fill();
+    if (on) { g.strokeStyle = '#fff'; g.lineWidth = 2 * dpr; g.stroke(); }
+    g.globalAlpha = 1; g.fillStyle = '#000'; g.font = `bold ${10 * dpr}px sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(a.k.toUpperCase(), a.tip[0], a.tip[1] + 0.5 * dpr); }
+  g.textAlign = 'left'; g.textBaseline = 'alphabetic'; g.fillStyle = '#ffffffcc'; g.font = `${10 * dpr}px sans-serif`;
+  const locked = S.drag && S.dragPlane;
+  g.fillStyle = locked ? AXIS_RGB[S.dragPlane] : '#ffffffcc'; if (locked) g.font = `bold ${11 * dpr}px sans-serif`;
+  g.fillText(locked ? `Ctrl: ${S.dragPlane.toUpperCase()} locked` : S.ui.alignAxis ? `view along ${S.ui.alignAxis.toUpperCase()} · Ctrl+drag keeps ${S.ui.alignAxis.toUpperCase()}` : 'click X / Y / Z to align · Ctrl+drag', cx - L - 6 * dpr, cy - L - 18 * dpr);
+  if (locked && S.ev.joints[S.drag.joint]) { const w = S.ev.joints[S.drag.joint].w, ax = officerAxes()[S.dragPlane], k = cam.width / S.ev.camera.width * S.viewZoom.cam,
+      a0 = project(w.map((v, i) => v - ax[i] * 40)), a1 = project(w.map((v, i) => v + ax[i] * 40));   // the locked axis through the joint, dashed: the joint does not move along it
+    if (a0 && a1) { g.setTransform(1, 0, 0, 1, S.camPan.fx * cam.width, S.camPan.fy * cam.height); g.strokeStyle = AXIS_RGB[S.dragPlane]; g.lineWidth = 2 * dpr; g.setLineDash([6 * dpr, 5 * dpr]);
+      g.beginPath(); g.moveTo(a0[0] * k, a0[1] * k); g.lineTo(a1[0] * k, a1[1] * k); g.stroke(); g.setLineDash([]); } }
+  g.restore(); }
+function axisHit(p) { // the axis tip under a canvas pointer position (canvas px, before the view zoom), or null
+  if (!S.ui.axes || !S.ev) return null; const { axes, dpr } = axesLayout(); let best = null, bd = 11 * dpr;
+  for (const a of axes) { const d = Math.hypot(a.tip[0] - p[0], a.tip[1] - p[1]); if (d < bd) { bd = d; best = a.k; } } return best; }
+function alignView(k) {
+  const c = S.camera, same = S.ui.alignAxis === k;
+  if (k === 'z') { const reach = Math.max(c.distance_cm, Math.abs(c.height_cm - c.aim_height_cm)); Object.assign(c, { distance_cm: MIN_DIST, height_cm: clamp(c.aim_height_cm + reach, 20, 1500) }); }
+  else { let az = k === 'x' ? 0 : 90; if (same && Math.abs(wrap180(c.azimuth_deg - az)) < 1) az = wrap180(az + 180);   // again: look from the other side
+    const reach = Math.hypot(c.distance_cm, c.height_cm - c.aim_height_cm);
+    Object.assign(c, { azimuth_deg: az, distance_cm: clamp(reach, MIN_DIST, MAX_DIST), height_cm: clamp(c.aim_height_cm, 20, 1500) }); }
+  Object.assign(c, { yaw_offset_deg: 0, pitch_offset_deg: 0, roll_deg: 0 }); S.ui.alignAxis = k;
+  markCustom(); syncCam(); requestEval(); redraw(); }
+cam.addEventListener('pointerdown', e => { if (!S.ev || e.button !== 0) return; const k = axisHit(rawPtr(cam, e)); if (!k) return;
+  e.stopImmediatePropagation(); e.preventDefault(); alignView(k); }, { capture: true });
+// rotation gizmo: drag a ring to turn the joint about that axis
+{ const rotMove = e => { const d = S.rotDrag; if (!d) return; const k = cam.width / S.ev.camera.width, p = ptr(cam, e), pi = [p[0] / k, p[1] / k];
+    if (d.tan) { const dx = pi[0] - d.lastP[0], dy = pi[1] - d.lastP[1], s2 = d.tan[0] ** 2 + d.tan[1] ** 2;   // ring seen at an angle: follow its front edge
+      d.acc += (dx * d.tan[0] + dy * d.tan[1]) / s2 / d.R; d.lastP = pi; }
+    else { const t = ringParam(d.c, d.R, d.ax, pi); d.acc += wrapPi(t - d.last); d.last = t; }   // ring seen face-on: the angle of the pointer around it
+    const v = d.v0 + (d.acc * 180 / Math.PI) / d.ax.sign;   // +v turns the part by sign*v degrees, right-handed about the axis
+    dragQueued = { mode: 'angle', joint: d.ax.owner, dof: d.ax.dof, value: v }; pumpDrag(); };
+  cam.addEventListener('pointerdown', e => { if (!S.rot || !S.ev || e.button !== 0 || S.drag) return; const p = ptr(cam, e), ax = ringHit(p); if (!ax) return;
+    const k = cam.width / S.ev.camera.width, c = S.ev.joints[S.rot.joint].w, R = ringR(S.rot.joint, ax), t = ringParam(c, R, ax, [p[0] / k, p[1] / k]);
+    S.rotDrag = { ax, c, R, last: t, acc: 0, v0: S.pose[ax.owner]?.[ax.dof] ?? 0, lastP: [p[0] / k, p[1] / k], tan: ringFrontTangent(c, R, ax.w) }; cam.setPointerCapture(e.pointerId); e.stopImmediatePropagation(); redraw(); });
+  cam.addEventListener('pointermove', e => { if (S.rotDrag) { rotMove(e); return; } if (!S.rot || !S.ev) return; const ax = ringHit(ptr(cam, e)), id = ax ? ax.owner + '.' + ax.dof : null;
+    if (id !== S.hoverRing) { S.hoverRing = id; cam.style.cursor = id ? 'grab' : 'crosshair'; redraw(); } });
+  const rotEnd = () => { if (S.rotDrag) { S.rotDrag = null; redraw(); } }; cam.addEventListener('pointerup', rotEnd); cam.addEventListener('pointercancel', rotEnd); }
+// camera view, empty space: hold LEFT mouse = move the officer on the ground, following the cursor (camera and background stay put);
+// hold RIGHT mouse = spin the officer in place about the vertical axis through its neck (camera and background stay put).
+{ let nav = null;
+  cam.addEventListener('contextmenu', e => e.preventDefault());
+  cam.addEventListener('pointerdown', e => { if (!S.ev || S.drag || S.rotDrag || (e.button !== 0 && e.button !== 2)) return;
+    const p = ptr(cam, e), k = cam.width / S.ev.camera.width; if (S.ui.handles && nearest(handleList(true), p, h => h.uv && [h.uv[0] * k, h.uv[1] * k], 14 * (devicePixelRatio || 1) / S.viewZoom.cam)) return;
+    if (e.button === 0) { const root = handleList().find(h => h.root); if (!root || !root.uv) return;
+      nav = { button: 0, grab: [root.uv[0] - p[0] / k, root.uv[1] - p[1] / k] }; cam.style.cursor = 'grabbing'; }   // grab = officer's ground point minus the cursor, so it does not jump
+    else { const neck = S.ev.joints.neck_01; if (!neck) return; const o = S.officer, a = rad(o.yaw_deg), dx = neck.w[0] - o.x, dy = neck.w[1] - o.y;
+      nav = { button: 2, x: e.clientX, yaw: o.yaw_deg, neck: [neck.w[0], neck.w[1]], loc: [dx * Math.cos(a) + dy * Math.sin(a), -dx * Math.sin(a) + dy * Math.cos(a)] }; cam.style.cursor = 'ew-resize'; }   // loc = neck in the officer's frame
+    cam.setPointerCapture(e.pointerId); });
+  cam.addEventListener('pointermove', e => { if (!nav || !S.ev) return;
+    if (nav.button === 0) { const p = ptr(cam, e), k = cam.width / S.ev.camera.width;
+      dragQueued = { mode: 'officer', target: { type: 'camera', uv: [p[0] / k + nav.grab[0], p[1] / k + nav.grab[1]] } }; pumpDrag(); return; }
+    const yaw = wrap180(nav.yaw - (e.clientX - nav.x) * 0.5), a = rad(yaw);   // drag right: the front of the officer turns to the viewer's right
+    setOfficerKeepCamera({ ...S.officer, yaw_deg: yaw, x: nav.neck[0] - (nav.loc[0] * Math.cos(a) - nav.loc[1] * Math.sin(a)), y: nav.neck[1] - (nav.loc[0] * Math.sin(a) + nav.loc[1] * Math.cos(a)) });
+    syncCam(); requestEval(); });
+  const endNav = () => { if (nav) { nav = null; cam.style.cursor = 'crosshair'; } }; cam.addEventListener('pointerup', endNav); cam.addEventListener('pointercancel', endNav); }
+// plan view
+wireCanvas(plan, p => nearest(planHandles(), p, h => h.px, 13 * (devicePixelRatio || 1)),
+  (h, p) => { const X = planXf(), [wx, wy] = X.inv(p[0], p[1]);
+    if (h.kind === 'cam') { markCustom(); const dx = wx - S.officer.x, dy = wy - S.officer.y; S.camera.distance_cm = clamp(Math.hypot(dx, dy), MIN_DIST, MAX_DIST); S.camera.azimuth_deg = wrap180(deg(Math.atan2(dy, dx)) - S.officer.yaw_deg); syncCam(); requestEval(); }
+    else if (h.kind === 'aim') { markCustom(); const e = liveCam().position, want = deg(Math.atan2(wy - e[1], wx - e[0])), base = baseLook().yaw; S.camera.yaw_offset_deg = clamp(wrap180(want - base), -45, 45); syncCam(); requestEval(); }
+    else if (h.kind === 'yaw') { const ang = deg(Math.atan2(wy - S.officer.y, wx - S.officer.x)); setOfficerKeepCamera({ ...S.officer, yaw_deg: wrap180(ang) }); syncCam(); syncers.forEach(s => s()); requestEval(); }
+    else if (h.kind === 'officer') { dragQueued = { mode: 'officer', target: { type: 'world', point: [wx, wy, 0] } }; pumpDrag(); }
+    else { dragQueued = { mode: 'joint', joint: h.joint, offset: h.offset, target: { type: 'world', point: [wx, wy, h.w[2]] } }; pumpDrag(); } }, 'plan');
+// profile view
+const profHandles = () => { const X = profXf(), out = [{ id: 'f:cam', kind: 'cam', px: X.f(liveCam().position) }, { id: 'f:aim', kind: 'aim', px: profAim().px }];
+  for (const h of kpHandles()) out.push({ ...h, id: 'f:' + h.id, kind: 'kp', px: X.f(h.w), lat: X.l_of(h.w) }); return out; };
+wireCanvas(prof, p => nearest(profHandles(), p, h => h.px, 13 * (devicePixelRatio || 1)),
+  (h, p) => { const X = profXf();
+    if (h.kind === 'cam') { markCustom(); S.camera.height_cm = clamp((X.gy - p[1]) / X.sc, 20, 1500); const s = (p[0] - X.x0) / X.sc; S.camera.distance_cm = clamp(Math.hypot(s, X.l_of(liveCam().position)), MIN_DIST, MAX_DIST); syncCam(); requestEval(); }
+    else if (h.kind === 'aim') { markCustom(); const c = liveCam(), e = X.f(c.position), want = deg(Math.atan2((e[1] - p[1]), (p[0] - e[0]))), base = baseLook().pitch; S.camera.pitch_offset_deg = clamp(want - base, -45, 45); syncCam(); requestEval(); }
+    else { const w = X.inv(p[0], p[1], h.lat); dragQueued = { mode: 'joint', joint: h.joint, offset: h.offset, target: { type: 'world', point: w } }; pumpDrag(); } }, 'prof');
+
+// ============================================================ toolbar + header
+function buildToolbar() {
+  const t = $('#toolbar'); t.replaceChildren();
+  const tips = { model3d: 'Show the skinned 3D uniform (appears when you stop dragging); while you drag, capsules keep it instant', bg: 'Show the uploaded photo behind the officer', capsules: 'Draw the capsule model the proxy renderer uses', bones: 'Draw the skeleton lines', handles: 'Show the draggable dots',
+    bbox: 'Bounding box the generator would label (red = it would reject this view)', guides: 'Rule-of-thirds grid and centre cross', rulers: 'Angle scale along the image edges, from the lens FOV',
+    horizon: 'The camera horizon line',
+    axes: 'Oxyz of the officer in the corner: click X / Y / Z to look along that axis; Ctrl+drag a joint keeps its coordinate on that axis' };
+  for (const [k, l] of [['bg', 'background'], ['model3d', '3D uniform'], ['capsules', 'capsules'], ['bones', 'skeleton'], ['handles', 'handles'], ['bbox', 'bbox'], ['guides', 'thirds'], ['rulers', 'FOV rulers'], ['horizon', 'horizon'], ['axes', 'axes']])
+    t.append(el('label', { title: tips[k] }, el('input', { type: 'checkbox', ...(S.ui[k] ? { checked: true } : {}), onchange: e => { S.ui[k] = e.target.checked; redraw(); scheduleSave(); broadcast(); } }), l));
+}
+$('#btnRender').addEventListener('click', guard(async () => { $('#btnRender').disabled = true; try { const r = await api('/api/render', { ...scene(), bg_id: S.bgId, profile_uniform: baseUniform().id, renderer: S.ui.renderer, brightness: S.ui.uniBrightness });
+  $('#renderBox').style.display = 'block'; $('#renderImg').onload = () => $('#renderBox').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#renderImg').src = r.image; const b = r.bbox; $('#renderInfo').textContent = ` [${r.renderer}${r.renderer !== 'proxy' ? ', cloth brightness ' + r.brightness.toFixed(2) : ''}]` + (b ? ` — mask bbox ${b.xyxy.join(', ')}  (${b.xywh[3]} px tall${b.truncated ? ', TRUNCATED at image edge' : ''})` : ' — officer not visible'); } finally { $('#btnRender').disabled = false; } }));
+for (const [id, type, ext] of [['#btnSavePng', 'image/png', 'png'], ['#btnSaveJpg', 'image/jpeg', 'jpg']]) $(id).addEventListener('click', () => { // save the render preview in the chosen format
+  const im = $('#renderImg'), c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
+  const g = c.getContext('2d'); if (type === 'image/jpeg') { g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); } g.drawImage(im, 0, 0);
+  c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `render.${ext}`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }, type, 0.95); });
+$('#btnScene').addEventListener('click', guard(async () => { const r = await api('/api/save_scene', { ...scene(), bg_id: S.bgId, renderer: S.ui.renderer, brightness: S.ui.uniBrightness, name: 'scene_' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-') }); toast_ok('saved ' + r.saved); }));
+addEventListener('resize', () => redraw());
+document.addEventListener('fullscreenchange', () => { redraw(); setTimeout(redraw, 60); });
+// full screen / pop out buttons on every view
+for (const view of document.querySelectorAll('.view')) {
+  view.querySelector('[data-act=full]').addEventListener('click', () => { if (document.fullscreenElement === view) document.exitFullscreen(); else view.requestFullscreen().catch(e => toast('full screen refused: ' + e.message)); });
+  view.querySelector('[data-act=pop]').addEventListener('click', () => { const name = view.dataset.view, w = window.open(`/?view=${name}`, 'tosdg-' + name, 'popup=yes,width=1280,height=800');
+    if (!w) toast('The browser blocked the pop-up window; allow pop-ups for this page and try again.'); });
+}
+// Mouse wheel over the camera view only zooms the picture (view-only, about the mouse position); no camera property changes.
+// Double-click resets. The camera is moved with the plan / profile views or the sliders.
+const wheelDelta = e => (e.deltaY || e.deltaX) * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 400 : 1);
+cam.addEventListener('wheel', e => { e.preventDefault(); if (!S.ev) return; const p = rawPtr(cam, e), z0 = S.viewZoom.cam, z1 = clamp(z0 * Math.exp(-wheelDelta(e) * 0.0015), 1, 12);
+  const u = [(p[0] - S.camPan.fx * cam.width) / z0, (p[1] - S.camPan.fy * cam.height) / z0];   // the picture point under the mouse stays under the mouse
+  S.viewZoom.cam = z1; S.camPan.fx = clamp((p[0] - u[0] * z1) / cam.width, 1 - z1, 0); S.camPan.fy = clamp((p[1] - u[1] * z1) / cam.height, 1 - z1, 0); redraw(); }, { passive: false });
+cam.addEventListener('dblclick', e => { if (S.drag || S.rotDrag) return; S.viewZoom.cam = 1; S.camPan = { fx: 0, fy: 0 }; redraw(); });
+// plan / profile views: wheel zooms the drawing itself (not the camera); double-click resets
+for (const [key, cv] of [['plan', plan], ['prof', prof]]) {
+  cv.addEventListener('wheel', e => { e.preventDefault(); S.viewZoom[key] = clamp(S.viewZoom[key] * Math.exp(-wheelDelta(e) * 0.0015), 0.3, 8); redraw(); }, { passive: false });
+  cv.addEventListener('dblclick', () => { S.viewZoom[key] = 1; redraw(); });
+}
+if (SINGLE) { document.body.classList.add('single', 'single-' + VIEW); document.title = 'tosdg studio — ' + { cam: 'Camera view', plan: 'Plan view', prof: 'Profile view' }[VIEW]; }
+
+// ============================================================ header buttons, help, tip, keyboard shortcuts, remembered panels
+$('#btnResetAll').addEventListener('click', resetAll); $('#btnUndo').addEventListener('click', undo); $('#btnRedo').addEventListener('click', redo);
+const helpModal = $('#helpModal');
+const toggleHelp = open => { helpModal.hidden = open === undefined ? !helpModal.hidden : !open; };
+$('#btnHelp').addEventListener('click', () => toggleHelp(true)); $('#helpClose').addEventListener('click', () => toggleHelp(false));
+helpModal.addEventListener('click', e => { if (e.target === helpModal) toggleHelp(false); });
+addEventListener('keydown', e => {
+  if (e.key === 'Escape') { if (S.rot) { leaveRot(); redraw(); } hideCtx(); toggleHelp(false); return; }
+  const t = e.target, typing = !!t && (t.isContentEditable || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || (t.tagName === 'INPUT' && !['range', 'checkbox', 'color', 'file', 'button'].includes(t.type)));
+  if ((e.ctrlKey || e.metaKey) && !e.altKey) { // undo / redo live in the main window only (a pop-out has no history of its own)
+    const k = e.key.toLowerCase(); if (SINGLE || typing) return;
+    if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); } else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); redo(); } return;
+  }
+  if (typing || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (e.key === '?') toggleHelp();
+  else if (k === 'f') $('#v' + (SINGLE ? VIEW : 'cam') + ' [data-act=full]').click();
+  else if (k === 'r' && !SINGLE) $('#btnRender').click();
+  else if (e.key === 'Home' && t.type !== 'range') resetCamera();
+});
+for (const d of document.querySelectorAll('details[data-k]')) d.open = false; // every panel starts collapsed
+wireDrop($('#pBg'), uploadBackgrounds);
+
+// ============================================================ boot
+(async () => {
+  try {
+    const r = await fetch('/api/init'); S.init = await r.json(); if (!r.ok) throw new Error(S.init.error);
+    const st = S.init.state || {}; S.pose = st.pose && Object.keys(st.pose).length ? st.pose : S.init.defaults.pose; S.officer = { ...S.init.defaults.officer, ...(st.officer || {}) }; S.officerPrev = { ...S.officer }; S.camera ={ ...S.init.defaults.camera, ...(st.camera || {}) };
+    S.bgId = S.init.backgrounds.some(b => b.id === st.bgId) ? st.bgId : (S.init.backgrounds[0]?.id || null); Object.assign(S.ui, st.ui || {}); S.ui.alignAxis = null;   // the default view below is not aligned to an axis
+    applyDefaultView(bgEntry()); // every start-up begins from the default view (the saved pose is kept)
+    buildOfficer(); buildCamera(); buildBg(); buildPose(); buildModelPanel(); buildRandom(); wireModelDrop(); buildToolbar(); buildRenderOpts();
+    $('#status').textContent = 'ready · data/studio'; requestEval(); historyCommit();
+    if (chan) chan.postMessage({ type: 'boot', from: WIN, boot: S.init.boot }); // pages of an older Studio run close (see retire)
+    if (SINGLE && chan) chan.postMessage({ type: 'hello', from: WIN, boot: S.init.boot }); // ask the main window for its live state
+  } catch (e) { $('#status').textContent = 'failed to load: ' + e.message; }
+})();
+</script>
+</body>
+</html>

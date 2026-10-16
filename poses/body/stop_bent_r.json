@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "stop_bent_r",
+  "skeleton_family": "ue5_humanoid",
+  "description": "C\u00e1nh tay ph\u1ea3i gi\u01a1 ngang vai, c\u1eb3ng tay g\u1eadp vu\u00f4ng g\u00f3c h\u01b0\u1edbng l\u00ean, l\u00f2ng b\u00e0n tay d\u1ef1ng \u0111\u1ee9ng h\u01b0\u1edbng sang b\u00ean ph\u1ea3i; tay tr\u00e1i bu\u00f4ng xu\u00f4i.",
+  "joints": {
+    "hand_r": {
+      "deviation": 7.2,
+      "flexion": -5.1
+    },
+    "lowerarm_l": {
+      "flexion": 10.0
+    },
+    "lowerarm_r": {
+      "flexion": 84.1,
+      "pronation": 82.5
+    },
+    "upperarm_l": {
+      "abduction": 6.0
+    },
+    "upperarm_r": {
+      "abduction": 90.9,
+      "flexion": 44.4,
+      "twist": -44.4
+    }
+  }
+}

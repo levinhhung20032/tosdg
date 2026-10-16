@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "kind": "hand",
+  "id": "relaxed",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Relaxed, slightly curled fingers.",
+  "joints": {
+    "index_01": {
+      "flexion": 15.0
+    },
+    "index_02": {
+      "flexion": 22.0
+    },
+    "index_03": {
+      "flexion": 12.0
+    },
+    "middle_01": {
+      "flexion": 15.0
+    },
+    "middle_02": {
+      "flexion": 22.0
+    },
+    "middle_03": {
+      "flexion": 12.0
+    },
+    "pinky_01": {
+      "flexion": 15.0
+    },
+    "pinky_02": {
+      "flexion": 22.0
+    },
+    "pinky_03": {
+      "flexion": 12.0
+    },
+    "ring_01": {
+      "flexion": 15.0
+    },
+    "ring_02": {
+      "flexion": 22.0
+    },
+    "ring_03": {
+      "flexion": 12.0
+    },
+    "thumb_01": {
+      "flexion": 10.0
+    },
+    "thumb_02": {
+      "flexion": 10.0
+    },
+    "thumb_03": {
+      "flexion": 5.0
+    }
+  }
+}

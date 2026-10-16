@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "speed_up_chest_l",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Tay tr\u00e1i g\u1eadp tr\u01b0\u1edbc ng\u1ef1c, c\u1eb3ng tay v\u1eaft ngang ng\u1ef1c, l\u00f2ng b\u00e0n tay \u00fap xu\u1ed1ng (ra hi\u1ec7u \u0111i nhanh h\u01a1n); tay ph\u1ea3i bu\u00f4ng xu\u00f4i.",
+  "joints": {
+    "hand_l": {
+      "deviation": 5.8,
+      "flexion": 3.7
+    },
+    "lowerarm_l": {
+      "flexion": 78.7,
+      "pronation": 66.2
+    },
+    "lowerarm_r": {
+      "flexion": 10.0
+    },
+    "upperarm_l": {
+      "abduction": 6.8,
+      "flexion": 22.8,
+      "twist": 35.7
+    },
+    "upperarm_r": {
+      "abduction": 6.0
+    }
+  }
+}

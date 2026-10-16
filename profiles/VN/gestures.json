@@ -1,0 +1,2754 @@
+{
+ "schema_version": "1.2",
+ "country": "VN",
+ "common_variation": {
+  "spine_01.flexion": [
+   -2,
+   3
+  ],
+  "spine_02.lateral": [
+   -3,
+   3
+  ],
+  "spine_02.twist": [
+   -6,
+   6
+  ],
+  "spine_03.flexion": [
+   -2,
+   3
+  ],
+  "neck_01.twist": [
+   -20,
+   20
+  ],
+  "neck_01.flexion": [
+   -5,
+   10
+  ],
+  "head.twist": [
+   -10,
+   10
+  ],
+  "head.lateral": [
+   -5,
+   5
+  ],
+  "thigh_l.abduction": [
+   0,
+   7
+  ],
+  "thigh_r.abduction": [
+   0,
+   7
+  ],
+  "thigh_l.twist": [
+   -5,
+   10
+  ],
+  "thigh_r.twist": [
+   -5,
+   10
+  ],
+  "calf_l.flexion": [
+   0,
+   6
+  ],
+  "calf_r.flexion": [
+   0,
+   6
+  ]
+ },
+ "gestures": [
+  {
+   "id": "VN_ARM_VERTICAL",
+   "label": "ARM_RAISED_VERTICAL",
+   "signalling": true,
+   "description": "Tay giơ thẳng đứng - one arm raised straight up. All road users on every side must stop (vehicles already inside the intersection may clear it).",
+   "source": {
+    "ref": "Luật GTĐB 2008 Đ10 k2(a)"
+   },
+   "instructions": {
+    "front": "STOP",
+    "back": "STOP",
+    "left": "STOP",
+    "right": "STOP"
+   },
+   "pose_variants": [
+    {
+     "id": "arm_r",
+     "pose": "arm_vertical_r",
+     "weight": 4.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 3,
+       "open_spread": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -10,
+       6
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -3,
+       10
+      ],
+      "hand_r.flexion": [
+       -15,
+       15
+      ],
+      "hand_r.deviation": [
+       -10,
+       10
+      ],
+      "upperarm_r.abduction": [
+       -5,
+       12
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "up",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "above",
+       "joint": "hand_r",
+       "reference": "head_end",
+       "margin_cm": 10
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "forward",
+       "max_angle_deg": 55
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ],
+     "baton_axis": "along"
+    },
+    {
+     "id": "arm_l",
+     "pose": "arm_vertical_l",
+     "weight": 1.0,
+     "signal_arms": [
+      "l"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 3,
+       "open_spread": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -10,
+       6
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -3,
+       10
+      ],
+      "hand_l.flexion": [
+       -15,
+       15
+      ],
+      "hand_l.deviation": [
+       -10,
+       10
+      ],
+      "upperarm_l.abduction": [
+       -5,
+       12
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "up",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "above",
+       "joint": "hand_l",
+       "reference": "head_end",
+       "margin_cm": 10
+      },
+      {
+       "type": "palm_facing",
+       "side": "l",
+       "direction": "forward",
+       "max_angle_deg": 55
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ],
+     "baton_axis": "along"
+    }
+   ]
+  },
+  {
+   "id": "VN_ARMS_HORIZONTAL",
+   "label": "ARMS_EXTENDED_SIDEWAYS",
+   "signalling": true,
+   "description": "Hai tay hoặc một tay dang ngang - both arms or one arm extended sideways. Front and back must stop; left and right may proceed.",
+   "source": {
+    "ref": "Luật GTĐB 2008 Đ10 k2(b)"
+   },
+   "instructions": {
+    "front": "STOP",
+    "back": "STOP",
+    "left": "PROCEED",
+    "right": "PROCEED"
+   },
+   "pose_variants": [
+    {
+     "id": "both",
+     "pose": "arms_horizontal",
+     "weight": 3.0,
+     "signal_arms": [
+      "l",
+      "r"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 3,
+       "open_spread": 1
+      },
+      "r": {
+       "open_flat": 3,
+       "open_spread": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.abduction": [
+       -10,
+       6
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -3,
+       10
+      ],
+      "hand_l.flexion": [
+       -15,
+       15
+      ],
+      "hand_l.deviation": [
+       -10,
+       10
+      ],
+      "upperarm_r.abduction": [
+       -10,
+       6
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -3,
+       10
+      ],
+      "hand_r.flexion": [
+       -15,
+       15
+      ],
+      "hand_r.deviation": [
+       -10,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "left",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "right",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      }
+     ],
+     "baton_axis": "along"
+    },
+    {
+     "id": "right_only",
+     "pose": "arm_horizontal_r",
+     "weight": 1.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 3,
+       "open_spread": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.abduction": [
+       -10,
+       6
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -3,
+       10
+      ],
+      "hand_r.flexion": [
+       -15,
+       15
+      ],
+      "hand_r.deviation": [
+       -10,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "right",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ],
+     "baton_axis": "along"
+    },
+    {
+     "id": "left_only",
+     "pose": "arm_horizontal_l",
+     "weight": 1.0,
+     "signal_arms": [
+      "l"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 3,
+       "open_spread": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.abduction": [
+       -10,
+       6
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -3,
+       10
+      ],
+      "hand_l.flexion": [
+       -15,
+       15
+      ],
+      "hand_l.deviation": [
+       -10,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "left",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ],
+     "baton_axis": "along"
+    }
+   ]
+  },
+  {
+   "id": "VN_RIGHT_ARM_FORWARD",
+   "label": "RIGHT_ARM_EXTENDED_FORWARD",
+   "signalling": true,
+   "description": "Tay phải giơ về phía trước - right arm extended forward. Behind and the officer's right must stop; front may turn right; the officer's left may proceed in any direction; pedestrians cross behind the officer.",
+   "source": {
+    "ref": "Luật GTĐB 2008 Đ10 k2(c)"
+   },
+   "instructions": {
+    "front": "TURN_RIGHT",
+    "back": "STOP",
+    "left": "PROCEED_ANY_DIRECTION",
+    "right": "STOP"
+   },
+   "pose_variants": [
+    {
+     "id": "default",
+     "pose": "arm_forward_r",
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 3,
+       "open_spread": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -10,
+       6
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -3,
+       10
+      ],
+      "hand_r.flexion": [
+       -15,
+       15
+      ],
+      "hand_r.deviation": [
+       -10,
+       10
+      ],
+      "upperarm_r.abduction": [
+       -6,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "forward",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_STOP_FRONT",
+   "label": "STOP_ARM_FORWARD",
+   "signalling": true,
+   "description": "Cánh tay phải duỗi thẳng ra trước ngang vai, bàn tay duỗi thẳng dựng đứng (ngón hướng lên, song song với thân người, không nghiêng), lòng bàn tay hướng thẳng về trước, tay trái buông xuôi. Người ở phía trước CSGT phải dừng lại.",
+   "source": {
+    "ref": "yêu cầu của người dùng (tay đưa ra trước, bàn tay dựng đứng); chưa đối chiếu văn bản gốc"
+   },
+   "instructions": {
+    "front": "STOP",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "default",
+     "pose": "stop_forward_r",
+     "weight": 1.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 4,
+       "open_spread": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -4,
+       4
+      ],
+      "upperarm_r.abduction": [
+       -3,
+       3
+      ],
+      "upperarm_r.twist": [
+       -5,
+       5
+      ],
+      "lowerarm_r.flexion": [
+       0,
+       5
+      ],
+      "lowerarm_r.pronation": [
+       -5,
+       0
+      ],
+      "hand_r.flexion": [
+       0,
+       5
+      ],
+      "hand_r.deviation": [
+       -4,
+       4
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "forward",
+       "max_angle_deg": 12
+      },
+      {
+       "type": "limb_direction",
+       "from": "hand_r",
+       "to": "middle_01_r",
+       "direction": "up",
+       "max_angle_deg": 10
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "forward",
+       "max_angle_deg": 15
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 30
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_STOP_LEFT",
+   "label": "STOP_LEFT_SIDE",
+   "signalling": true,
+   "description": "Cánh tay trái giơ ngang vai, cẳng tay gập vuông góc hướng lên, lòng bàn tay dựng đứng hướng sang bên trái (biến thể: cả cánh tay dang ngang, bàn tay bẻ lên), tay phải buông xuôi. Người ở phía bên trái CSGT phải dừng lại.",
+   "source": {
+    "ref": "infographic LuatVietnam theo QCVN 41:2019/BGTVT, hiệu lệnh 7"
+   },
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "STOP",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "bent",
+     "pose": "stop_bent_l",
+     "weight": 3.0,
+     "signal_arms": [
+      "l"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 4,
+       "open_spread": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -8,
+       6
+      ],
+      "upperarm_l.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_l.flexion": [
+       -8,
+       10
+      ],
+      "lowerarm_l.pronation": [
+       -10,
+       10
+      ],
+      "hand_l.flexion": [
+       -8,
+       8
+      ],
+      "hand_l.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "lowerarm_l",
+       "direction": "left",
+       "max_angle_deg": 25
+      },
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_l",
+       "to": "hand_l",
+       "direction": "up",
+       "max_angle_deg": 25
+      },
+      {
+       "type": "palm_facing",
+       "side": "l",
+       "direction": "left",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    },
+    {
+     "id": "hand_up",
+     "pose": "stop_handup_l",
+     "weight": 1.0,
+     "signal_arms": [
+      "l"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 4,
+       "open_spread": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -10,
+       6
+      ],
+      "upperarm_l.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_l.flexion": [
+       -3,
+       10
+      ],
+      "lowerarm_l.pronation": [
+       -10,
+       10
+      ],
+      "hand_l.flexion": [
+       0,
+       10
+      ],
+      "hand_l.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "left",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "palm_facing",
+       "side": "l",
+       "direction": "left",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "limb_direction",
+       "from": "hand_l",
+       "to": "middle_01_l",
+       "direction": "up",
+       "max_angle_deg": 60
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_STOP_RIGHT",
+   "label": "STOP_RIGHT_SIDE",
+   "signalling": true,
+   "description": "Cánh tay phải giơ ngang vai, cẳng tay gập vuông góc hướng lên, lòng bàn tay dựng đứng hướng sang bên phải (biến thể: cả cánh tay dang ngang, bàn tay bẻ lên), tay trái buông xuôi. Người ở phía bên phải CSGT phải dừng lại.",
+   "source": {
+    "ref": "infographic LuatVietnam theo QCVN 41:2019/BGTVT, hiệu lệnh 8"
+   },
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "STOP"
+   },
+   "pose_variants": [
+    {
+     "id": "bent",
+     "pose": "stop_bent_r",
+     "weight": 3.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 4,
+       "open_spread": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -8,
+       6
+      ],
+      "upperarm_r.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_r.flexion": [
+       -8,
+       10
+      ],
+      "lowerarm_r.pronation": [
+       -10,
+       10
+      ],
+      "hand_r.flexion": [
+       -8,
+       8
+      ],
+      "hand_r.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "lowerarm_r",
+       "direction": "right",
+       "max_angle_deg": 25
+      },
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_r",
+       "to": "hand_r",
+       "direction": "up",
+       "max_angle_deg": 25
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "right",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    },
+    {
+     "id": "hand_up",
+     "pose": "stop_handup_r",
+     "weight": 1.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 4,
+       "open_spread": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -10,
+       6
+      ],
+      "upperarm_r.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_r.flexion": [
+       -3,
+       10
+      ],
+      "lowerarm_r.pronation": [
+       -10,
+       10
+      ],
+      "hand_r.flexion": [
+       0,
+       10
+      ],
+      "hand_r.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "right",
+       "max_angle_deg": 20
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "right",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "limb_direction",
+       "from": "hand_r",
+       "to": "middle_01_r",
+       "direction": "up",
+       "max_angle_deg": 60
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_SLOW_DOWN_LEFT",
+   "label": "SLOW_DOWN_LEFT_SIDE",
+   "signalling": true,
+   "description": "Tay trái đưa thấp ngang hông/thắt lưng, lòng bàn tay úp xuống và nhấn lên xuống, tay phải buông xuôi. Người ở phía bên trái CSGT phải đi chậm lại.",
+   "source": {
+    "ref": "infographic LuatVietnam theo QCVN 41:2019/BGTVT, hiệu lệnh 5"
+   },
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "SLOW_DOWN",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "default",
+     "pose": "slow_down_l",
+     "weight": 1.0,
+     "signal_arms": [
+      "l"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 4,
+       "relaxed": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -4,
+       8
+      ],
+      "upperarm_l.twist": [
+       -15,
+       15
+      ],
+      "lowerarm_l.flexion": [
+       -12,
+       12
+      ],
+      "lowerarm_l.pronation": [
+       -10,
+       10
+      ],
+      "hand_l.flexion": [
+       -10,
+       10
+      ],
+      "hand_l.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "below",
+       "joint": "hand_l",
+       "reference": "neck_01",
+       "margin_cm": 30
+      },
+      {
+       "type": "above",
+       "joint": "hand_l",
+       "reference": "pelvis",
+       "margin_cm": -5
+      },
+      {
+       "type": "palm_facing",
+       "side": "l",
+       "direction": "down",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_SLOW_DOWN_RIGHT",
+   "label": "SLOW_DOWN_RIGHT_SIDE",
+   "signalling": true,
+   "description": "Tay phải đưa thấp ngang hông/thắt lưng, lòng bàn tay úp xuống và nhấn lên xuống, tay trái buông xuôi. Người ở phía bên phải CSGT phải đi chậm lại.",
+   "source": {
+    "ref": "infographic LuatVietnam theo QCVN 41:2019/BGTVT, hiệu lệnh 6"
+   },
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "SLOW_DOWN"
+   },
+   "pose_variants": [
+    {
+     "id": "default",
+     "pose": "slow_down_r",
+     "weight": 1.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 4,
+       "relaxed": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -4,
+       8
+      ],
+      "upperarm_r.twist": [
+       -15,
+       15
+      ],
+      "lowerarm_r.flexion": [
+       -12,
+       12
+      ],
+      "lowerarm_r.pronation": [
+       -10,
+       10
+      ],
+      "hand_r.flexion": [
+       -10,
+       10
+      ],
+      "hand_r.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "below",
+       "joint": "hand_r",
+       "reference": "neck_01",
+       "margin_cm": 30
+      },
+      {
+       "type": "above",
+       "joint": "hand_r",
+       "reference": "pelvis",
+       "margin_cm": -5
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "down",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_SPEED_UP_LEFT",
+   "label": "SPEED_UP_LEFT_SIDE",
+   "signalling": true,
+   "description": "Tay trái gập, bàn tay đưa lên sát tai hoặc vắt ngang ngực (cử động về phía vai), tay phải buông xuôi. Người ở phía bên trái CSGT được đi nhanh hơn.",
+   "source": {
+    "ref": "infographic LuatVietnam theo QCVN 41:2019/BGTVT, hiệu lệnh 3"
+   },
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "SPEED_UP",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "ear",
+     "pose": "speed_up_ear_l",
+     "weight": 2.0,
+     "signal_arms": [
+      "l"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 4,
+       "relaxed": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -10,
+       10
+      ],
+      "upperarm_l.abduction": [
+       -8,
+       8
+      ],
+      "upperarm_l.twist": [
+       -15,
+       15
+      ],
+      "lowerarm_l.flexion": [
+       -12,
+       3
+      ],
+      "lowerarm_l.pronation": [
+       -15,
+       15
+      ],
+      "hand_l.flexion": [
+       -10,
+       10
+      ],
+      "hand_l.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "above",
+       "joint": "hand_l",
+       "reference": "neck_01",
+       "margin_cm": 5
+      },
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_l",
+       "to": "hand_l",
+       "direction": "up",
+       "max_angle_deg": 80
+      },
+      {
+       "type": "palm_facing",
+       "side": "l",
+       "direction": "right",
+       "max_angle_deg": 60
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    },
+    {
+     "id": "chest",
+     "pose": "speed_up_chest_l",
+     "weight": 1.0,
+     "signal_arms": [
+      "l"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 4,
+       "relaxed": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -4,
+       8
+      ],
+      "upperarm_l.twist": [
+       -15,
+       15
+      ],
+      "lowerarm_l.flexion": [
+       -10,
+       10
+      ],
+      "lowerarm_l.pronation": [
+       -10,
+       10
+      ],
+      "hand_l.flexion": [
+       -10,
+       10
+      ],
+      "hand_l.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "below",
+       "joint": "hand_l",
+       "reference": "neck_01",
+       "margin_cm": 15
+      },
+      {
+       "type": "above",
+       "joint": "hand_l",
+       "reference": "pelvis",
+       "margin_cm": 5
+      },
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_l",
+       "to": "hand_l",
+       "direction": "right",
+       "max_angle_deg": 70
+      },
+      {
+       "type": "palm_facing",
+       "side": "l",
+       "direction": "down",
+       "max_angle_deg": 50
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_SPEED_UP_RIGHT",
+   "label": "SPEED_UP_RIGHT_SIDE",
+   "signalling": true,
+   "description": "Tay phải gập trước ngực (hoặc đưa lên sát tai), bàn tay cử động về phía vai, tay trái buông xuôi. Người ở phía bên phải CSGT được đi nhanh hơn.",
+   "source": {
+    "ref": "infographic LuatVietnam theo QCVN 41:2019/BGTVT, hiệu lệnh 4"
+   },
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "SPEED_UP"
+   },
+   "pose_variants": [
+    {
+     "id": "chest",
+     "pose": "speed_up_chest_r",
+     "weight": 2.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 4,
+       "relaxed": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -4,
+       8
+      ],
+      "upperarm_r.twist": [
+       -15,
+       15
+      ],
+      "lowerarm_r.flexion": [
+       -10,
+       10
+      ],
+      "lowerarm_r.pronation": [
+       -10,
+       10
+      ],
+      "hand_r.flexion": [
+       -10,
+       10
+      ],
+      "hand_r.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "below",
+       "joint": "hand_r",
+       "reference": "neck_01",
+       "margin_cm": 15
+      },
+      {
+       "type": "above",
+       "joint": "hand_r",
+       "reference": "pelvis",
+       "margin_cm": 5
+      },
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_r",
+       "to": "hand_r",
+       "direction": "left",
+       "max_angle_deg": 70
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "down",
+       "max_angle_deg": 50
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    },
+    {
+     "id": "ear",
+     "pose": "speed_up_ear_r",
+     "weight": 1.0,
+     "signal_arms": [
+      "r"
+     ],
+     "hands": {
+      "r": {
+       "open_flat": 4,
+       "relaxed": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -10,
+       10
+      ],
+      "upperarm_r.abduction": [
+       -8,
+       8
+      ],
+      "upperarm_r.twist": [
+       -15,
+       15
+      ],
+      "lowerarm_r.flexion": [
+       -12,
+       3
+      ],
+      "lowerarm_r.pronation": [
+       -15,
+       15
+      ],
+      "hand_r.flexion": [
+       -10,
+       10
+      ],
+      "hand_r.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "above",
+       "joint": "hand_r",
+       "reference": "neck_01",
+       "margin_cm": 5
+      },
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_r",
+       "to": "hand_r",
+       "direction": "up",
+       "max_angle_deg": 80
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "left",
+       "max_angle_deg": 60
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_TURN_LEFT_IN_FRONT",
+   "label": "BOTH_PALMS_FORWARD",
+   "signalling": true,
+   "description": "Hai tay gập vuông góc trước ngực, hai cẳng tay dựng đứng song song, hai lòng bàn tay dựng đứng hướng thẳng về trước. Người ở phía bên trái CSGT được rẽ trái qua trước mặt CSGT.",
+   "source": {
+    "ref": "infographic LuatVietnam theo QCVN 41:2019/BGTVT, hiệu lệnh 10"
+   },
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "TURN_LEFT",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "default",
+     "pose": "palms_forward_both",
+     "weight": 1.0,
+     "signal_arms": [
+      "l",
+      "r"
+     ],
+     "hands": {
+      "l": {
+       "open_flat": 4,
+       "open_spread": 1
+      },
+      "r": {
+       "open_flat": 4,
+       "open_spread": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -6,
+       6
+      ],
+      "upperarm_l.twist": [
+       -12,
+       12
+      ],
+      "lowerarm_l.flexion": [
+       -10,
+       10
+      ],
+      "lowerarm_l.pronation": [
+       -10,
+       10
+      ],
+      "hand_l.flexion": [
+       -8,
+       8
+      ],
+      "hand_l.deviation": [
+       -8,
+       8
+      ],
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -6,
+       6
+      ],
+      "upperarm_r.twist": [
+       -12,
+       12
+      ],
+      "lowerarm_r.flexion": [
+       -10,
+       10
+      ],
+      "lowerarm_r.pronation": [
+       -10,
+       10
+      ],
+      "hand_r.flexion": [
+       -8,
+       8
+      ],
+      "hand_r.deviation": [
+       -8,
+       8
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_l",
+       "to": "hand_l",
+       "direction": "up",
+       "max_angle_deg": 25
+      },
+      {
+       "type": "palm_facing",
+       "side": "l",
+       "direction": "forward",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      },
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_r",
+       "to": "hand_r",
+       "direction": "up",
+       "max_angle_deg": 25
+      },
+      {
+       "type": "palm_facing",
+       "side": "r",
+       "direction": "forward",
+       "max_angle_deg": 45
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_NO_SIGNAL",
+   "label": "NO_SIGNAL",
+   "signalling": false,
+   "description": "Officer present but not signalling (hard negative: uniformed officer standing).",
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "default",
+     "pose": "neutral_stand",
+     "signal_arms": [],
+     "hands": {
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_HELLO",
+   "label": "HELLO",
+   "signalling": false,
+   "weight": 0,
+   "description": "Chào / vẫy tay: một tay giơ lên ngang vai, lòng bàn tay mở hướng ra trước; không phải hiệu lệnh giao thông (weight 0: chỉ được lấy mẫu khi config đặt gesture_weights).",
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "right",
+     "pose": "hello_r",
+     "weight": 1.0,
+     "signal_arms": [],
+     "hands": {
+      "r": {
+       "open_spread": 3,
+       "open_flat": 2
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -8,
+       8
+      ],
+      "upperarm_r.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_r.flexion": [
+       -8,
+       8
+      ],
+      "lowerarm_r.pronation": [
+       -10,
+       10
+      ],
+      "hand_r.flexion": [
+       -8,
+       8
+      ],
+      "hand_r.deviation": [
+       -6,
+       6
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_r",
+       "to": "hand_r",
+       "direction": "up",
+       "max_angle_deg": 65
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      }
+     ]
+    },
+    {
+     "id": "left",
+     "pose": "hello_l",
+     "weight": 1.0,
+     "signal_arms": [],
+     "hands": {
+      "l": {
+       "open_spread": 3,
+       "open_flat": 2
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -8,
+       8
+      ],
+      "upperarm_l.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_l.flexion": [
+       -8,
+       8
+      ],
+      "lowerarm_l.pronation": [
+       -10,
+       10
+      ],
+      "hand_l.flexion": [
+       -8,
+       8
+      ],
+      "hand_l.deviation": [
+       -6,
+       6
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_l",
+       "to": "hand_l",
+       "direction": "up",
+       "max_angle_deg": 65
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "max_deg": 60
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_THUMB_UP",
+   "label": "THUMB_UP",
+   "signalling": false,
+   "weight": 0,
+   "description": "Giơ ngón cái (thumbs up): một tay gập khuỷu đưa lên phía trước, nắm tay ngón cái hướng lên; không phải hiệu lệnh giao thông (weight 0: chỉ được lấy mẫu khi config đặt gesture_weights).",
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "right",
+     "pose": "thumb_up_r",
+     "weight": 1.0,
+     "signal_arms": [],
+     "hands": {
+      "r": {
+       "thumb_up": 1
+      },
+      "l": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_r.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_r.abduction": [
+       -8,
+       8
+      ],
+      "upperarm_r.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_r.flexion": [
+       -8,
+       8
+      ],
+      "lowerarm_r.pronation": [
+       -10,
+       10
+      ],
+      "hand_r.flexion": [
+       -8,
+       8
+      ],
+      "hand_r.deviation": [
+       -6,
+       6
+      ],
+      "upperarm_l.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_l.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_l.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_l.flexion": [
+       -5,
+       25
+      ],
+      "hand_l.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_r",
+       "to": "hand_r",
+       "direction": "up",
+       "max_angle_deg": 65
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 35
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "min_deg": 150
+      },
+      {
+       "type": "finger_curl",
+       "side": "r",
+       "fingers": [
+        "thumb"
+       ],
+       "max_deg": 40
+      }
+     ]
+    },
+    {
+     "id": "left",
+     "pose": "thumb_up_l",
+     "weight": 1.0,
+     "signal_arms": [],
+     "hands": {
+      "l": {
+       "thumb_up": 1
+      },
+      "r": {
+       "relaxed": 3,
+       "fist": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.flexion": [
+       -8,
+       8
+      ],
+      "upperarm_l.abduction": [
+       -8,
+       8
+      ],
+      "upperarm_l.twist": [
+       -10,
+       10
+      ],
+      "lowerarm_l.flexion": [
+       -8,
+       8
+      ],
+      "lowerarm_l.pronation": [
+       -10,
+       10
+      ],
+      "hand_l.flexion": [
+       -8,
+       8
+      ],
+      "hand_l.deviation": [
+       -6,
+       6
+      ],
+      "upperarm_r.abduction": [
+       -2,
+       10
+      ],
+      "upperarm_r.flexion": [
+       -10,
+       12
+      ],
+      "upperarm_r.twist": [
+       -20,
+       20
+      ],
+      "lowerarm_r.flexion": [
+       -5,
+       25
+      ],
+      "hand_r.flexion": [
+       -10,
+       15
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "lowerarm_l",
+       "to": "hand_l",
+       "direction": "up",
+       "max_angle_deg": 65
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 35
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "index",
+        "middle",
+        "ring",
+        "pinky"
+       ],
+       "min_deg": 150
+      },
+      {
+       "type": "finger_curl",
+       "side": "l",
+       "fingers": [
+        "thumb"
+       ],
+       "max_deg": 40
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "VN_A_POSE",
+   "label": "A_POSE",
+   "signalling": false,
+   "weight": 0,
+   "description": "Tư thế A của model gốc (Tripo): đứng, hai tay buông chếch ra hai bên khoảng 20°, lòng bàn tay mở ra; không phải hiệu lệnh giao thông (weight 0: chỉ được lấy mẫu khi config đặt gesture_weights).",
+   "instructions": {
+    "front": "NONE",
+    "back": "NONE",
+    "left": "NONE",
+    "right": "NONE"
+   },
+   "pose_variants": [
+    {
+     "id": "default",
+     "pose": "a_pose",
+     "signal_arms": [],
+     "hands": {
+      "l": {
+       "open_spread": 3,
+       "open_flat": 2,
+       "relaxed": 1
+      },
+      "r": {
+       "open_spread": 3,
+       "open_flat": 2,
+       "relaxed": 1
+      }
+     },
+     "variation": {
+      "upperarm_l.abduction": [
+       -6,
+       6
+      ],
+      "upperarm_l.flexion": [
+       -6,
+       6
+      ],
+      "upperarm_l.twist": [
+       -8,
+       8
+      ],
+      "lowerarm_l.flexion": [
+       -6,
+       6
+      ],
+      "hand_l.flexion": [
+       -6,
+       6
+      ],
+      "upperarm_r.abduction": [
+       -6,
+       6
+      ],
+      "upperarm_r.flexion": [
+       -6,
+       6
+      ],
+      "upperarm_r.twist": [
+       -8,
+       8
+      ],
+      "lowerarm_r.flexion": [
+       -6,
+       6
+      ],
+      "hand_r.flexion": [
+       -6,
+       6
+      ]
+     },
+     "constraints": [
+      {
+       "type": "limb_direction",
+       "from": "upperarm_l",
+       "to": "hand_l",
+       "direction": "down",
+       "max_angle_deg": 55
+      },
+      {
+       "type": "limb_direction",
+       "from": "upperarm_r",
+       "to": "hand_r",
+       "direction": "down",
+       "max_angle_deg": 55
+      }
+     ],
+     "weight": 1.0
+    }
+   ]
+  }
+ ]
+}

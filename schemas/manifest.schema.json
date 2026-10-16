@@ -1,0 +1,103 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Dataset manifest",
+ "type": "object",
+ "additionalProperties": false,
+ "required": [
+  "schema_version",
+  "generator",
+  "created_utc",
+  "config",
+  "config_sha256",
+  "asset_hashes",
+  "assets_sha256",
+  "samples",
+  "failures",
+  "rejection_counts",
+  "background_library_resolved"
+ ],
+ "properties": {
+  "schema_version": {
+   "enum": [
+    "1.0",
+    "1.1"
+   ]
+  },
+  "generator": {
+   "type": "object"
+  },
+  "created_utc": {
+   "type": "string"
+  },
+  "config": {
+   "type": "object"
+  },
+  "config_sha256": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "asset_hashes": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string",
+    "pattern": "^[0-9a-f]{64}$"
+   }
+  },
+  "assets_sha256": {
+   "type": "string",
+   "pattern": "^[0-9a-f]{64}$"
+  },
+  "samples": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "sample_id",
+     "index",
+     "sample_seed",
+     "attempt",
+     "metadata",
+     "sha256"
+    ],
+    "properties": {
+     "sample_id": {
+      "type": "string"
+     },
+     "index": {
+      "type": "integer"
+     },
+     "sample_seed": {
+      "type": "integer"
+     },
+     "attempt": {
+      "type": "integer"
+     },
+     "metadata": {
+      "type": "string"
+     },
+     "sha256": {
+      "type": "object",
+      "additionalProperties": {
+       "type": "string",
+       "pattern": "^[0-9a-f]{64}$"
+      }
+     }
+    }
+   }
+  },
+  "failures": {
+   "type": "array"
+  },
+  "rejection_counts": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "integer"
+   }
+  },
+  "background_library_resolved": {
+   "type": "string",
+   "description": "Background library the dataset was made with. 1.1: relative to the repository root when inside it, otherwise absolute; '/' separators. 1.0: absolute, as the OS wrote it."
+  }
+ }
+}

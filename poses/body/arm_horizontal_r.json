@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "arm_horizontal_r",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Right arm extended sideways at shoulder height; left arm hanging.",
+  "joints": {
+    "lowerarm_l": {
+      "flexion": 10.0
+    },
+    "lowerarm_r": {
+      "flexion": 3.0
+    },
+    "upperarm_l": {
+      "abduction": 6.0
+    },
+    "upperarm_r": {
+      "abduction": 90.0,
+      "twist": -60.0
+    }
+  }
+}

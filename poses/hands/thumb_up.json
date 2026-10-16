@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "kind": "hand",
+  "id": "thumb_up",
+  "skeleton_family": "ue5_humanoid",
+  "description": "N\u1eafm tay, ng\u00f3n c\u00e1i du\u1ed7i th\u1eb3ng h\u01b0\u1edbng l\u00ean (thumbs up).",
+  "joints": {
+    "index_01": {
+      "flexion": 80.0
+    },
+    "index_02": {
+      "flexion": 100.0
+    },
+    "index_03": {
+      "flexion": 60.0
+    },
+    "middle_01": {
+      "flexion": 80.0
+    },
+    "middle_02": {
+      "flexion": 100.0
+    },
+    "middle_03": {
+      "flexion": 60.0
+    },
+    "pinky_01": {
+      "flexion": 80.0
+    },
+    "pinky_02": {
+      "flexion": 100.0
+    },
+    "pinky_03": {
+      "flexion": 60.0
+    },
+    "ring_01": {
+      "flexion": 80.0
+    },
+    "ring_02": {
+      "flexion": 100.0
+    },
+    "ring_03": {
+      "flexion": 60.0
+    },
+    "thumb_01": {
+      "abduction": 25.0,
+      "flexion": 0.0
+    },
+    "thumb_02": {
+      "flexion": 0.0
+    },
+    "thumb_03": {
+      "flexion": 0.0
+    }
+  }
+}

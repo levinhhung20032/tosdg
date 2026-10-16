@@ -1,0 +1,24 @@
+{
+ "schema_version": "1.1",
+ "name": "smoke",
+ "profile": "VN",
+ "character": "tripo_v1",
+ "backend": "mesh",
+ "master_seed": 20261008,
+ "num_samples": 5,
+ "resolution": [
+  640,
+  360
+ ],
+ "background_library": "../data/backgrounds",
+ "officer_yaw_deg": [
+  0,
+  0
+ ],
+ "max_attempts_per_sample": 20,
+ "max_pose_tries": 200,
+ "uniform_brightness_range": [
+  0.9,
+  1.1
+ ]
+}

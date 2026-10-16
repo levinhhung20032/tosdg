@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "hello_l",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Tay tr\u00e1i gi\u01a1 l\u00ean ngang vai, c\u1eb3ng tay d\u1ef1ng \u0111\u1ee9ng, l\u00f2ng b\u00e0n tay m\u1edf h\u01b0\u1edbng ra ph\u00eda tr\u01b0\u1edbc (v\u1eaby ch\u00e0o); tay ph\u1ea3i bu\u00f4ng xu\u00f4i.",
+  "joints": {
+    "clavicle_l": {
+      "elevation": 21.8076,
+      "protraction": -14.6742
+    },
+    "hand_l": {
+      "deviation": 10.0,
+      "flexion": -10.0
+    },
+    "head": {
+      "flexion": -2.4994,
+      "lateral": -15.0,
+      "twist": 0.7776
+    },
+    "lowerarm_l": {
+      "flexion": 89.2197,
+      "pronation": 51.0024
+    },
+    "lowerarm_r": {
+      "flexion": 10.0
+    },
+    "neck_01": {
+      "flexion": 4.2888,
+      "lateral": -12.5274,
+      "twist": 1.6684
+    },
+    "spine_01": {
+      "flexion": 4.8195,
+      "lateral": 6.3942,
+      "twist": -2.7219
+    },
+    "spine_02": {
+      "flexion": -1.1993,
+      "lateral": 7.3827,
+      "twist": -3.1085
+    },
+    "spine_03": {
+      "flexion": -7.3066,
+      "lateral": -6.0098,
+      "twist": -4.2498
+    },
+    "upperarm_l": {
+      "abduction": 16.289,
+      "flexion": 43.1838,
+      "twist": -4.013
+    },
+    "upperarm_r": {
+      "abduction": 6.0
+    }
+  }
+}

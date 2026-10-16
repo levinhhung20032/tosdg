@@ -1,0 +1,93 @@
+{
+ "schema_version": "1.3",
+ "country": "VN",
+ "uniforms": [
+  {
+   "id": "beta",
+   "weight": 1.0,
+   "verified": false,
+   "description": "User-supplied 3D model of a person in uniform (beta.glb); the model's own texture is the appearance. Skin: the model's own skeleton and weights. Origin/licence of the model are the uploader's responsibility.",
+   "proxy_colors": {
+    "torso": [
+     211,
+     175,
+     143
+    ],
+    "upper_arm": [
+     211,
+     175,
+     143
+    ],
+    "forearm": [
+     211,
+     175,
+     143
+    ],
+    "hand": [
+     189,
+     146,
+     123
+    ],
+    "finger": [
+     189,
+     146,
+     123
+    ],
+    "neck": [
+     189,
+     146,
+     123
+    ],
+    "head": [
+     189,
+     146,
+     123
+    ],
+    "headwear": [
+     211,
+     175,
+     143
+    ],
+    "pelvis": [
+     211,
+     175,
+     143
+    ],
+    "thigh": [
+     211,
+     175,
+     143
+    ],
+    "shin": [
+     211,
+     175,
+     143
+    ],
+    "foot": [
+     24,
+     22,
+     24
+    ],
+    "red": [
+     181,
+     35,
+     26
+    ],
+    "leather": [
+     36,
+     28,
+     25
+    ],
+    "metal": [
+     230,
+     170,
+     60
+    ]
+   },
+   "mesh": {
+    "asset": "assets/beta.glb",
+    "fit": "assets/beta.fit.json"
+   }
+  }
+ ]
+}

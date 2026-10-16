@@ -1,0 +1,528 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Country gesture definitions",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "country",
+  "gestures"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema_version": {
+   "type": "string",
+   "pattern": "^\\d+\\.\\d+$"
+  },
+  "country": {
+   "type": "string"
+  },
+  "common_variation": {
+   "type": "object",
+   "propertyNames": {
+    "pattern": "^[a-z0-9_]+\\.[a-z_]+$"
+   },
+   "additionalProperties": {
+    "type": "array",
+    "items": {
+     "type": "number"
+    },
+    "minItems": 2,
+    "maxItems": 2
+   }
+  },
+  "gestures": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "id",
+     "label",
+     "description",
+     "instructions",
+     "pose_variants"
+    ],
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+     },
+     "label": {
+      "type": "string"
+     },
+     "description": {
+      "type": "string"
+     },
+     "signalling": {
+      "type": "boolean"
+     },
+     "source": {
+      "type": "object"
+     },
+     "instructions": {
+      "type": "object",
+      "required": [
+       "front",
+       "back",
+       "left",
+       "right"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "front": {
+        "type": "string"
+       },
+       "back": {
+        "type": "string"
+       },
+       "left": {
+        "type": "string"
+       },
+       "right": {
+        "type": "string"
+       }
+      }
+     },
+     "variation": {
+      "type": "object",
+      "propertyNames": {
+       "pattern": "^[a-z0-9_]+\\.[a-z_]+$"
+      },
+      "additionalProperties": {
+       "type": "array",
+       "items": {
+        "type": "number"
+       },
+       "minItems": 2,
+       "maxItems": 2
+      }
+     },
+     "constraints": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "type"
+       ],
+       "oneOf": [
+        {
+         "properties": {
+          "type": {
+           "const": "limb_direction"
+          },
+          "from": {
+           "type": "string"
+          },
+          "to": {
+           "type": "string"
+          },
+          "direction": {
+           "oneOf": [
+            {
+             "enum": [
+              "forward",
+              "back",
+              "left",
+              "right",
+              "up",
+              "down"
+             ]
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 3,
+             "maxItems": 3
+            }
+           ]
+          },
+          "max_angle_deg": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 180
+          }
+         },
+         "required": [
+          "type",
+          "from",
+          "to",
+          "direction",
+          "max_angle_deg"
+         ],
+         "additionalProperties": false
+        },
+        {
+         "properties": {
+          "type": {
+           "const": "palm_facing"
+          },
+          "side": {
+           "enum": [
+            "l",
+            "r"
+           ]
+          },
+          "direction": {
+           "oneOf": [
+            {
+             "enum": [
+              "forward",
+              "back",
+              "left",
+              "right",
+              "up",
+              "down"
+             ]
+            },
+            {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 3,
+             "maxItems": 3
+            }
+           ]
+          },
+          "max_angle_deg": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 180
+          }
+         },
+         "required": [
+          "type",
+          "side",
+          "direction",
+          "max_angle_deg"
+         ],
+         "additionalProperties": false
+        },
+        {
+         "properties": {
+          "type": {
+           "enum": [
+            "above",
+            "below"
+           ]
+          },
+          "joint": {
+           "type": "string"
+          },
+          "reference": {
+           "type": "string"
+          },
+          "margin_cm": {
+           "type": "number"
+          }
+         },
+         "required": [
+          "type",
+          "joint",
+          "reference"
+         ],
+         "additionalProperties": false
+        },
+        {
+         "properties": {
+          "type": {
+           "const": "finger_curl"
+          },
+          "side": {
+           "enum": [
+            "l",
+            "r"
+           ]
+          },
+          "fingers": {
+           "type": "array",
+           "items": {
+            "enum": [
+             "thumb",
+             "index",
+             "middle",
+             "ring",
+             "pinky"
+            ]
+           },
+           "minItems": 1
+          },
+          "min_deg": {
+           "type": "number"
+          },
+          "max_deg": {
+           "type": "number"
+          }
+         },
+         "required": [
+          "type",
+          "side",
+          "fingers"
+         ],
+         "additionalProperties": false
+        }
+       ]
+      }
+     },
+     "pose_variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "additionalProperties": false,
+       "required": [
+        "id",
+        "pose",
+        "signal_arms"
+       ],
+       "properties": {
+        "id": {
+         "type": "string",
+         "pattern": "^[A-Za-z0-9_\\-]+$"
+        },
+        "pose": {
+         "type": "string",
+         "pattern": "^[A-Za-z0-9_\\-]+$"
+        },
+        "weight": {
+         "type": "number",
+         "minimum": 0
+        },
+        "baton_axis": {
+         "enum": [
+          "across",
+          "along"
+         ],
+         "description": "How a held baton lies in the signalling hand: across the fist (default) or along the forearm (v1.1+)."
+        },
+        "hands": {
+         "type": "object",
+         "additionalProperties": false,
+         "properties": {
+          "l": {
+           "type": "object",
+           "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+           },
+           "minProperties": 1
+          },
+          "r": {
+           "type": "object",
+           "additionalProperties": {
+            "type": "number",
+            "minimum": 0
+           },
+           "minProperties": 1
+          }
+         }
+        },
+        "variation": {
+         "type": "object",
+         "propertyNames": {
+          "pattern": "^[a-z0-9_]+\\.[a-z_]+$"
+         },
+         "additionalProperties": {
+          "type": "array",
+          "items": {
+           "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+         }
+        },
+        "constraints": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "required": [
+           "type"
+          ],
+          "oneOf": [
+           {
+            "properties": {
+             "type": {
+              "const": "limb_direction"
+             },
+             "from": {
+              "type": "string"
+             },
+             "to": {
+              "type": "string"
+             },
+             "direction": {
+              "oneOf": [
+               {
+                "enum": [
+                 "forward",
+                 "back",
+                 "left",
+                 "right",
+                 "up",
+                 "down"
+                ]
+               },
+               {
+                "type": "array",
+                "items": {
+                 "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+               }
+              ]
+             },
+             "max_angle_deg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180
+             }
+            },
+            "required": [
+             "type",
+             "from",
+             "to",
+             "direction",
+             "max_angle_deg"
+            ],
+            "additionalProperties": false
+           },
+           {
+            "properties": {
+             "type": {
+              "const": "palm_facing"
+             },
+             "side": {
+              "enum": [
+               "l",
+               "r"
+              ]
+             },
+             "direction": {
+              "oneOf": [
+               {
+                "enum": [
+                 "forward",
+                 "back",
+                 "left",
+                 "right",
+                 "up",
+                 "down"
+                ]
+               },
+               {
+                "type": "array",
+                "items": {
+                 "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+               }
+              ]
+             },
+             "max_angle_deg": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 180
+             }
+            },
+            "required": [
+             "type",
+             "side",
+             "direction",
+             "max_angle_deg"
+            ],
+            "additionalProperties": false
+           },
+           {
+            "properties": {
+             "type": {
+              "enum": [
+               "above",
+               "below"
+              ]
+             },
+             "joint": {
+              "type": "string"
+             },
+             "reference": {
+              "type": "string"
+             },
+             "margin_cm": {
+              "type": "number"
+             }
+            },
+            "required": [
+             "type",
+             "joint",
+             "reference"
+            ],
+            "additionalProperties": false
+           },
+           {
+            "properties": {
+             "type": {
+              "const": "finger_curl"
+             },
+             "side": {
+              "enum": [
+               "l",
+               "r"
+              ]
+             },
+             "fingers": {
+              "type": "array",
+              "items": {
+               "enum": [
+                "thumb",
+                "index",
+                "middle",
+                "ring",
+                "pinky"
+               ]
+              },
+              "minItems": 1
+             },
+             "min_deg": {
+              "type": "number"
+             },
+             "max_deg": {
+              "type": "number"
+             }
+            },
+            "required": [
+             "type",
+             "side",
+             "fingers"
+            ],
+            "additionalProperties": false
+           }
+          ]
+         }
+        },
+        "signal_arms": {
+         "type": "array",
+         "items": {
+          "enum": [
+           "l",
+           "r"
+          ]
+         },
+         "uniqueItems": true
+        }
+       }
+      }
+     },
+     "weight": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Optional (gestures 1.2+): relative chance of the gesture being drawn (default 1; 0 = never unless the config's gesture_weights names it)."
+     }
+    }
+   }
+  }
+ }
+}

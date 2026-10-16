@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "kind": "hand",
+  "id": "open_flat",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Fingers extended and together (signalling hand).",
+  "joints": {
+    "index_01": {
+      "flexion": 2.0
+    },
+    "index_02": {
+      "flexion": 3.0
+    },
+    "index_03": {
+      "flexion": 2.0
+    },
+    "middle_01": {
+      "flexion": 2.0
+    },
+    "middle_02": {
+      "flexion": 3.0
+    },
+    "middle_03": {
+      "flexion": 2.0
+    },
+    "pinky_01": {
+      "flexion": 2.0
+    },
+    "pinky_02": {
+      "flexion": 3.0
+    },
+    "pinky_03": {
+      "flexion": 2.0
+    },
+    "ring_01": {
+      "flexion": 2.0
+    },
+    "ring_02": {
+      "flexion": 3.0
+    },
+    "ring_03": {
+      "flexion": 2.0
+    },
+    "thumb_02": {
+      "flexion": 5.0
+    }
+  }
+}

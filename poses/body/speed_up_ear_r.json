@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "speed_up_ear_r",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Tay ph\u1ea3i g\u1eadp, b\u00e0n tay \u0111\u01b0a l\u00ean s\u00e1t tai/mang tai (ra hi\u1ec7u \u0111i nhanh h\u01a1n); tay tr\u00e1i bu\u00f4ng xu\u00f4i.",
+  "joints": {
+    "hand_r": {
+      "deviation": 5.6,
+      "flexion": -38.1
+    },
+    "lowerarm_l": {
+      "flexion": 10.0
+    },
+    "lowerarm_r": {
+      "flexion": 127.8,
+      "pronation": -47.5
+    },
+    "upperarm_l": {
+      "abduction": 6.0
+    },
+    "upperarm_r": {
+      "abduction": 61.7,
+      "flexion": 99.9,
+      "twist": 47.2
+    }
+  }
+}

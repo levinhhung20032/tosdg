@@ -1,0 +1,79 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Country / authority profile",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "country",
+  "authority",
+  "regulation",
+  "files"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema_version": {
+   "type": "string",
+   "pattern": "^\\d+\\.\\d+$"
+  },
+  "country": {
+   "type": "string",
+   "pattern": "^[A-Z]{2}$"
+  },
+  "authority": {
+   "type": "string"
+  },
+  "description": {
+   "type": "string"
+  },
+  "regulation": {
+   "type": "object",
+   "required": [
+    "id",
+    "instruction_vocabulary"
+   ],
+   "properties": {
+    "id": {
+     "type": "string"
+    },
+    "sources": {
+     "type": "array"
+    },
+    "verified": {
+     "type": "boolean"
+    },
+    "notes": {
+     "type": "string"
+    },
+    "control_precedence": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "minItems": 1,
+     "uniqueItems": true,
+     "description": "Profiles 1.0 only: the order of the traffic signals (officer, light, sign, marking). Not used since 1.1 (no traffic lights / signs are annotated on the photos)."
+    },
+    "instruction_vocabulary": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     },
+     "minItems": 1,
+     "uniqueItems": true
+    }
+   }
+  },
+  "files": {
+   "type": "object",
+   "required": [
+    "gestures",
+    "uniforms",
+    "camera_profiles"
+   ],
+   "additionalProperties": {
+    "type": "string"
+   }
+  }
+ },
+ "$comment": "1.1: regulation.control_precedence no longer used (optional)."
+}

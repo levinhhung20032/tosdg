@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "palms_forward_both",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Hai tay g\u1eadp vu\u00f4ng g\u00f3c tr\u01b0\u1edbc ng\u1ef1c, hai c\u1eb3ng tay d\u1ef1ng \u0111\u1ee9ng song song, hai l\u00f2ng b\u00e0n tay d\u1ef1ng \u0111\u1ee9ng h\u01b0\u1edbng th\u1eb3ng v\u1ec1 tr\u01b0\u1edbc.",
+  "joints": {
+    "hand_l": {
+      "deviation": 3.0,
+      "flexion": -10.9
+    },
+    "hand_r": {
+      "deviation": 3.0,
+      "flexion": -10.9
+    },
+    "lowerarm_l": {
+      "flexion": 139.6,
+      "pronation": 53.3
+    },
+    "lowerarm_r": {
+      "flexion": 139.6,
+      "pronation": 53.3
+    },
+    "upperarm_l": {
+      "abduction": 17.2,
+      "flexion": 23.8,
+      "twist": -26.9
+    },
+    "upperarm_r": {
+      "abduction": 17.2,
+      "flexion": 23.8,
+      "twist": -26.9
+    }
+  }
+}

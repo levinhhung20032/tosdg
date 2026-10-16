@@ -1,0 +1,8373 @@
+{
+ "schema_version": "1.2",
+ "backgrounds": [
+  {
+   "id": "dash_caotoc_bacnam",
+   "file": "images/dash_caotoc_bacnam.jpg",
+   "sha256": "2cef8036e2ef91c9238b7f66b9a820f2e9c4913cc4b2d9c2e8b86a12a8d3a491",
+   "width": 1920,
+   "height": 1440,
+   "category": "street",
+   "tags": [
+    "dashcam",
+    "day",
+    "ground_level",
+    "highway",
+    "vn"
+   ],
+   "horizon_y_frac": 0.62,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/dash_caotoc_bacnam.ground.png",
+    "sha256": "c42c40bc9f9e6941420487aa754ae04cbcebdded3d34c6617d8a9b4c24e40fd4",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2337
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   }
+  },
+  {
+   "id": "dash_hn_lequangdao",
+   "file": "images/dash_hn_lequangdao.jpg",
+   "sha256": "6dce7ffca5fedb114f186e0c013f08f64fa3cda026d2fc0c061d66c4d154abca",
+   "width": 1920,
+   "height": 1080,
+   "category": "street",
+   "tags": [
+    "dashcam",
+    "day",
+    "ground_level",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.8,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/dash_hn_lequangdao.ground.png",
+    "sha256": "eca67ee55f66d47d8aaef6e031ebe1f89c1bf040ae42aa6b016f643f3717577e",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1429
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       578.6,
+       983.5
+      ],
+      "height_px": 127.1,
+      "bbox": [
+       459.6,
+       856.5,
+       697.7,
+       983.5
+      ],
+      "score": 0.923
+     },
+     {
+      "kind": "car",
+      "feet": [
+       811.8,
+       933.0
+      ],
+      "height_px": 48.3,
+      "bbox": [
+       776.5,
+       884.8,
+       847.0,
+       933.0
+      ],
+      "score": 0.896
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   }
+  },
+  {
+   "id": "dash_ql1_hue",
+   "file": "images/dash_ql1_hue.jpg",
+   "sha256": "b84f509a96d24c86f18d52ba58f5c97e331ec693ff19adefe64ca1cc510a31cc",
+   "width": 1920,
+   "height": 1080,
+   "category": "street",
+   "tags": [
+    "dashcam",
+    "day",
+    "ground_level",
+    "highway",
+    "vn"
+   ],
+   "horizon_y_frac": 0.73,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/dash_ql1_hue.ground.png",
+    "sha256": "b474331efca0aea24b6f3824bd6381e697adba315c4487ce03369fd35d10912b",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1334
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "bus",
+      "feet": [
+       1045.0,
+       917.5
+      ],
+      "height_px": 376.1,
+      "bbox": [
+       835.8,
+       541.4,
+       1254.2,
+       917.5
+      ],
+      "score": 0.909
+     },
+     {
+      "kind": "bus",
+      "feet": [
+       779.2,
+       893.1
+      ],
+      "height_px": 250.2,
+      "bbox": [
+       692.2,
+       642.9,
+       866.1,
+       893.1
+      ],
+      "score": 0.889
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "standing",
+      "feet": [
+       1520.9,
+       898.5
+      ],
+      "height_px": 143.3,
+      "bbox": [
+       1489.4,
+       755.1,
+       1552.4,
+       904.4
+      ],
+      "score": 0.887
+     }
+    ]
+   }
+  },
+  {
+   "id": "nga3_haiduong_dinhlong",
+   "file": "images/nga3_haiduong_dinhlong.jpg",
+   "sha256": "58f2411bd182a3bbd0143ec74c30aeb5ad5a5c13047550a0c4d83c5540b26aed",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.67,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga3_haiduong_dinhlong.ground.png",
+    "sha256": "47d9a09c29341d2219b160ed6d1debe2c2be6dc1f9f85eddb3da47e308ab052d",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2231
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     1152.0,
+     1043.0
+    ],
+    "arms_deg": [
+     0.0,
+     -90.0,
+     100.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_hcm_conghoa",
+   "file": "images/nga3_hcm_conghoa.jpg",
+   "sha256": "c7ba74c75c965d4758fdf1cd21e1a98d37fbe89d9547ce80e2032eb2d996a514",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.72,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga3_hcm_conghoa.ground.png",
+    "sha256": "9a0035f1a2439404f7f3c97fe2ef5bbf9239fa92acdf672d63a1e7e3c87cbccf",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1756
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "truck",
+      "feet": [
+       368.6,
+       1166.7
+      ],
+      "height_px": 211.8,
+      "bbox": [
+       94.3,
+       954.9,
+       642.9,
+       1166.7
+      ],
+      "score": 0.549
+     },
+     {
+      "kind": "truck",
+      "feet": [
+       1125.3,
+       1163.7
+      ],
+      "height_px": 199.2,
+      "bbox": [
+       884.9,
+       964.5,
+       1365.8,
+       1163.7
+      ],
+      "score": 0.535
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1403.7,
+       1107.1
+      ],
+      "height_px": 57.6,
+      "bbox": [
+       1377.7,
+       1049.5,
+       1429.6,
+       1107.1
+      ],
+      "score": 0.527
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       238.0,
+       1226.7
+      ],
+      "height_px": 243.5,
+      "bbox": [
+       152.9,
+       983.2,
+       323.2,
+       1226.7
+      ],
+      "score": 0.883
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       981.3,
+       1190.6
+      ],
+      "height_px": 184.1,
+      "bbox": [
+       907.6,
+       1006.5,
+       1055.0,
+       1190.6
+      ],
+      "score": 0.86
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1481.9,
+       1161.4
+      ],
+      "height_px": 155.5,
+      "bbox": [
+       1429.6,
+       1005.9,
+       1520.4,
+       1161.4
+      ],
+      "score": 0.784
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       748.1,
+       1144.8
+      ],
+      "height_px": 138.0,
+      "bbox": [
+       673.2,
+       1006.8,
+       823.1,
+       1144.8
+      ],
+      "score": 0.782
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       847.9,
+       1120.8
+      ],
+      "height_px": 96.3,
+      "bbox": [
+       805.9,
+       1024.5,
+       890.0,
+       1120.8
+      ],
+      "score": 0.767
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       748.1,
+       1144.8
+      ],
+      "height_px": 132.8,
+      "bbox": [
+       673.2,
+       1012.0,
+       823.1,
+       1144.8
+      ],
+      "score": 0.716
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1589.9,
+       1102.2
+      ],
+      "height_px": 80.6,
+      "bbox": [
+       1553.7,
+       1021.6,
+       1626.1,
+       1102.2
+      ],
+      "score": 0.694
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       563.5,
+       1312.4
+      ],
+      "height_px": 328.3,
+      "bbox": [
+       487.7,
+       984.1,
+       645.6,
+       1312.4
+      ],
+      "score": 0.59
+     }
+    ]
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     1056.0,
+     1224.0
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_hn_kimma",
+   "file": "images/nga3_hn_kimma.jpg",
+   "sha256": "bd832ce67baba392c5032672f4d0d56d439acec09799b30ed98a2d5d991a4d3e",
+   "width": 1920,
+   "height": 1272,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.55,
+   "ground": {
+    "file": "images/nga3_hn_kimma.ground.png",
+    "sha256": "7b946159b79133a19e27b04e83e473080047b15d82b662c67715fce248eca033",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3724
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "standing",
+      "feet": [
+       737.1,
+       811.6
+      ],
+      "height_px": 142.6,
+      "bbox": [
+       716.8,
+       669.0,
+       757.4,
+       817.5
+      ],
+      "score": 0.85
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       195.3,
+       950.8
+      ],
+      "height_px": 275.3,
+      "bbox": [
+       40.3,
+       675.5,
+       350.4,
+       950.8
+      ],
+      "score": 0.845
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       812.5,
+       846.7
+      ],
+      "height_px": 168.2,
+      "bbox": [
+       753.1,
+       678.5,
+       871.9,
+       846.7
+      ],
+      "score": 0.826
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1455.8,
+       752.8
+      ],
+      "height_px": 61.2,
+      "bbox": [
+       1445.5,
+       691.6,
+       1472.8,
+       752.8
+      ],
+      "score": 0.749
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       195.3,
+       950.8
+      ],
+      "height_px": 289.8,
+      "bbox": [
+       40.3,
+       661.0,
+       350.4,
+       950.8
+      ],
+      "score": 0.738
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1607.5,
+       753.1
+      ],
+      "height_px": 62.6,
+      "bbox": [
+       1594.2,
+       690.4,
+       1628.3,
+       753.1
+      ],
+      "score": 0.712
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1561.0,
+       755.5
+      ],
+      "height_px": 67.3,
+      "bbox": [
+       1546.0,
+       688.2,
+       1580.0,
+       755.5
+      ],
+      "score": 0.69
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       388.6,
+       748.0
+      ],
+      "height_px": 72.0,
+      "bbox": [
+       363.4,
+       676.0,
+       413.8,
+       748.0
+      ],
+      "score": 0.684
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1108.5,
+       824.2
+      ],
+      "height_px": 133.2,
+      "bbox": [
+       1065.0,
+       691.0,
+       1151.9,
+       824.2
+      ],
+      "score": 0.682
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1108.5,
+       824.2
+      ],
+      "height_px": 142.8,
+      "bbox": [
+       1065.0,
+       681.4,
+       1160.0,
+       824.2
+      ],
+      "score": 0.64
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1512.2,
+       734.1
+      ],
+      "height_px": 44.0,
+      "bbox": [
+       1480.7,
+       690.1,
+       1543.8,
+       734.1
+      ],
+      "score": 0.815
+     },
+     {
+      "kind": "truck",
+      "feet": [
+       1201.5,
+       716.6
+      ],
+      "height_px": 63.7,
+      "bbox": [
+       1148.2,
+       652.9,
+       1254.9,
+       716.6
+      ],
+      "score": 0.611
+     },
+     {
+      "kind": "car",
+      "feet": [
+       566.4,
+       752.1
+      ],
+      "height_px": 109.6,
+      "bbox": [
+       437.1,
+       642.5,
+       695.7,
+       752.1
+      ],
+      "score": 0.508
+     }
+    ]
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     960.0,
+     839.5
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_hn_tanmai",
+   "file": "images/nga3_hn_tanmai.jpg",
+   "sha256": "33036b9938d23887b6e56602622cffb03ee0edda3206c051df4710b3417d430d",
+   "width": 1920,
+   "height": 1081,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.6,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga3_hn_tanmai.ground.png",
+    "sha256": "29ed3c2a4cac056ef75d5c152c6136267c90ecd95d8732e7f861265a028f6070",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2988
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "bus",
+      "feet": [
+       774.9,
+       796.5
+      ],
+      "height_px": 273.8,
+      "bbox": [
+       460.3,
+       522.6,
+       1089.5,
+       796.5
+      ],
+      "score": 0.943
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1682.1,
+       871.6
+      ],
+      "height_px": 227.5,
+      "bbox": [
+       1621.6,
+       644.1,
+       1743.2,
+       871.6
+      ],
+      "score": 0.887
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1393.6,
+       837.0
+      ],
+      "height_px": 174.5,
+      "bbox": [
+       1292.4,
+       662.6,
+       1494.9,
+       837.0
+      ],
+      "score": 0.853
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       206.6,
+       763.1
+      ],
+      "height_px": 99.4,
+      "bbox": [
+       169.9,
+       663.7,
+       243.4,
+       763.1
+      ],
+      "score": 0.76
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       421.8,
+       715.8
+      ],
+      "height_px": 50.7,
+      "bbox": [
+       406.6,
+       665.1,
+       435.9,
+       715.8
+      ],
+      "score": 0.726
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       304.6,
+       718.9
+      ],
+      "height_px": 54.7,
+      "bbox": [
+       289.4,
+       664.2,
+       317.8,
+       718.9
+      ],
+      "score": 0.62
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       388.5,
+       709.7
+      ],
+      "height_px": 44.7,
+      "bbox": [
+       379.6,
+       665.0,
+       398.6,
+       709.7
+      ],
+      "score": 0.603
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1094.7,
+       743.0
+      ],
+      "height_px": 69.6,
+      "bbox": [
+       1068.9,
+       673.4,
+       1120.5,
+       743.0
+      ],
+      "score": 0.556
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1272.8,
+       730.0
+      ],
+      "height_px": 56.0,
+      "bbox": [
+       1244.1,
+       673.9,
+       1301.4,
+       730.0
+      ],
+      "score": 0.537
+     }
+    ]
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     960.0,
+     778.3
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_hoian_dinhtienhoang",
+   "file": "images/nga3_hoian_dinhtienhoang.jpg",
+   "sha256": "01cdce40c418ddf17a162eef125f273542b831a7c18b1a69541e16aec5e135d0",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.6,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga3_hoian_dinhtienhoang.ground.png",
+    "sha256": "acf5cdef4470a6138ba2c7ae0ee7ea82b0e1febaab62e8db4fe6596fd3dad1e9",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3311
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       593.3,
+       1009.2
+      ],
+      "height_px": 107.3,
+      "bbox": [
+       554.0,
+       901.9,
+       632.6,
+       1009.2
+      ],
+      "score": 0.893
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       938.6,
+       988.4
+      ],
+      "height_px": 115.6,
+      "bbox": [
+       901.1,
+       872.8,
+       976.2,
+       988.4
+      ],
+      "score": 0.774
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       368.3,
+       1007.6
+      ],
+      "height_px": 95.8,
+      "bbox": [
+       326.1,
+       911.8,
+       410.6,
+       1007.6
+      ],
+      "score": 0.768
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       193.8,
+       1019.4
+      ],
+      "height_px": 151.3,
+      "bbox": [
+       134.2,
+       868.0,
+       253.4,
+       1019.4
+      ],
+      "score": 0.73
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       826.6,
+       998.0
+      ],
+      "height_px": 114.9,
+      "bbox": [
+       764.2,
+       883.1,
+       889.1,
+       998.0
+      ],
+      "score": 0.72
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       89.2,
+       1024.2
+      ],
+      "height_px": 109.9,
+      "bbox": [
+       23.3,
+       914.3,
+       155.2,
+       1024.2
+      ],
+      "score": 0.714
+     },
+     {
+      "kind": "bus",
+      "feet": [
+       1544.0,
+       945.6
+      ],
+      "height_px": 140.6,
+      "bbox": [
+       1449.3,
+       805.0,
+       1638.6,
+       945.6
+      ],
+      "score": 0.633
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1764.3,
+       897.5
+      ],
+      "height_px": 79.5,
+      "bbox": [
+       1706.6,
+       818.0,
+       1822.0,
+       897.5
+      ],
+      "score": 0.523
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1665.5,
+       919.1
+      ],
+      "height_px": 88.0,
+      "bbox": [
+       1632.6,
+       831.1,
+       1698.5,
+       919.1
+      ],
+      "score": 0.742
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1336.1,
+       937.2
+      ],
+      "height_px": 87.7,
+      "bbox": [
+       1310.3,
+       849.5,
+       1362.0,
+       937.2
+      ],
+      "score": 0.74
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1405.0,
+       886.5
+      ],
+      "height_px": 44.6,
+      "bbox": [
+       1384.9,
+       841.9,
+       1425.0,
+       886.5
+      ],
+      "score": 0.481
+     }
+    ]
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     1056.0,
+     1036.8
+    ],
+    "arms_deg": [
+     70.0,
+     -90.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_hoian_haibatrung",
+   "file": "images/nga3_hoian_haibatrung.jpg",
+   "sha256": "cd3ac5f1a1a0e513789441355839b615aa2102be90786ce74cb6db9bab6d6520",
+   "width": 1920,
+   "height": 1440,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.5899793582285606,
+   "ground": {
+    "file": "images/nga3_hoian_haibatrung.ground.png",
+    "sha256": "adaabe954115f5eea140db60a6f9648f33542a111bd84d482f8d45b999c59342",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2971
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "standing",
+      "feet": [
+       1500.5,
+       1042.3
+      ],
+      "height_px": 143.6,
+      "bbox": [
+       1472.7,
+       898.7,
+       1528.3,
+       1048.3
+      ],
+      "score": 0.884
+     },
+     {
+      "kind": "standing",
+      "feet": [
+       1433.0,
+       1048.8
+      ],
+      "height_px": 151.7,
+      "bbox": [
+       1405.9,
+       897.0,
+       1460.0,
+       1055.1
+      ],
+      "score": 0.86
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1217.1,
+       1027.9
+      ],
+      "height_px": 138.8,
+      "bbox": [
+       1172.7,
+       889.1,
+       1261.6,
+       1027.9
+      ],
+      "score": 0.821
+     },
+     {
+      "kind": "standing",
+      "feet": [
+       1298.2,
+       1021.1
+      ],
+      "height_px": 136.0,
+      "bbox": [
+       1279.1,
+       885.2,
+       1317.2,
+       1026.8
+      ],
+      "score": 0.817
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       668.2,
+       1042.2
+      ],
+      "height_px": 198.1,
+      "bbox": [
+       622.6,
+       844.1,
+       715.1,
+       1042.2
+      ],
+      "score": 0.736
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       454.2,
+       936.6
+      ],
+      "height_px": 63.1,
+      "bbox": [
+       402.4,
+       873.4,
+       505.9,
+       936.6
+      ],
+      "score": 0.73
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1024.0,
+       927.6
+      ],
+      "height_px": 42.9,
+      "bbox": [
+       1005.6,
+       884.6,
+       1042.4,
+       927.6
+      ],
+      "score": 0.511
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       227.6,
+       981.8
+      ],
+      "height_px": 87.8,
+      "bbox": [
+       193.9,
+       894.1,
+       261.3,
+       981.8
+      ],
+      "score": 0.51
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       977.6,
+       922.5
+      ],
+      "height_px": 46.7,
+      "bbox": [
+       948.9,
+       875.8,
+       1006.4,
+       922.5
+      ],
+      "score": 0.509
+     }
+    ]
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     768.0,
+     1008.0
+    ],
+    "arms_deg": [
+     0.0,
+     180.0,
+     -80.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_khanhhoa_dienkhanh",
+   "file": "images/nga3_khanhhoa_dienkhanh.jpg",
+   "sha256": "a275320fe428af7407549493e5c2604e3dd337c0a625e64d7b563749cfb86bf9",
+   "width": 1917,
+   "height": 1083,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.56,
+   "ground": {
+    "file": "images/nga3_khanhhoa_dienkhanh.ground.png",
+    "sha256": "6f76b668b7be8444cc18f458fffb4cf4421ac156354bcb98d2573f7bc068aa9e",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.4057
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1587.7,
+       683.9
+      ],
+      "height_px": 142.8,
+      "bbox": [
+       1502.0,
+       541.1,
+       1673.3,
+       683.9
+      ],
+      "score": 0.841
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1702.4,
+       675.8
+      ],
+      "height_px": 129.6,
+      "bbox": [
+       1638.1,
+       546.2,
+       1766.6,
+       675.8
+      ],
+      "score": 0.834
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1422.9,
+       662.1
+      ],
+      "height_px": 120.8,
+      "bbox": [
+       1353.5,
+       541.3,
+       1492.3,
+       662.1
+      ],
+      "score": 0.818
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       421.0,
+       641.1
+      ],
+      "height_px": 107.7,
+      "bbox": [
+       363.2,
+       533.4,
+       478.7,
+       641.1
+      ],
+      "score": 0.712
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "truck",
+      "feet": [
+       717.2,
+       603.1
+      ],
+      "height_px": 105.1,
+      "bbox": [
+       674.7,
+       498.0,
+       759.7,
+       603.1
+      ],
+      "score": 0.722
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       221.4,
+       610.9
+      ],
+      "height_px": 49.8,
+      "bbox": [
+       198.9,
+       561.1,
+       243.9,
+       610.9
+      ],
+      "score": 0.596
+     }
+    ]
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     862.6,
+     714.8
+    ],
+    "arms_deg": [
+     0.0,
+     90.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_tiengiang_nhibinh",
+   "file": "images/nga3_tiengiang_nhibinh.jpg",
+   "sha256": "be7fce9acc12c0834d6ae2d6a22b3ad484390643291e7153f3c96aabeee503b6",
+   "width": 1920,
+   "height": 1080,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.56,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga3_tiengiang_nhibinh.ground.png",
+    "sha256": "2c68e3d26f64818efdb921e284ac6816adfb089582e145ceb87608d57be83910",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.309
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1285.2,
+       686.3
+      ],
+      "height_px": 101.5,
+      "bbox": [
+       1241.3,
+       584.8,
+       1329.1,
+       686.3
+      ],
+      "score": 0.823
+     }
+    ]
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     1056.0,
+     777.6
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "id": "nga3_uyban",
+   "file": "images/nga3_uyban.jpg",
+   "sha256": "db756b6a44174f89075a02f6a9eca3c930555b265b2039661e0411f9323efe29",
+   "width": 1920,
+   "height": 1079,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.575,
+   "ground": {
+    "file": "images/nga3_uyban.ground.png",
+    "sha256": "d830481d357b38fb3c1f493ffeb1a92a42ef39b72839f859f26fa9dac2f7e48d",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.4017
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1253.0,
+       700.1
+      ],
+      "height_px": 132.2,
+      "bbox": [
+       1190.6,
+       568.0,
+       1315.4,
+       700.1
+      ],
+      "score": 0.778
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1253.0,
+       700.1
+      ],
+      "height_px": 128.7,
+      "bbox": [
+       1190.6,
+       571.5,
+       1315.4,
+       700.1
+      ],
+      "score": 0.773
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1434.3,
+       689.6
+      ],
+      "height_px": 111.4,
+      "bbox": [
+       1378.5,
+       578.3,
+       1490.1,
+       689.6
+      ],
+      "score": 0.772
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       788.4,
+       631.0
+      ],
+      "height_px": 62.0,
+      "bbox": [
+       775.3,
+       569.0,
+       802.2,
+       631.0
+      ],
+      "score": 0.678
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "junction": {
+    "type": "T",
+    "center": [
+     768.0,
+     669.0
+    ],
+    "arms_deg": [
+     -20.0,
+     90.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga3y_dongthap_anphuoc",
+   "file": "images/nga3y_dongthap_anphuoc.jpg",
+   "sha256": "d0b13be1ceccc2d9a3fd0bfb6e6cd56506bb5f23e51444825ea05c1ef050ad2d",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.57,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga3y_dongthap_anphuoc.ground.png",
+    "sha256": "396a2746287532ce191b4f63fcff9d5ec525e8e36cb8ca735f618c957b4c1ac0",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3494
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "junction": {
+    "type": "Y",
+    "center": [
+     768.0,
+     950.4
+    ],
+    "arms_deg": [
+     -30.0,
+     35.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_bacninh_luongtai",
+   "file": "images/nga4_bacninh_luongtai.jpg",
+   "sha256": "49b0965536bc34b6f1c2179674e2bed6b587910754369a9a49cb20a7407fef9d",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.55,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_bacninh_luongtai.ground.png",
+    "sha256": "c6bc8344eee73075c7986054f60a3d043698cfc4fa30de236048f647f50b33e7",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3942
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       400.3,
+       820.9
+      ],
+      "height_px": 91.5,
+      "bbox": [
+       336.5,
+       729.4,
+       464.2,
+       820.9
+      ],
+      "score": 0.787
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       492.2,
+       803.9
+      ],
+      "height_px": 87.6,
+      "bbox": [
+       455.9,
+       716.4,
+       528.5,
+       803.9
+      ],
+      "score": 0.637
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1547.7,
+       756.5
+      ],
+      "height_px": 54.4,
+      "bbox": [
+       1520.4,
+       702.1,
+       1575.0,
+       756.5
+      ],
+      "score": 0.6
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1303.3,
+       761.4
+      ],
+      "height_px": 42.5,
+      "bbox": [
+       1282.8,
+       718.9,
+       1323.9,
+       761.4
+      ],
+      "score": 0.568
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1352.2,
+       768.1
+      ],
+      "height_px": 63.4,
+      "bbox": [
+       1318.1,
+       704.7,
+       1386.3,
+       768.1
+      ],
+      "score": 0.537
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "standing",
+      "feet": [
+       704.4,
+       789.4
+      ],
+      "height_px": 95.7,
+      "bbox": [
+       687.7,
+       693.7,
+       721.1,
+       793.4
+      ],
+      "score": 0.827
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       762.8,
+       763.5
+      ],
+      "height_px": 73.1,
+      "bbox": [
+       742.7,
+       690.4,
+       783.0,
+       763.5
+      ],
+      "score": 0.732
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       951.9,
+       748.4
+      ],
+      "height_px": 62.2,
+      "bbox": [
+       934.0,
+       686.2,
+       969.8,
+       748.4
+      ],
+      "score": 0.536
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       951.9,
+       748.4
+      ],
+      "height_px": 64.8,
+      "bbox": [
+       934.0,
+       683.6,
+       973.9,
+       748.4
+      ],
+      "score": 0.507
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1128.6,
+       745.7
+      ],
+      "height_px": 56.8,
+      "bbox": [
+       1107.3,
+       688.9,
+       1149.9,
+       745.7
+      ],
+      "score": 0.499
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     864.0,
+     801.4
+    ],
+    "arms_deg": [
+     -80.0,
+     82.0,
+     -8.0,
+     177.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_haiduong_chilang",
+   "file": "images/nga4_haiduong_chilang.jpg",
+   "sha256": "509adf551fdc9ddb54bcc019a67002f89171835233a33562b592884e8188f864",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.64,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_haiduong_chilang.ground.png",
+    "sha256": "88d3648d554bddde524877428dc33fe947f68c39aa0451f88e838a8c1d5a97da",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2801
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       988.7,
+       895.9
+      ],
+      "height_px": 72.8,
+      "bbox": [
+       953.8,
+       823.1,
+       1023.7,
+       895.9
+      ],
+      "score": 0.874
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       481.8,
+       967.0
+      ],
+      "height_px": 122.0,
+      "bbox": [
+       384.9,
+       845.0,
+       578.7,
+       967.0
+      ],
+      "score": 0.858
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       818.5,
+       918.2
+      ],
+      "height_px": 96.4,
+      "bbox": [
+       778.8,
+       821.8,
+       858.2,
+       918.2
+      ],
+      "score": 0.74
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       924.3,
+       903.1
+      ],
+      "height_px": 61.2,
+      "bbox": [
+       893.2,
+       841.9,
+       955.4,
+       903.1
+      ],
+      "score": 0.501
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1683.2,
+       851.7
+      ],
+      "height_px": 64.9,
+      "bbox": [
+       1645.1,
+       786.7,
+       1721.3,
+       851.7
+      ],
+      "score": 0.75
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1245.1,
+       871.8
+      ],
+      "height_px": 71.1,
+      "bbox": [
+       1227.4,
+       800.8,
+       1262.7,
+       871.8
+      ],
+      "score": 0.643
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1829.2,
+       948.0
+      ],
+      "height_px": 155.5,
+      "bbox": [
+       1756.0,
+       792.5,
+       1902.4,
+       948.0
+      ],
+      "score": 0.637
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1173.6,
+       859.7
+      ],
+      "height_px": 65.0,
+      "bbox": [
+       1138.8,
+       794.6,
+       1200.9,
+       859.7
+      ],
+      "score": 0.595
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1472.8,
+       853.4
+      ],
+      "height_px": 56.6,
+      "bbox": [
+       1444.5,
+       796.8,
+       1501.1,
+       853.4
+      ],
+      "score": 0.532
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1046.5,
+       881.0
+      ],
+      "height_px": 78.3,
+      "bbox": [
+       1008.5,
+       802.7,
+       1084.6,
+       881.0
+      ],
+      "score": 0.507
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1829.2,
+       948.0
+      ],
+      "height_px": 156.3,
+      "bbox": [
+       1756.0,
+       791.7,
+       1902.4,
+       948.0
+      ],
+      "score": 0.477
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1173.6,
+       859.7
+      ],
+      "height_px": 56.5,
+      "bbox": [
+       1146.2,
+       803.2,
+       1200.9,
+       859.7
+      ],
+      "score": 0.462
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     1190.4,
+     890.4
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     21.0,
+     -165.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_haiduong_nguyenluongbang",
+   "file": "images/nga4_haiduong_nguyenluongbang.jpg",
+   "sha256": "0cfba07011f46e068467f2705e408e57efe1116987ce4125fdb8f260c15433e1",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.7,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_haiduong_nguyenluongbang.ground.png",
+    "sha256": "48980e1e22cd074a19c32850cf0a07a49f2d835d665a4482c0de1f5ea5c8f3d5",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2444
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       458.7,
+       959.3
+      ],
+      "height_px": 75.8,
+      "bbox": [
+       366.1,
+       883.4,
+       551.2,
+       959.3
+      ],
+      "score": 0.92
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1401.8,
+       935.8
+      ],
+      "height_px": 59.7,
+      "bbox": [
+       1340.7,
+       876.1,
+       1462.8,
+       935.8
+      ],
+      "score": 0.596
+     },
+     {
+      "kind": "car",
+      "feet": [
+       682.7,
+       937.9
+      ],
+      "height_px": 52.8,
+      "bbox": [
+       638.1,
+       885.1,
+       727.4,
+       937.9
+      ],
+      "score": 0.515
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       921.6,
+       945.9
+      ],
+      "height_px": 65.1,
+      "bbox": [
+       902.0,
+       880.8,
+       941.3,
+       945.9
+      ],
+      "score": 0.74
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1068.0,
+       952.6
+      ],
+      "height_px": 67.5,
+      "bbox": [
+       1033.5,
+       885.1,
+       1102.4,
+       952.6
+      ],
+      "score": 0.733
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1469.4,
+       954.6
+      ],
+      "height_px": 71.4,
+      "bbox": [
+       1436.2,
+       883.3,
+       1502.6,
+       954.6
+      ],
+      "score": 0.688
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       825.0,
+       950.3
+      ],
+      "height_px": 68.2,
+      "bbox": [
+       787.2,
+       882.1,
+       862.8,
+       950.3
+      ],
+      "score": 0.685
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1673.7,
+       943.4
+      ],
+      "height_px": 59.7,
+      "bbox": [
+       1649.8,
+       883.7,
+       1697.6,
+       943.4
+      ],
+      "score": 0.678
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1818.6,
+       940.3
+      ],
+      "height_px": 55.2,
+      "bbox": [
+       1791.9,
+       885.1,
+       1845.4,
+       940.3
+      ],
+      "score": 0.626
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       331.3,
+       941.2
+      ],
+      "height_px": 61.0,
+      "bbox": [
+       294.2,
+       880.2,
+       368.5,
+       941.2
+      ],
+      "score": 0.593
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1899.4,
+       928.8
+      ],
+      "height_px": 43.3,
+      "bbox": [
+       1881.5,
+       885.5,
+       1917.4,
+       928.8
+      ],
+      "score": 0.51
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       627.3,
+       944.1
+      ],
+      "height_px": 63.8,
+      "bbox": [
+       602.5,
+       880.3,
+       652.1,
+       944.1
+      ],
+      "score": 0.497
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     864.0,
+     992.2
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     174.0,
+     -4.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_haiduong_nguyenluongbang_2",
+   "file": "images/nga4_haiduong_nguyenluongbang_2.jpg",
+   "sha256": "0ebc651f7815d3185c66d366f084278e69d2efc4dcc401e775331cf60b2ef9d0",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.66,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_haiduong_nguyenluongbang_2.ground.png",
+    "sha256": "3a58c0c79c59bbd5706e894d22d9bdce6e01300c4d788a6d95933ebcc420acd1",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2535
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1268.9,
+       932.7
+      ],
+      "height_px": 65.6,
+      "bbox": [
+       1190.8,
+       867.1,
+       1347.0,
+       932.7
+      ],
+      "score": 0.926
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1711.0,
+       956.4
+      ],
+      "height_px": 78.8,
+      "bbox": [
+       1611.7,
+       877.6,
+       1810.3,
+       956.4
+      ],
+      "score": 0.919
+     },
+     {
+      "kind": "car",
+      "feet": [
+       372.6,
+       984.2
+      ],
+      "height_px": 116.7,
+      "bbox": [
+       255.5,
+       867.5,
+       489.6,
+       984.2
+      ],
+      "score": 0.906
+     },
+     {
+      "kind": "car",
+      "feet": [
+       952.6,
+       919.3
+      ],
+      "height_px": 62.3,
+      "bbox": [
+       898.7,
+       857.0,
+       1006.6,
+       919.3
+      ],
+      "score": 0.866
+     },
+     {
+      "kind": "bicycle",
+      "feet": [
+       1076.6,
+       975.7
+      ],
+      "height_px": 72.7,
+      "bbox": [
+       1053.3,
+       903.1,
+       1100.0,
+       975.7
+      ],
+      "score": 0.686
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1558.5,
+       1061.5
+      ],
+      "height_px": 184.5,
+      "bbox": [
+       1488.5,
+       877.0,
+       1628.4,
+       1061.5
+      ],
+      "score": 0.844
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1558.5,
+       1061.5
+      ],
+      "height_px": 187.9,
+      "bbox": [
+       1488.5,
+       873.6,
+       1628.4,
+       1061.5
+      ],
+      "score": 0.817
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     1056.0,
+     941.3
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     0.0,
+     -172.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_haiduong_nguyenvanlinh",
+   "file": "images/nga4_haiduong_nguyenvanlinh.jpg",
+   "sha256": "a4d4956e451db8392c08e33d66e25322f9b4369083bf9083d41a367215436bac",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.58,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_haiduong_nguyenvanlinh.ground.png",
+    "sha256": "c4449c0cce81bbd3c864d360e30d56a670a9092d7b6489a3f0006a5237a9b505",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2834
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       536.9,
+       962.7
+      ],
+      "height_px": 218.9,
+      "bbox": [
+       297.0,
+       743.8,
+       776.7,
+       962.7
+      ],
+      "score": 0.933
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1696.4,
+       847.9
+      ],
+      "height_px": 86.1,
+      "bbox": [
+       1632.3,
+       761.8,
+       1760.6,
+       847.9
+      ],
+      "score": 0.903
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1032.8,
+       920.4
+      ],
+      "height_px": 138.5,
+      "bbox": [
+       960.0,
+       781.9,
+       1105.5,
+       920.4
+      ],
+      "score": 0.867
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       826.4,
+       921.1
+      ],
+      "height_px": 122.4,
+      "bbox": [
+       756.8,
+       798.7,
+       896.1,
+       921.1
+      ],
+      "score": 0.717
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "standing",
+      "feet": [
+       1113.4,
+       905.8
+      ],
+      "height_px": 164.5,
+      "bbox": [
+       1087.5,
+       741.3,
+       1139.3,
+       912.7
+      ],
+      "score": 0.856
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1346.1,
+       877.6
+      ],
+      "height_px": 128.0,
+      "bbox": [
+       1281.5,
+       749.6,
+       1422.7,
+       877.6
+      ],
+      "score": 0.789
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1233.4,
+       853.8
+      ],
+      "height_px": 99.3,
+      "bbox": [
+       1176.4,
+       754.6,
+       1290.4,
+       853.8
+      ],
+      "score": 0.787
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1346.1,
+       877.6
+      ],
+      "height_px": 125.0,
+      "bbox": [
+       1281.5,
+       752.7,
+       1410.7,
+       877.6
+      ],
+      "score": 0.743
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1346.1,
+       877.6
+      ],
+      "height_px": 129.2,
+      "bbox": [
+       1281.5,
+       748.5,
+       1410.7,
+       877.6
+      ],
+      "score": 0.732
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1600.9,
+       814.2
+      ],
+      "height_px": 55.1,
+      "bbox": [
+       1589.0,
+       759.1,
+       1614.8,
+       814.2
+      ],
+      "score": 0.606
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     1152.0,
+     839.5
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     0.0,
+     -171.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_haiduong_nhudinhhien",
+   "file": "images/nga4_haiduong_nhudinhhien.jpg",
+   "sha256": "cac3d6bbecaa4ca1af6254d58778b36601221ba274ae417d2685201d0d1dcad0",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.62,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_haiduong_nhudinhhien.ground.png",
+    "sha256": "f4d83be16b7ba6953575367c485b118bd683c67a40b5f152b2fadf7ddd210ffd",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3186
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "bus",
+      "feet": [
+       579.3,
+       848.0
+      ],
+      "height_px": 115.8,
+      "bbox": [
+       517.7,
+       732.2,
+       640.8,
+       848.0
+      ],
+      "score": 0.905
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       368.5,
+       952.8
+      ],
+      "height_px": 130.1,
+      "bbox": [
+       327.3,
+       822.7,
+       409.6,
+       952.8
+      ],
+      "score": 0.832
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     672.0,
+     915.8
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     -21.0,
+     167.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_haiduong_quangtrung",
+   "file": "images/nga4_haiduong_quangtrung.jpg",
+   "sha256": "698427626c4077e8c7250b5276dc94d795f6cf6b9b7da63e31b46df2530605ad",
+   "width": 1920,
+   "height": 1272,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.66,
+   "ground": {
+    "file": "images/nga4_haiduong_quangtrung.ground.png",
+    "sha256": "67d26ce65dc6295bc3c0be2ccc71e31a29bdf379ba7e4a3b4e61592dd431c491",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1967
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1608.8,
+       1016.2
+      ],
+      "height_px": 137.2,
+      "bbox": [
+       1538.9,
+       879.0,
+       1678.6,
+       1016.2
+      ],
+      "score": 0.643
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       864.9,
+       871.3
+      ],
+      "height_px": 44.3,
+      "bbox": [
+       854.7,
+       827.0,
+       876.7,
+       871.3
+      ],
+      "score": 0.614
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       1407.9,
+       968.2
+      ],
+      "height_px": 103.8,
+      "bbox": [
+       1335.3,
+       864.4,
+       1480.5,
+       968.2
+      ],
+      "score": 0.697
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1004.2,
+       896.3
+      ],
+      "height_px": 55.5,
+      "bbox": [
+       983.5,
+       840.8,
+       1024.8,
+       896.3
+      ],
+      "score": 0.624
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1234.8,
+       930.5
+      ],
+      "height_px": 67.0,
+      "bbox": [
+       1185.6,
+       863.4,
+       1284.0,
+       930.5
+      ],
+      "score": 0.586
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       715.8,
+       884.9
+      ],
+      "height_px": 48.4,
+      "bbox": [
+       696.0,
+       836.5,
+       735.6,
+       884.9
+      ],
+      "score": 0.584
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       427.2,
+       1031.0
+      ],
+      "height_px": 180.0,
+      "bbox": [
+       321.6,
+       851.0,
+       532.7,
+       1031.0
+      ],
+      "score": 0.54
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       606.2,
+       1056.9
+      ],
+      "height_px": 197.9,
+      "bbox": [
+       519.0,
+       859.0,
+       693.5,
+       1056.9
+      ],
+      "score": 0.503
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1087.9,
+       897.8
+      ],
+      "height_px": 50.1,
+      "bbox": [
+       1060.3,
+       847.7,
+       1115.5,
+       897.8
+      ],
+      "score": 0.463
+     }
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_dienbienphu",
+   "file": "images/nga4_hcm_dienbienphu.jpg",
+   "sha256": "bb6a6de3fc153c5cc88f56b182466664b8ac8bac2d6a7ab74fd51e7697d33904",
+   "width": 1920,
+   "height": 1440,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.71,
+   "ground": {
+    "file": "images/nga4_hcm_dienbienphu.ground.png",
+    "sha256": "971ae399a48071d2d1c9b467d16f2add7c6660830ce7317c596a2b72b2f75353",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2014
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1745.0,
+       1098.9
+      ],
+      "height_px": 100.4,
+      "bbox": [
+       1724.2,
+       998.5,
+       1769.8,
+       1098.9
+      ],
+      "score": 0.787
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1876.5,
+       1095.1
+      ],
+      "height_px": 101.8,
+      "bbox": [
+       1854.7,
+       993.3,
+       1896.5,
+       1095.1
+      ],
+      "score": 0.781
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1832.1,
+       1113.7
+      ],
+      "height_px": 117.0,
+      "bbox": [
+       1807.3,
+       996.7,
+       1858.4,
+       1113.7
+      ],
+      "score": 0.682
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1665.0,
+       1134.0
+      ],
+      "height_px": 143.9,
+      "bbox": [
+       1637.4,
+       990.1,
+       1706.9,
+       1134.0
+      ],
+      "score": 0.531
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1352.7,
+       1163.1
+      ],
+      "height_px": 148.6,
+      "bbox": [
+       1243.0,
+       1014.4,
+       1462.3,
+       1163.1
+      ],
+      "score": 0.922
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     1056.0,
+     1152.0
+    ],
+    "arms_deg": [
+     -114.0,
+     54.0,
+     22.0,
+     -166.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_dongkhoi",
+   "file": "images/nga4_hcm_dongkhoi.jpg",
+   "sha256": "8d20177cafb421e9faab94cc679304830629c799191d8dc3d10f56414c1a6190",
+   "width": 1824,
+   "height": 1368,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.7,
+   "ground": {
+    "file": "images/nga4_hcm_dongkhoi.ground.png",
+    "sha256": "5aade8bbe7212ad02801c007f63d53a81484176ed313d798f94b03e5b32cc96e",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2509
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1385.6,
+       1031.5
+      ],
+      "height_px": 125.7,
+      "bbox": [
+       1359.0,
+       905.8,
+       1408.7,
+       1031.5
+      ],
+      "score": 0.802
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1631.0,
+       1049.7
+      ],
+      "height_px": 150.1,
+      "bbox": [
+       1564.5,
+       899.6,
+       1697.5,
+       1049.7
+      ],
+      "score": 0.787
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       924.2,
+       1016.9
+      ],
+      "height_px": 92.3,
+      "bbox": [
+       891.2,
+       924.6,
+       957.3,
+       1016.9
+      ],
+      "score": 0.762
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1204.3,
+       1037.2
+      ],
+      "height_px": 125.6,
+      "bbox": [
+       1149.0,
+       911.6,
+       1259.7,
+       1037.2
+      ],
+      "score": 0.735
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       871.3,
+       1026.3
+      ],
+      "height_px": 108.8,
+      "bbox": [
+       855.3,
+       917.5,
+       897.3,
+       1026.3
+      ],
+      "score": 0.675
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1631.0,
+       1049.7
+      ],
+      "height_px": 135.1,
+      "bbox": [
+       1564.5,
+       914.6,
+       1697.5,
+       1049.7
+      ],
+      "score": 0.618
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       989.5,
+       1032.5
+      ],
+      "height_px": 121.0,
+      "bbox": [
+       948.0,
+       911.6,
+       1027.7,
+       1032.5
+      ],
+      "score": 0.481
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       429.0,
+       1033.9
+      ],
+      "height_px": 131.4,
+      "bbox": [
+       259.6,
+       902.5,
+       598.5,
+       1033.9
+      ],
+      "score": 0.885
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1369.9,
+       1011.1
+      ],
+      "height_px": 106.8,
+      "bbox": [
+       1240.0,
+       904.3,
+       1499.7,
+       1011.1
+      ],
+      "score": 0.847
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       90.9,
+       1002.2
+      ],
+      "height_px": 82.0,
+      "bbox": [
+       66.4,
+       920.2,
+       115.5,
+       1002.2
+      ],
+      "score": 0.845
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1100.5,
+       1024.7
+      ],
+      "height_px": 119.7,
+      "bbox": [
+       1003.3,
+       905.0,
+       1197.7,
+       1024.7
+      ],
+      "score": 0.671
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     912.0,
+     1094.4
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     5.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_govap",
+   "file": "images/nga4_hcm_govap.jpg",
+   "sha256": "16aee55b2fbb91debdbd62d4084cbb55601b32cd175e98455d9c3f4e0d3ab27f",
+   "width": 1920,
+   "height": 1438,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.5,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_hcm_govap.ground.png",
+    "sha256": "35682a8b0a1222ad5119a7555d9b8d8ed80aacf6ba2e549324dd2375de21611c",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.378
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       1340.4,
+       881.2
+      ],
+      "height_px": 94.2,
+      "bbox": [
+       1298.9,
+       787.1,
+       1381.9,
+       881.2
+      ],
+      "score": 0.819
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       760.3,
+       810.4
+      ],
+      "height_px": 58.8,
+      "bbox": [
+       736.3,
+       751.6,
+       784.3,
+       810.4
+      ],
+      "score": 0.697
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       517.6,
+       983.9
+      ],
+      "height_px": 149.3,
+      "bbox": [
+       473.2,
+       834.5,
+       562.0,
+       983.9
+      ],
+      "score": 0.523
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1477.5,
+       876.4
+      ],
+      "height_px": 164.2,
+      "bbox": [
+       1383.0,
+       712.2,
+       1571.9,
+       876.4
+      ],
+      "score": 0.843
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1678.0,
+       915.8
+      ],
+      "height_px": 212.9,
+      "bbox": [
+       1553.3,
+       702.9,
+       1802.7,
+       915.8
+      ],
+      "score": 0.838
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1013.7,
+       967.4
+      ],
+      "height_px": 230.8,
+      "bbox": [
+       941.7,
+       736.6,
+       1085.7,
+       967.4
+      ],
+      "score": 0.824
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       901.5,
+       846.6
+      ],
+      "height_px": 127.6,
+      "bbox": [
+       847.2,
+       719.0,
+       955.7,
+       846.6
+      ],
+      "score": 0.821
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       212.9,
+       920.1
+      ],
+      "height_px": 164.1,
+      "bbox": [
+       172.8,
+       755.9,
+       255.7,
+       920.1
+      ],
+      "score": 0.814
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1013.7,
+       967.4
+      ],
+      "height_px": 244.0,
+      "bbox": [
+       941.7,
+       723.4,
+       1085.7,
+       967.4
+      ],
+      "score": 0.813
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       439.7,
+       927.1
+      ],
+      "height_px": 181.9,
+      "bbox": [
+       393.5,
+       745.2,
+       485.9,
+       927.1
+      ],
+      "score": 0.813
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       516.6,
+       982.8
+      ],
+      "height_px": 233.0,
+      "bbox": [
+       472.0,
+       749.8,
+       563.0,
+       982.8
+      ],
+      "score": 0.811
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1477.5,
+       876.4
+      ],
+      "height_px": 165.1,
+      "bbox": [
+       1383.0,
+       711.3,
+       1571.9,
+       876.4
+      ],
+      "score": 0.796
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       93.7,
+       967.9
+      ],
+      "height_px": 191.9,
+      "bbox": [
+       45.2,
+       776.0,
+       156.4,
+       967.9
+      ],
+      "score": 0.793
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       356.9,
+       906.2
+      ],
+      "height_px": 168.9,
+      "bbox": [
+       307.6,
+       737.3,
+       406.2,
+       906.2
+      ],
+      "score": 0.777
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1229.2,
+       896.5
+      ],
+      "height_px": 186.1,
+      "bbox": [
+       1142.3,
+       710.4,
+       1329.9,
+       896.5
+      ],
+      "score": 0.776
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       293.9,
+       876.9
+      ],
+      "height_px": 131.9,
+      "bbox": [
+       254.7,
+       745.0,
+       333.2,
+       876.9
+      ],
+      "score": 0.758
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1229.2,
+       896.5
+      ],
+      "height_px": 188.7,
+      "bbox": [
+       1142.3,
+       707.9,
+       1316.2,
+       896.5
+      ],
+      "score": 0.731
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       605.1,
+       917.1
+      ],
+      "height_px": 173.0,
+      "bbox": [
+       553.5,
+       744.2,
+       652.0,
+       917.1
+      ],
+      "score": 0.721
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       605.1,
+       917.1
+      ],
+      "height_px": 183.7,
+      "bbox": [
+       558.2,
+       733.4,
+       652.0,
+       917.1
+      ],
+      "score": 0.665
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     960.0,
+     1006.6
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     -7.0,
+     -173.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_lytutrong",
+   "file": "images/nga4_hcm_lytutrong.jpg",
+   "sha256": "1ec422a09099c97d609f0107036e9b16c39ef6f0935891db061fdbf6619685f2",
+   "width": 1920,
+   "height": 1078,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.845,
+   "horizon_source": "detected",
+   "ground": {
+    "file": "images/nga4_hcm_lytutrong.ground.png",
+    "sha256": "def8b73b66474ae0211a71b6967e0400343c33328ea81baac7c876891c6f64af",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.0695
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1471.7,
+       982.5
+      ],
+      "height_px": 110.2,
+      "bbox": [
+       1440.7,
+       872.4,
+       1501.9,
+       982.5
+      ],
+      "score": 0.842
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1164.6,
+       1039.7
+      ],
+      "height_px": 176.5,
+      "bbox": [
+       1064.0,
+       863.1,
+       1265.2,
+       1039.7
+      ],
+      "score": 0.833
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1164.6,
+       1039.7
+      ],
+      "height_px": 171.9,
+      "bbox": [
+       1064.0,
+       867.8,
+       1265.2,
+       1039.7
+      ],
+      "score": 0.805
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       693.1,
+       1019.3
+      ],
+      "height_px": 138.9,
+      "bbox": [
+       660.3,
+       880.3,
+       726.0,
+       1019.3
+      ],
+      "score": 0.629
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1663.2,
+       923.4
+      ],
+      "height_px": 54.0,
+      "bbox": [
+       1651.6,
+       869.3,
+       1673.4,
+       923.4
+      ],
+      "score": 0.616
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       635.0,
+       1025.2
+      ],
+      "height_px": 135.0,
+      "bbox": [
+       601.9,
+       890.3,
+       682.5,
+       1025.2
+      ],
+      "score": 0.605
+     }
+    ]
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1723.9,
+       915.8
+      ],
+      "height_px": 52.9,
+      "bbox": [
+       1688.3,
+       862.9,
+       1759.6,
+       915.8
+      ],
+      "score": 0.763
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1465.4,
+       983.5
+      ],
+      "height_px": 72.8,
+      "bbox": [
+       1442.7,
+       910.7,
+       1488.1,
+       983.5
+      ],
+      "score": 0.546
+     }
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_namkykhoinghia",
+   "file": "images/nga4_hcm_namkykhoinghia.jpg",
+   "sha256": "79452468d91e0b46412dc6594d3e2157801d000a5d2ff98788699a304a76af4a",
+   "width": 1920,
+   "height": 1440,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.6,
+   "ground": {
+    "file": "images/nga4_hcm_namkykhoinghia.ground.png",
+    "sha256": "d8a77ec5140970e734078bca7b398a3bf51d042f8f999295be073516bba2d9f9",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2207
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1182.8,
+       1163.9
+      ],
+      "height_px": 323.8,
+      "bbox": [
+       1085.6,
+       840.1,
+       1236.5,
+       1163.9
+      ],
+      "score": 0.902
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       320.3,
+       943.5
+      ],
+      "height_px": 101.4,
+      "bbox": [
+       292.4,
+       842.1,
+       349.8,
+       943.5
+      ],
+      "score": 0.604
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1108.8,
+       894.9
+      ],
+      "height_px": 57.1,
+      "bbox": [
+       1086.6,
+       837.8,
+       1131.0,
+       894.9
+      ],
+      "score": 0.521
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1317.6,
+       893.4
+      ],
+      "height_px": 51.7,
+      "bbox": [
+       1288.2,
+       841.7,
+       1346.9,
+       893.4
+      ],
+      "score": 0.497
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1407.1,
+       899.4
+      ],
+      "height_px": 57.9,
+      "bbox": [
+       1374.3,
+       841.5,
+       1439.9,
+       899.4
+      ],
+      "score": 0.484
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "bus",
+      "feet": [
+       1581.9,
+       896.8
+      ],
+      "height_px": 109.8,
+      "bbox": [
+       1425.7,
+       786.9,
+       1738.1,
+       896.8
+      ],
+      "score": 0.9
+     },
+     {
+      "kind": "truck",
+      "feet": [
+       539.2,
+       910.4
+      ],
+      "height_px": 164.5,
+      "bbox": [
+       208.0,
+       745.9,
+       870.4,
+       910.4
+      ],
+      "score": 0.891
+     },
+     {
+      "kind": "car",
+      "feet": [
+       945.7,
+       884.0
+      ],
+      "height_px": 42.7,
+      "bbox": [
+       896.9,
+       841.3,
+       994.6,
+       884.0
+      ],
+      "score": 0.678
+     },
+     {
+      "kind": "truck",
+      "feet": [
+       1021.9,
+       898.4
+      ],
+      "height_px": 55.5,
+      "bbox": [
+       976.1,
+       842.9,
+       1067.8,
+       898.4
+      ],
+      "score": 0.575
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     864.0,
+     979.2
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     11.0,
+     172.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_q1_2019",
+   "file": "images/nga4_hcm_q1_2019.jpg",
+   "sha256": "ebb0f978eb25da605aec1ce84dd3bf80ec5c224f2dc642fc2c04509449478b9b",
+   "width": 1920,
+   "height": 1280,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.66,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_hcm_q1_2019.ground.png",
+    "sha256": "6b4d189d650f564c1facf08a54cf3256e283ba7671809608fa864b0bb9d7b570",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2663
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1709.6,
+       881.5
+      ],
+      "height_px": 94.1,
+      "bbox": [
+       1651.4,
+       787.4,
+       1767.8,
+       881.5
+      ],
+      "score": 0.8
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       836.5,
+       915.7
+      ],
+      "height_px": 74.8,
+      "bbox": [
+       806.2,
+       840.9,
+       866.7,
+       915.7
+      ],
+      "score": 0.767
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       766.6,
+       913.1
+      ],
+      "height_px": 83.7,
+      "bbox": [
+       736.2,
+       829.4,
+       797.0,
+       913.1
+      ],
+      "score": 0.626
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1324.0,
+       1100.1
+      ],
+      "height_px": 282.6,
+      "bbox": [
+       1260.4,
+       817.4,
+       1393.2,
+       1100.1
+      ],
+      "score": 0.898
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1529.1,
+       993.8
+      ],
+      "height_px": 187.9,
+      "bbox": [
+       1482.9,
+       805.9,
+       1580.7,
+       993.8
+      ],
+      "score": 0.874
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1658.2,
+       925.5
+      ],
+      "height_px": 125.5,
+      "bbox": [
+       1626.9,
+       800.1,
+       1682.9,
+       925.5
+      ],
+      "score": 0.817
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1151.3,
+       935.4
+      ],
+      "height_px": 120.2,
+      "bbox": [
+       1096.0,
+       815.1,
+       1206.6,
+       935.4
+      ],
+      "score": 0.782
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1396.1,
+       892.5
+      ],
+      "height_px": 87.2,
+      "bbox": [
+       1377.8,
+       805.3,
+       1423.6,
+       892.5
+      ],
+      "score": 0.776
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       332.6,
+       919.3
+      ],
+      "height_px": 89.6,
+      "bbox": [
+       296.3,
+       829.7,
+       368.9,
+       919.3
+      ],
+      "score": 0.775
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1464.4,
+       881.6
+      ],
+      "height_px": 81.9,
+      "bbox": [
+       1443.8,
+       799.7,
+       1486.3,
+       881.6
+      ],
+      "score": 0.675
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     1152.0,
+     972.8
+    ],
+    "arms_deg": [
+     -66.0,
+     34.0,
+     120.0,
+     -160.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_q6_phulam",
+   "file": "images/nga4_hcm_q6_phulam.jpg",
+   "sha256": "76d8a64ccdaf4ef58ec5f88c87069337236f637318e76618a4b040bf49f345bb",
+   "width": 1920,
+   "height": 1080,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.74,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_hcm_q6_phulam.ground.png",
+    "sha256": "2ba80bd5cbe62299edd376391d1f3f46332d79c563b96c60499aa8761798715c",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1805
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       425.7,
+       720.0
+      ],
+      "height_px": 48.7,
+      "bbox": [
+       397.9,
+       671.3,
+       453.5,
+       720.0
+      ],
+      "score": 0.716
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1482.9,
+       793.8
+      ],
+      "height_px": 61.6,
+      "bbox": [
+       1456.4,
+       732.1,
+       1509.5,
+       793.8
+      ],
+      "score": 0.669
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1820.5,
+       840.6
+      ],
+      "height_px": 77.9,
+      "bbox": [
+       1765.0,
+       762.7,
+       1876.1,
+       840.6
+      ],
+      "score": 0.562
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1593.4,
+       765.1
+      ],
+      "height_px": 45.9,
+      "bbox": [
+       1577.5,
+       719.2,
+       1609.3,
+       765.1
+      ],
+      "score": 0.527
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1673.3,
+       733.4
+      ],
+      "height_px": 47.1,
+      "bbox": [
+       1655.8,
+       686.3,
+       1690.8,
+       733.4
+      ],
+      "score": 0.478
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1594.0,
+       718.3
+      ],
+      "height_px": 54.9,
+      "bbox": [
+       1556.0,
+       663.4,
+       1632.0,
+       718.3
+      ],
+      "score": 0.473
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       473.1,
+       899.6
+      ],
+      "height_px": 156.6,
+      "bbox": [
+       431.3,
+       743.0,
+       504.8,
+       899.6
+      ],
+      "score": 0.763
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       259.1,
+       818.3
+      ],
+      "height_px": 109.0,
+      "bbox": [
+       205.3,
+       709.3,
+       313.0,
+       818.3
+      ],
+      "score": 0.73
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1625.3,
+       784.4
+      ],
+      "height_px": 89.0,
+      "bbox": [
+       1602.6,
+       695.3,
+       1647.9,
+       784.4
+      ],
+      "score": 0.721
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1219.3,
+       853.9
+      ],
+      "height_px": 129.7,
+      "bbox": [
+       1183.7,
+       724.2,
+       1254.8,
+       853.9
+      ],
+      "score": 0.693
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1126.1,
+       793.5
+      ],
+      "height_px": 93.8,
+      "bbox": [
+       1092.7,
+       699.7,
+       1159.5,
+       793.5
+      ],
+      "score": 0.677
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       546.4,
+       830.5
+      ],
+      "height_px": 115.2,
+      "bbox": [
+       504.4,
+       715.3,
+       588.4,
+       830.5
+      ],
+      "score": 0.666
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1004.5,
+       859.2
+      ],
+      "height_px": 140.9,
+      "bbox": [
+       947.3,
+       718.3,
+       1061.6,
+       859.2
+      ],
+      "score": 0.664
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1004.5,
+       859.2
+      ],
+      "height_px": 153.7,
+      "bbox": [
+       947.3,
+       705.5,
+       1074.9,
+       859.2
+      ],
+      "score": 0.53
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1219.3,
+       853.9
+      ],
+      "height_px": 141.7,
+      "bbox": [
+       1183.7,
+       712.3,
+       1257.2,
+       853.9
+      ],
+      "score": 0.509
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1316.5,
+       799.8
+      ],
+      "height_px": 96.0,
+      "bbox": [
+       1284.8,
+       703.8,
+       1348.3,
+       799.8
+      ],
+      "score": 0.494
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1360.2,
+       772.1
+      ],
+      "height_px": 75.4,
+      "bbox": [
+       1333.9,
+       696.7,
+       1386.4,
+       772.1
+      ],
+      "score": 0.475
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1820.6,
+       840.4
+      ],
+      "height_px": 113.0,
+      "bbox": [
+       1764.9,
+       727.4,
+       1876.3,
+       840.4
+      ],
+      "score": 0.473
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       638.9,
+       828.9
+      ],
+      "height_px": 111.1,
+      "bbox": [
+       601.0,
+       717.9,
+       676.7,
+       828.9
+      ],
+      "score": 0.473
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     1056.0,
+     885.6
+    ],
+    "arms_deg": [
+     -94.0,
+     81.0,
+     -171.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_suvanhanh_dem",
+   "file": "images/nga4_hcm_suvanhanh_dem.jpg",
+   "sha256": "96014dcad8b7883ed8999ac17daea698fd7fe85b20b8aa810e483e2a530b4037",
+   "width": 1920,
+   "height": 1280,
+   "category": "intersection",
+   "tags": [
+    "ground_level",
+    "intersection",
+    "night",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.62,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_hcm_suvanhanh_dem.ground.png",
+    "sha256": "f53d4ea5f937b0ffbf7fa6b1cd95e7b920d45322ec4e629f3add3060e395e828",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1583
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       907.6,
+       820.6
+      ],
+      "height_px": 68.2,
+      "bbox": [
+       889.4,
+       752.4,
+       925.8,
+       820.6
+      ],
+      "score": 0.663
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1033.3,
+       830.8
+      ],
+      "height_px": 60.9,
+      "bbox": [
+       1011.5,
+       769.9,
+       1055.2,
+       830.8
+      ],
+      "score": 0.53
+     },
+     {
+      "kind": "car",
+      "feet": [
+       519.5,
+       870.5
+      ],
+      "height_px": 162.2,
+      "bbox": [
+       347.8,
+       708.3,
+       691.2,
+       870.5
+      ],
+      "score": 0.529
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1467.5,
+       1272.9
+      ],
+      "height_px": 571.9,
+      "bbox": [
+       1089.7,
+       700.9,
+       1845.2,
+       1272.9
+      ],
+      "score": 0.905
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       192.9,
+       1267.5
+      ],
+      "height_px": 515.0,
+      "bbox": [
+       0.0,
+       752.5,
+       385.7,
+       1267.5
+      ],
+      "score": 0.875
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1467.5,
+       1272.9
+      ],
+      "height_px": 518.1,
+      "bbox": [
+       1089.7,
+       754.8,
+       1845.2,
+       1272.9
+      ],
+      "score": 0.874
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       976.4,
+       877.1
+      ],
+      "height_px": 144.3,
+      "bbox": [
+       942.8,
+       732.8,
+       1014.4,
+       877.1
+      ],
+      "score": 0.865
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1467.5,
+       1272.9
+      ],
+      "height_px": 499.9,
+      "bbox": [
+       1089.7,
+       773.0,
+       1845.2,
+       1272.9
+      ],
+      "score": 0.849
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1467.5,
+       1272.9
+      ],
+      "height_px": 536.7,
+      "bbox": [
+       1089.7,
+       736.2,
+       1845.2,
+       1272.9
+      ],
+      "score": 0.767
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       405.7,
+       904.8
+      ],
+      "height_px": 173.2,
+      "bbox": [
+       336.0,
+       731.5,
+       475.4,
+       904.8
+      ],
+      "score": 0.761
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1738.9,
+       1078.2
+      ],
+      "height_px": 312.6,
+      "bbox": [
+       1566.1,
+       765.6,
+       1911.7,
+       1078.2
+      ],
+      "score": 0.702
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       405.7,
+       904.8
+      ],
+      "height_px": 171.3,
+      "bbox": [
+       336.0,
+       733.5,
+       476.2,
+       904.8
+      ],
+      "score": 0.689
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1102.3,
+       811.5
+      ],
+      "height_px": 82.4,
+      "bbox": [
+       1083.8,
+       729.1,
+       1122.8,
+       811.5
+      ],
+      "score": 0.656
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1188.5,
+       798.2
+      ],
+      "height_px": 70.5,
+      "bbox": [
+       1172.0,
+       727.7,
+       1203.3,
+       798.2
+      ],
+      "score": 0.62
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       724.7,
+       867.9
+      ],
+      "height_px": 143.6,
+      "bbox": [
+       685.3,
+       724.3,
+       764.0,
+       867.9
+      ],
+      "score": 0.461
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     960.0,
+     896.0
+    ],
+    "arms_deg": [
+     -90.0,
+     103.0,
+     0.0,
+     -176.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hcm_thanhthai",
+   "file": "images/nga4_hcm_thanhthai.jpg",
+   "sha256": "f67116967ff587f28ed0a0489a187ec2d898ee81d7bd882594e4f1a4e90e1da5",
+   "width": 1920,
+   "height": 1078,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.6,
+   "ground": {
+    "file": "images/nga4_hcm_thanhthai.ground.png",
+    "sha256": "eef65c4bc10fb2f783a37dc2491ac1acc9fad3325d154cb5502bf12c87b75af9",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2159
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1570.7,
+       882.5
+      ],
+      "height_px": 294.5,
+      "bbox": [
+       1510.9,
+       588.0,
+       1674.3,
+       882.5
+      ],
+      "score": 0.89
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1288.1,
+       885.5
+      ],
+      "height_px": 304.6,
+      "bbox": [
+       1170.6,
+       581.0,
+       1405.6,
+       885.5
+      ],
+      "score": 0.871
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       876.4,
+       877.8
+      ],
+      "height_px": 266.8,
+      "bbox": [
+       788.2,
+       611.0,
+       964.7,
+       877.8
+      ],
+      "score": 0.848
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1022.1,
+       844.8
+      ],
+      "height_px": 227.1,
+      "bbox": [
+       944.5,
+       617.7,
+       1125.5,
+       844.8
+      ],
+      "score": 0.831
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1698.7,
+       836.4
+      ],
+      "height_px": 245.2,
+      "bbox": [
+       1648.0,
+       591.2,
+       1760.3,
+       836.4
+      ],
+      "score": 0.83
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1022.1,
+       844.8
+      ],
+      "height_px": 230.2,
+      "bbox": [
+       944.5,
+       614.6,
+       1099.6,
+       844.8
+      ],
+      "score": 0.796
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1855.2,
+       792.5
+      ],
+      "height_px": 195.8,
+      "bbox": [
+       1807.4,
+       596.8,
+       1901.0,
+       792.5
+      ],
+      "score": 0.788
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       324.9,
+       871.3
+      ],
+      "height_px": 230.8,
+      "bbox": [
+       239.7,
+       640.5,
+       410.1,
+       871.3
+      ],
+      "score": 0.768
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       876.4,
+       877.8
+      ],
+      "height_px": 255.1,
+      "bbox": [
+       776.5,
+       622.7,
+       964.7,
+       877.8
+      ],
+      "score": 0.762
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       463.0,
+       873.0
+      ],
+      "height_px": 236.5,
+      "bbox": [
+       367.3,
+       636.5,
+       558.6,
+       873.0
+      ],
+      "score": 0.715
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       621.8,
+       869.0
+      ],
+      "height_px": 237.6,
+      "bbox": [
+       517.5,
+       631.4,
+       726.1,
+       869.0
+      ],
+      "score": 0.671
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       621.8,
+       869.0
+      ],
+      "height_px": 234.0,
+      "bbox": [
+       517.5,
+       635.0,
+       726.1,
+       869.0
+      ],
+      "score": 0.659
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       224.6,
+       811.7
+      ],
+      "height_px": 204.7,
+      "bbox": [
+       171.9,
+       607.0,
+       277.9,
+       811.7
+      ],
+      "score": 0.573
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1168.7,
+       821.3
+      ],
+      "height_px": 201.2,
+      "bbox": [
+       1131.4,
+       620.0,
+       1221.5,
+       821.3
+      ],
+      "score": 0.569
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       324.9,
+       871.3
+      ],
+      "height_px": 238.3,
+      "bbox": [
+       239.7,
+       633.0,
+       410.1,
+       871.3
+      ],
+      "score": 0.52
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       463.0,
+       873.0
+      ],
+      "height_px": 215.8,
+      "bbox": [
+       364.1,
+       657.2,
+       558.6,
+       873.0
+      ],
+      "score": 0.509
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       876.4,
+       877.8
+      ],
+      "height_px": 248.0,
+      "bbox": [
+       788.2,
+       629.8,
+       993.5,
+       877.8
+      ],
+      "score": 0.496
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       621.8,
+       869.0
+      ],
+      "height_px": 251.8,
+      "bbox": [
+       517.5,
+       617.2,
+       726.1,
+       869.0
+      ],
+      "score": 0.49
+     }
+    ]
+   },
+   "horizon_source": "manual",
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   }
+  },
+  {
+   "id": "nga4_hn_macthaitong",
+   "file": "images/nga4_hn_macthaitong.jpg",
+   "sha256": "048289679d0045efb8b5b687917fbd69f4ddc6f33ac0ced2815986d94231bd0a",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.55,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_hn_macthaitong.ground.png",
+    "sha256": "d579d04655732017e8d81baadbdd8610df2da56925ea15353df10b0cf2286f56",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2345
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       621.1,
+       846.4
+      ],
+      "height_px": 59.2,
+      "bbox": [
+       595.5,
+       787.1,
+       646.7,
+       846.4
+      ],
+      "score": 0.746
+     },
+     {
+      "kind": "car",
+      "feet": [
+       801.2,
+       943.1
+      ],
+      "height_px": 146.1,
+      "bbox": [
+       659.8,
+       797.0,
+       942.6,
+       943.1
+      ],
+      "score": 0.601
+     },
+     {
+      "kind": "car",
+      "feet": [
+       835.8,
+       796.1
+      ],
+      "height_px": 41.1,
+      "bbox": [
+       803.4,
+       755.0,
+       868.3,
+       796.1
+      ],
+      "score": 0.598
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       460.4,
+       828.4
+      ],
+      "height_px": 62.5,
+      "bbox": [
+       428.0,
+       765.9,
+       492.9,
+       828.4
+      ],
+      "score": 0.521
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1288.7,
+       801.5
+      ],
+      "height_px": 73.2,
+      "bbox": [
+       1244.1,
+       728.3,
+       1333.2,
+       801.5
+      ],
+      "score": 0.517
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       990.8,
+       963.1
+      ],
+      "height_px": 164.8,
+      "bbox": [
+       905.7,
+       798.3,
+       1076.0,
+       963.1
+      ],
+      "score": 0.833
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1139.6,
+       963.1
+      ],
+      "height_px": 166.9,
+      "bbox": [
+       1054.5,
+       796.2,
+       1224.7,
+       963.1
+      ],
+      "score": 0.826
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1364.4,
+       866.0
+      ],
+      "height_px": 108.8,
+      "bbox": [
+       1309.8,
+       757.1,
+       1419.1,
+       866.0
+      ],
+      "score": 0.742
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1139.6,
+       963.1
+      ],
+      "height_px": 161.4,
+      "bbox": [
+       1054.5,
+       801.7,
+       1224.7,
+       963.1
+      ],
+      "score": 0.742
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       990.8,
+       963.1
+      ],
+      "height_px": 162.3,
+      "bbox": [
+       905.7,
+       800.9,
+       1076.0,
+       963.1
+      ],
+      "score": 0.728
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1139.6,
+       963.1
+      ],
+      "height_px": 182.6,
+      "bbox": [
+       1047.0,
+       780.6,
+       1224.7,
+       963.1
+      ],
+      "score": 0.651
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1231.5,
+       813.2
+      ],
+      "height_px": 62.5,
+      "bbox": [
+       1203.2,
+       750.7,
+       1259.7,
+       813.2
+      ],
+      "score": 0.636
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1026.8,
+       818.2
+      ],
+      "height_px": 68.7,
+      "bbox": [
+       1004.0,
+       749.4,
+       1049.5,
+       818.2
+      ],
+      "score": 0.616
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1364.4,
+       866.0
+      ],
+      "height_px": 106.4,
+      "bbox": [
+       1309.8,
+       759.5,
+       1425.0,
+       866.0
+      ],
+      "score": 0.518
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     864.0,
+     892.8
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     1.0,
+     179.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hn_phamhung",
+   "file": "images/nga4_hn_phamhung.jpg",
+   "sha256": "a1aa046e66fff4811e7a1775b9e81e1c7e7bafab5f263fcd8d912c4512ac6c3a",
+   "width": 1920,
+   "height": 1280,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.57,
+   "horizon_source": "detected",
+   "ground": {
+    "file": "images/nga4_hn_phamhung.ground.png",
+    "sha256": "9f70dd3e4e90865ea6e4596400b116c40ca655cc3b9c9ff71a7f036903390632",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1242
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1169.3,
+       920.4
+      ],
+      "height_px": 167.0,
+      "bbox": [
+       1076.3,
+       753.4,
+       1262.3,
+       920.4
+      ],
+      "score": 0.828
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1169.3,
+       920.4
+      ],
+      "height_px": 158.8,
+      "bbox": [
+       1076.3,
+       761.6,
+       1262.3,
+       920.4
+      ],
+      "score": 0.824
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       564.2,
+       914.2
+      ],
+      "height_px": 154.4,
+      "bbox": [
+       476.5,
+       759.8,
+       651.9,
+       914.2
+      ],
+      "score": 0.624
+     }
+    ]
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1592.3,
+       896.8
+      ],
+      "height_px": 131.1,
+      "bbox": [
+       1376.7,
+       765.7,
+       1808.0,
+       896.8
+      ],
+      "score": 0.918
+     },
+     {
+      "kind": "car",
+      "feet": [
+       281.4,
+       852.8
+      ],
+      "height_px": 77.3,
+      "bbox": [
+       172.0,
+       775.4,
+       390.8,
+       852.8
+      ],
+      "score": 0.9
+     },
+     {
+      "kind": "car",
+      "feet": [
+       732.9,
+       892.6
+      ],
+      "height_px": 115.6,
+      "bbox": [
+       567.7,
+       777.0,
+       898.1,
+       892.6
+      ],
+      "score": 0.892
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     960.0,
+     857.6
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     13.0,
+     180.0
+    ]
+   }
+  },
+  {
+   "id": "nga4_hn_tranduyhung",
+   "file": "images/nga4_hn_tranduyhung.jpg",
+   "sha256": "ebcb7436d76150a5ac6e752c5ff1b6d829a20e9c910edf672e575deb7c07af3b",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.6,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga4_hn_tranduyhung.ground.png",
+    "sha256": "90e3a51474c5113a1e769c015438db1de9c620ec5e85560f12460cbc4b3c9fc6",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3529
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       578.2,
+       890.3
+      ],
+      "height_px": 64.2,
+      "bbox": [
+       495.0,
+       826.1,
+       661.5,
+       890.3
+      ],
+      "score": 0.876
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1630.2,
+       902.6
+      ],
+      "height_px": 45.2,
+      "bbox": [
+       1593.9,
+       857.4,
+       1666.6,
+       902.6
+      ],
+      "score": 0.758
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       170.9,
+       949.5
+      ],
+      "height_px": 87.2,
+      "bbox": [
+       105.9,
+       862.4,
+       235.9,
+       949.5
+      ],
+      "score": 0.755
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       343.9,
+       946.1
+      ],
+      "height_px": 97.9,
+      "bbox": [
+       295.6,
+       848.1,
+       392.2,
+       946.1
+      ],
+      "score": 0.682
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       747.3,
+       895.4
+      ],
+      "height_px": 50.5,
+      "bbox": [
+       728.4,
+       844.9,
+       766.2,
+       895.4
+      ],
+      "score": 0.628
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       427.1,
+       942.4
+      ],
+      "height_px": 95.3,
+      "bbox": [
+       374.1,
+       847.1,
+       480.0,
+       942.4
+      ],
+      "score": 0.572
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1822.8,
+       1001.9
+      ],
+      "height_px": 155.6,
+      "bbox": [
+       1777.4,
+       846.3,
+       1868.2,
+       1001.9
+      ],
+      "score": 0.821
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1090.8,
+       907.2
+      ],
+      "height_px": 76.3,
+      "bbox": [
+       1048.8,
+       830.9,
+       1132.8,
+       907.2
+      ],
+      "score": 0.678
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1312.6,
+       894.2
+      ],
+      "height_px": 61.3,
+      "bbox": [
+       1277.9,
+       833.0,
+       1347.4,
+       894.2
+      ],
+      "score": 0.666
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       893.5,
+       879.9
+      ],
+      "height_px": 54.7,
+      "bbox": [
+       864.5,
+       825.2,
+       922.5,
+       879.9
+      ],
+      "score": 0.648
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       809.2,
+       905.6
+      ],
+      "height_px": 76.2,
+      "bbox": [
+       787.3,
+       829.5,
+       829.7,
+       905.6
+      ],
+      "score": 0.634
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1539.3,
+       991.2
+      ],
+      "height_px": 136.9,
+      "bbox": [
+       1497.8,
+       854.4,
+       1580.8,
+       991.2
+      ],
+      "score": 0.616
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1169.6,
+       886.7
+      ],
+      "height_px": 57.3,
+      "bbox": [
+       1139.0,
+       829.5,
+       1200.2,
+       886.7
+      ],
+      "score": 0.553
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1388.3,
+       900.8
+      ],
+      "height_px": 64.8,
+      "bbox": [
+       1351.8,
+       836.0,
+       1424.7,
+       900.8
+      ],
+      "score": 0.551
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1496.4,
+       903.0
+      ],
+      "height_px": 68.8,
+      "bbox": [
+       1468.6,
+       834.2,
+       1524.1,
+       903.0
+      ],
+      "score": 0.513
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     960.0,
+     979.2
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     11.0,
+     -177.0
+    ]
+   }
+  },
+  {
+   "id": "nga6_haiduong_phamngulao",
+   "file": "images/nga6_haiduong_phamngulao.jpg",
+   "sha256": "916735a3d9bc0146c51426f8ad94807d0e8251052616eb73fe341d3c2a394b2e",
+   "width": 1920,
+   "height": 1272,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "intersection",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.5379369517029461,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/nga6_haiduong_phamngulao.ground.png",
+    "sha256": "b556dd547d67cae3f3e1412fc3417c219cd467412e52a01f5f70350dfa8943dc",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3043
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "standing",
+      "feet": [
+       1546.7,
+       1026.3
+      ],
+      "height_px": 385.5,
+      "bbox": [
+       1473.3,
+       640.7,
+       1620.1,
+       1042.3
+      ],
+      "score": 0.904
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       332.5,
+       889.6
+      ],
+      "height_px": 231.6,
+      "bbox": [
+       277.7,
+       657.9,
+       390.0,
+       889.6
+      ],
+      "score": 0.847
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1428.3,
+       924.1
+      ],
+      "height_px": 242.0,
+      "bbox": [
+       1362.9,
+       682.1,
+       1493.7,
+       924.1
+      ],
+      "score": 0.845
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       681.5,
+       1086.9
+      ],
+      "height_px": 435.6,
+      "bbox": [
+       555.0,
+       651.3,
+       808.0,
+       1086.9
+      ],
+      "score": 0.831
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       448.1,
+       778.8
+      ],
+      "height_px": 102.1,
+      "bbox": [
+       417.5,
+       676.7,
+       478.8,
+       778.8
+      ],
+      "score": 0.808
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       867.9,
+       822.3
+      ],
+      "height_px": 149.0,
+      "bbox": [
+       788.3,
+       673.2,
+       947.6,
+       822.3
+      ],
+      "score": 0.808
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1166.6,
+       841.1
+      ],
+      "height_px": 151.6,
+      "bbox": [
+       1096.3,
+       689.5,
+       1237.0,
+       841.1
+      ],
+      "score": 0.756
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1166.6,
+       841.1
+      ],
+      "height_px": 161.3,
+      "bbox": [
+       1096.3,
+       679.8,
+       1237.0,
+       841.1
+      ],
+      "score": 0.741
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1782.8,
+       832.2
+      ],
+      "height_px": 125.2,
+      "bbox": [
+       1756.3,
+       707.0,
+       1821.3,
+       832.2
+      ],
+      "score": 0.728
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1428.3,
+       924.1
+      ],
+      "height_px": 231.5,
+      "bbox": [
+       1332.9,
+       692.6,
+       1493.7,
+       924.1
+      ],
+      "score": 0.698
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       332.5,
+       889.6
+      ],
+      "height_px": 211.7,
+      "bbox": [
+       273.9,
+       677.9,
+       387.3,
+       889.6
+      ],
+      "score": 0.683
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1834.0,
+       803.8
+      ],
+      "height_px": 84.4,
+      "bbox": [
+       1811.9,
+       719.5,
+       1857.7,
+       803.8
+      ],
+      "score": 0.627
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       681.5,
+       1086.9
+      ],
+      "height_px": 384.0,
+      "bbox": [
+       521.9,
+       703.0,
+       808.0,
+       1086.9
+      ],
+      "score": 0.596
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       519.3,
+       936.1
+      ],
+      "height_px": 249.5,
+      "bbox": [
+       449.1,
+       686.6,
+       589.4,
+       936.1
+      ],
+      "score": 0.56
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       269.4,
+       781.2
+      ],
+      "height_px": 100.8,
+      "bbox": [
+       228.9,
+       680.5,
+       298.0,
+       781.2
+      ],
+      "score": 0.543
+     }
+    ]
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       1354.6,
+       833.7
+      ],
+      "height_px": 96.2,
+      "bbox": [
+       1326.8,
+       737.5,
+       1382.4,
+       833.7
+      ],
+      "score": 0.565
+     }
+    ]
+   },
+   "junction": {
+    "type": "cross",
+    "center": [
+     960.0,
+     915.8
+    ],
+    "arms_deg": [
+     -90.0,
+     63.0,
+     -23.0,
+     6.0,
+     37.0,
+     -177.0
+    ]
+   }
+  },
+  {
+   "id": "pho_haiduong_daophungthai",
+   "file": "images/pho_haiduong_daophungthai.jpg",
+   "sha256": "897f67beb570bbfb451db300ed976c3796e575925caa2048eef72526655e5240",
+   "width": 1920,
+   "height": 1272,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.66,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/pho_haiduong_daophungthai.ground.png",
+    "sha256": "8b118d166dacaf803abce5436dd2d4ec5b1b13201ce20228e5dfef3a23adaccb",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2447
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       1209.7,
+       922.4
+      ],
+      "height_px": 55.0,
+      "bbox": [
+       1169.0,
+       867.5,
+       1250.4,
+       922.4
+      ],
+      "score": 0.693
+     },
+     {
+      "kind": "bicycle",
+      "feet": [
+       150.4,
+       988.7
+      ],
+      "height_px": 74.4,
+      "bbox": [
+       128.7,
+       914.4,
+       172.1,
+       988.7
+      ],
+      "score": 0.589
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1832.4,
+       958.2
+      ],
+      "height_px": 115.2,
+      "bbox": [
+       1759.8,
+       843.0,
+       1905.0,
+       958.2
+      ],
+      "score": 0.57
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "standing",
+      "feet": [
+       612.6,
+       988.4
+      ],
+      "height_px": 159.1,
+      "bbox": [
+       591.7,
+       829.3,
+       633.5,
+       995.0
+      ],
+      "score": 0.85
+     }
+    ]
+   }
+  },
+  {
+   "id": "pho_haiduong_hongquang",
+   "file": "images/pho_haiduong_hongquang.jpg",
+   "sha256": "4d2fcb8fcb60e892f6d8be88df443f3e95a99bad2883f2d165cf73fc95abf207",
+   "width": 1920,
+   "height": 1272,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.62,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/pho_haiduong_hongquang.ground.png",
+    "sha256": "54138153443a996db9b95d8bf1c8d10e3e1dc7488ef30b669ab8d5f9c4cc220f",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2784
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1249.7,
+       903.9
+      ],
+      "height_px": 105.2,
+      "bbox": [
+       1185.7,
+       798.7,
+       1313.7,
+       903.9
+      ],
+      "score": 0.884
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   }
+  },
+  {
+   "id": "pho_hcm_hoangvanthu",
+   "file": "images/pho_hcm_hoangvanthu.jpg",
+   "sha256": "857969ed57ab126c7dcdc891be1ed226dc5de4f4cf9a337d98fecb19ebd64b24",
+   "width": 1920,
+   "height": 1440,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.5,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/pho_hcm_hoangvanthu.ground.png",
+    "sha256": "4f26de95bf91d2a32cd9e594adc56660f1ccdb397dc77c5c911e6a4538c9f541",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.4152
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "truck",
+      "feet": [
+       1660.6,
+       943.8
+      ],
+      "height_px": 281.7,
+      "bbox": [
+       1474.5,
+       662.1,
+       1846.7,
+       943.8
+      ],
+      "score": 0.742
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1167.8,
+       873.8
+      ],
+      "height_px": 205.5,
+      "bbox": [
+       1111.2,
+       668.3,
+       1199.3,
+       873.8
+      ],
+      "score": 0.875
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       651.3,
+       987.4
+      ],
+      "height_px": 314.9,
+      "bbox": [
+       560.2,
+       672.5,
+       725.0,
+       987.4
+      ],
+      "score": 0.815
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       764.0,
+       813.6
+      ],
+      "height_px": 118.7,
+      "bbox": [
+       741.3,
+       694.9,
+       792.0,
+       813.6
+      ],
+      "score": 0.793
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1014.0,
+       830.3
+      ],
+      "height_px": 152.4,
+      "bbox": [
+       979.5,
+       678.0,
+       1046.4,
+       830.3
+      ],
+      "score": 0.792
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1065.0,
+       784.5
+      ],
+      "height_px": 107.9,
+      "bbox": [
+       1039.1,
+       676.6,
+       1088.6,
+       784.5
+      ],
+      "score": 0.643
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       159.9,
+       864.7
+      ],
+      "height_px": 126.9,
+      "bbox": [
+       120.3,
+       737.8,
+       199.4,
+       864.7
+      ],
+      "score": 0.624
+     }
+    ]
+   }
+  },
+  {
+   "id": "pho_hcm_suvanhanh_dem",
+   "file": "images/pho_hcm_suvanhanh_dem.jpg",
+   "sha256": "ed937cc29bfb8dd5e8bf43fd60ebd2a3692365b1a5963277b671371515191e26",
+   "width": 1920,
+   "height": 1280,
+   "category": "street",
+   "tags": [
+    "ground_level",
+    "night",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.63,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/pho_hcm_suvanhanh_dem.ground.png",
+    "sha256": "28ce58ce46fc67a8d1d569ac20cdc8ebb492c3dc7dcd007756d8cf547796a911",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1168
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       992.8,
+       1230.7
+      ],
+      "height_px": 397.1,
+      "bbox": [
+       673.5,
+       833.7,
+       1312.2,
+       1230.7
+      ],
+      "score": 0.95
+     },
+     {
+      "kind": "car",
+      "feet": [
+       377.2,
+       1042.2
+      ],
+      "height_px": 239.0,
+      "bbox": [
+       169.4,
+       803.2,
+       585.0,
+       1042.2
+      ],
+      "score": 0.924
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1416.4,
+       891.0
+      ],
+      "height_px": 101.8,
+      "bbox": [
+       1352.5,
+       789.2,
+       1480.3,
+       891.0
+      ],
+      "score": 0.879
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1027.4,
+       839.9
+      ],
+      "height_px": 65.6,
+      "bbox": [
+       945.7,
+       774.2,
+       1109.2,
+       839.9
+      ],
+      "score": 0.77
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1516.6,
+       998.0
+      ],
+      "height_px": 228.6,
+      "bbox": [
+       1446.4,
+       769.4,
+       1586.8,
+       998.0
+      ],
+      "score": 0.788
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       145.2,
+       1010.7
+      ],
+      "height_px": 202.2,
+      "bbox": [
+       93.9,
+       808.5,
+       200.3,
+       1010.7
+      ],
+      "score": 0.782
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       706.0,
+       967.0
+      ],
+      "height_px": 180.0,
+      "bbox": [
+       661.2,
+       787.0,
+       751.1,
+       967.0
+      ],
+      "score": 0.759
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       610.5,
+       959.5
+      ],
+      "height_px": 173.4,
+      "bbox": [
+       568.9,
+       786.1,
+       654.4,
+       959.5
+      ],
+      "score": 0.747
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1264.6,
+       919.5
+      ],
+      "height_px": 129.7,
+      "bbox": [
+       1242.5,
+       789.7,
+       1293.9,
+       919.5
+      ],
+      "score": 0.695
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1310.4,
+       887.9
+      ],
+      "height_px": 97.6,
+      "bbox": [
+       1294.3,
+       790.3,
+       1329.8,
+       887.9
+      ],
+      "score": 0.592
+     }
+    ]
+   }
+  },
+  {
+   "id": "pho_hn_truongchinh",
+   "file": "images/pho_hn_truongchinh.jpg",
+   "sha256": "c0ed3395372505c0caad5dbe16b740bd2c83af15d12d0b8bea2929c38eca7395",
+   "width": 1920,
+   "height": 1440,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.64,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/pho_hn_truongchinh.ground.png",
+    "sha256": "4edb0e45c1a170aa985a0e8408164d075c66a65ef3a75fa9642236104cac4361",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2446
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "truck",
+      "feet": [
+       1122.0,
+       989.7
+      ],
+      "height_px": 84.5,
+      "bbox": [
+       1089.3,
+       905.2,
+       1154.7,
+       989.7
+      ],
+      "score": 0.871
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1702.1,
+       1151.4
+      ],
+      "height_px": 141.3,
+      "bbox": [
+       1647.5,
+       1010.1,
+       1756.7,
+       1151.4
+      ],
+      "score": 0.833
+     },
+     {
+      "kind": "car",
+      "feet": [
+       701.5,
+       1025.5
+      ],
+      "height_px": 111.2,
+      "bbox": [
+       624.6,
+       914.3,
+       778.3,
+       1025.5
+      ],
+      "score": 0.827
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1194.1,
+       1008.7
+      ],
+      "height_px": 41.2,
+      "bbox": [
+       1181.3,
+       967.5,
+       1206.8,
+       1008.7
+      ],
+      "score": 0.612
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1308.8,
+       984.6
+      ],
+      "height_px": 45.3,
+      "bbox": [
+       1285.2,
+       939.3,
+       1332.5,
+       984.6
+      ],
+      "score": 0.554
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1816.6,
+       1076.5
+      ],
+      "height_px": 104.5,
+      "bbox": [
+       1770.4,
+       972.0,
+       1862.8,
+       1076.5
+      ],
+      "score": 0.531
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1393.1,
+       995.7
+      ],
+      "height_px": 46.2,
+      "bbox": [
+       1359.8,
+       949.4,
+       1426.4,
+       995.7
+      ],
+      "score": 0.482
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       947.8,
+       1127.6
+      ],
+      "height_px": 194.8,
+      "bbox": [
+       911.1,
+       932.9,
+       984.2,
+       1127.6
+      ],
+      "score": 0.849
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       849.2,
+       1176.6
+      ],
+      "height_px": 244.4,
+      "bbox": [
+       801.4,
+       932.2,
+       906.4,
+       1176.6
+      ],
+      "score": 0.842
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1477.7,
+       1045.4
+      ],
+      "height_px": 111.1,
+      "bbox": [
+       1443.2,
+       934.3,
+       1512.1,
+       1045.4
+      ],
+      "score": 0.749
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       537.2,
+       1058.1
+      ],
+      "height_px": 139.7,
+      "bbox": [
+       492.0,
+       918.4,
+       582.4,
+       1058.1
+      ],
+      "score": 0.721
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       474.4,
+       1044.8
+      ],
+      "height_px": 127.2,
+      "bbox": [
+       447.4,
+       917.6,
+       514.5,
+       1044.8
+      ],
+      "score": 0.706
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       919.2,
+       978.3
+      ],
+      "height_px": 50.6,
+      "bbox": [
+       908.9,
+       927.6,
+       929.5,
+       978.3
+      ],
+      "score": 0.576
+     }
+    ]
+   }
+  },
+  {
+   "id": "ql5_haiduong_huong_hn",
+   "file": "images/ql5_haiduong_huong_hn.jpg",
+   "sha256": "f70e38edf79270a61d0d13a86a7e9ab1bb2c631fa4c4f5816bb24b29917d4ac1",
+   "width": 1920,
+   "height": 1272,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "highway",
+    "vn"
+   ],
+   "horizon_y_frac": 0.64,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/ql5_haiduong_huong_hn.ground.png",
+    "sha256": "d6a72d5c6adb9cd85c9673b9ed8c7af49807f56df72f2b193e3aee8040fc6bae",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3394
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "truck",
+      "feet": [
+       128.7,
+       798.9
+      ],
+      "height_px": 44.5,
+      "bbox": [
+       111.7,
+       754.4,
+       145.6,
+       798.9
+      ],
+      "score": 0.708
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       196.3,
+       853.4
+      ],
+      "height_px": 64.4,
+      "bbox": [
+       180.6,
+       788.9,
+       216.4,
+       853.4
+      ],
+      "score": 0.744
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       371.4,
+       880.4
+      ],
+      "height_px": 95.6,
+      "bbox": [
+       347.1,
+       784.8,
+       395.7,
+       880.4
+      ],
+      "score": 0.683
+     }
+    ]
+   }
+  },
+  {
+   "id": "ql5_haiduong_huong_hp",
+   "file": "images/ql5_haiduong_huong_hp.jpg",
+   "sha256": "f8eb190dd2373d6ef176c1c2151ab41792960233aac62864fb4c5a1be400abd0",
+   "width": 1920,
+   "height": 1272,
+   "category": "street",
+   "tags": [
+    "day",
+    "ground_level",
+    "highway",
+    "vn"
+   ],
+   "horizon_y_frac": 0.63,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/ql5_haiduong_huong_hp.ground.png",
+    "sha256": "e2df775e06e82508f6872d0f4c3a9f96796403f538750619d6578770b9326e8b",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2541
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "truck",
+      "feet": [
+       1578.1,
+       830.0
+      ],
+      "height_px": 54.2,
+      "bbox": [
+       1551.2,
+       775.8,
+       1605.0,
+       830.0
+      ],
+      "score": 0.674
+     },
+     {
+      "kind": "truck",
+      "feet": [
+       1055.1,
+       883.2
+      ],
+      "height_px": 210.6,
+      "bbox": [
+       861.1,
+       672.6,
+       1249.2,
+       883.2
+      ],
+      "score": 0.539
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1257.9,
+       1084.7
+      ],
+      "height_px": 277.7,
+      "bbox": [
+       1184.5,
+       807.1,
+       1331.3,
+       1084.7
+      ],
+      "score": 0.848
+     }
+    ]
+   }
+  },
+  {
+   "id": "vx_bencat_dem",
+   "file": "images/vx_bencat_dem.jpg",
+   "sha256": "8b169b62e57f8002708299ef063dfc1a6bb47ad3aef4456a1347ed3a220478aa",
+   "width": 1920,
+   "height": 1491,
+   "category": "intersection",
+   "tags": [
+    "ground_level",
+    "night",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.57,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_bencat_dem.ground.png",
+    "sha256": "8f40d6f54f28f764b441fe90c9b4fe6f23bc47d63fc75edb6ef365add6fd8ab5",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.3935
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "motorbike",
+      "feet": [
+       175.4,
+       918.8
+      ],
+      "height_px": 68.5,
+      "bbox": [
+       115.5,
+       850.3,
+       235.3,
+       918.8
+      ],
+      "score": 0.81
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       279.5,
+       917.2
+      ],
+      "height_px": 77.0,
+      "bbox": [
+       221.8,
+       840.2,
+       337.2,
+       917.2
+      ],
+      "score": 0.802
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1289.2,
+       967.2
+      ],
+      "height_px": 121.1,
+      "bbox": [
+       1258.2,
+       846.1,
+       1320.3,
+       967.2
+      ],
+      "score": 0.742
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       921.1,
+       948.0
+      ],
+      "height_px": 116.7,
+      "bbox": [
+       890.9,
+       831.3,
+       951.2,
+       948.0
+      ],
+      "score": 0.702
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     1056.0,
+     1013.9
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     8.0,
+     -173.0
+    ]
+   }
+  },
+  {
+   "id": "vx_brvt_ql51",
+   "file": "images/vx_brvt_ql51.jpg",
+   "sha256": "fd6f096504473eb032bba17b247c400c11536360519eaa3114e70395eff59894",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "highway",
+    "roundabout",
+    "vn"
+   ],
+   "horizon_y_frac": 0.71,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_brvt_ql51.ground.png",
+    "sha256": "24c5fedcf51375ffbe7080dbbac634aba42b9aeba9ba680f3c4912ef24031655",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2432
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1652.0,
+       1139.4
+      ],
+      "height_px": 101.5,
+      "bbox": [
+       1590.7,
+       1037.9,
+       1713.4,
+       1139.4
+      ],
+      "score": 0.802
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1811.5,
+       1127.2
+      ],
+      "height_px": 86.2,
+      "bbox": [
+       1788.1,
+       1041.1,
+       1832.3,
+       1127.2
+      ],
+      "score": 0.776
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       911.9,
+       1098.6
+      ],
+      "height_px": 74.4,
+      "bbox": [
+       878.6,
+       1024.1,
+       945.3,
+       1098.6
+      ],
+      "score": 0.541
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     960.0,
+     1209.6
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     -173.0,
+     -18.0
+    ]
+   }
+  },
+  {
+   "id": "vx_denbonngon",
+   "file": "images/vx_denbonngon.jpg",
+   "sha256": "d139a39c73791f9ee003998334812bf4d7c57e15ebc546abacfc0cfb86f331b7",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.71,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_denbonngon.ground.png",
+    "sha256": "c269d81ed369e7d6583de1254ceb35b155068a6516afec2f53aac220306d58a9",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2057
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "truck",
+      "feet": [
+       267.1,
+       1109.9
+      ],
+      "height_px": 154.8,
+      "bbox": [
+       79.0,
+       955.1,
+       455.3,
+       1109.9
+      ],
+      "score": 0.922
+     },
+     {
+      "kind": "truck",
+      "feet": [
+       1667.9,
+       1156.4
+      ],
+      "height_px": 155.0,
+      "bbox": [
+       1521.8,
+       1001.4,
+       1814.0,
+       1156.4
+      ],
+      "score": 0.895
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       62.7,
+       1204.8
+      ],
+      "height_px": 166.6,
+      "bbox": [
+       22.5,
+       1038.1,
+       112.1,
+       1204.8
+      ],
+      "score": 0.804
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       315.1,
+       1205.4
+      ],
+      "height_px": 171.0,
+      "bbox": [
+       214.7,
+       1034.5,
+       415.6,
+       1205.4
+      ],
+      "score": 0.803
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       865.0,
+       1160.6
+      ],
+      "height_px": 131.6,
+      "bbox": [
+       789.5,
+       1029.0,
+       940.6,
+       1160.6
+      ],
+      "score": 0.789
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1361.6,
+       1155.7
+      ],
+      "height_px": 135.6,
+      "bbox": [
+       1291.5,
+       1020.1,
+       1431.7,
+       1155.7
+      ],
+      "score": 0.788
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1097.9,
+       1156.7
+      ],
+      "height_px": 129.4,
+      "bbox": [
+       1024.1,
+       1027.3,
+       1171.8,
+       1156.7
+      ],
+      "score": 0.775
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       208.7,
+       1159.0
+      ],
+      "height_px": 135.8,
+      "bbox": [
+       186.4,
+       1023.2,
+       234.9,
+       1159.0
+      ],
+      "score": 0.742
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     864.0,
+     1238.4
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     171.0,
+     19.0
+    ]
+   }
+  },
+  {
+   "id": "vx_haiduong_tonghop",
+   "file": "images/vx_haiduong_tonghop.jpg",
+   "sha256": "896f359b262bdf57356c034610c6c3dedb51b88c1f4c21ce04f289c9dabbaeea",
+   "width": 1920,
+   "height": 1272,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.63,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_haiduong_tonghop.ground.png",
+    "sha256": "d9415fe82771d3fe4b1e743a62b9dd5e3a08d0325a60fd1c564d0d842e69707d",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2679
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       602.9,
+       940.5
+      ],
+      "height_px": 131.0,
+      "bbox": [
+       551.2,
+       809.4,
+       654.6,
+       940.5
+      ],
+      "score": 0.802
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1491.1,
+       951.1
+      ],
+      "height_px": 135.6,
+      "bbox": [
+       1406.8,
+       815.5,
+       1575.3,
+       951.1
+      ],
+      "score": 0.783
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       152.1,
+       1137.1
+      ],
+      "height_px": 315.2,
+      "bbox": [
+       6.3,
+       821.8,
+       297.8,
+       1137.1
+      ],
+      "score": 0.761
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       989.4,
+       931.8
+      ],
+      "height_px": 109.2,
+      "bbox": [
+       935.3,
+       822.6,
+       1043.5,
+       931.8
+      ],
+      "score": 0.752
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1112.1,
+       895.9
+      ],
+      "height_px": 68.0,
+      "bbox": [
+       1095.7,
+       827.9,
+       1126.5,
+       895.9
+      ],
+      "score": 0.724
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       325.4,
+       930.8
+      ],
+      "height_px": 110.3,
+      "bbox": [
+       295.5,
+       820.6,
+       352.9,
+       930.8
+      ],
+      "score": 0.69
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1320.1,
+       908.9
+      ],
+      "height_px": 80.3,
+      "bbox": [
+       1294.1,
+       828.6,
+       1348.3,
+       908.9
+      ],
+      "score": 0.685
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1696.2,
+       923.5
+      ],
+      "height_px": 96.8,
+      "bbox": [
+       1644.8,
+       826.7,
+       1747.6,
+       923.5
+      ],
+      "score": 0.637
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1259.8,
+       892.9
+      ],
+      "height_px": 62.5,
+      "bbox": [
+       1242.3,
+       830.4,
+       1277.3,
+       892.9
+      ],
+      "score": 0.624
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1392.5,
+       901.5
+      ],
+      "height_px": 73.0,
+      "bbox": [
+       1361.6,
+       828.5,
+       1423.4,
+       901.5
+      ],
+      "score": 0.603
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1203.1,
+       886.6
+      ],
+      "height_px": 56.4,
+      "bbox": [
+       1189.1,
+       830.2,
+       1216.0,
+       886.6
+      ],
+      "score": 0.594
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1696.2,
+       923.5
+      ],
+      "height_px": 90.1,
+      "bbox": [
+       1644.8,
+       833.4,
+       1754.0,
+       923.5
+      ],
+      "score": 0.502
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1696.2,
+       923.5
+      ],
+      "height_px": 95.7,
+      "bbox": [
+       1644.8,
+       827.8,
+       1747.6,
+       923.5
+      ],
+      "score": 0.471
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     768.0,
+     966.7
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     180.0,
+     20.0
+    ]
+   }
+  },
+  {
+   "id": "vx_hatinh",
+   "file": "images/vx_hatinh.jpg",
+   "sha256": "d1fb6ae24909053849fc65f36026dc8e6637a06e9d93f714904d8aaa977b4452",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.69,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_hatinh.ground.png",
+    "sha256": "507349860b29daf7f798be541cbb9c0e42ef869d89d876458b8497194a122cd5",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2169
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       208.2,
+       1069.7
+      ],
+      "height_px": 64.1,
+      "bbox": [
+       128.1,
+       1005.6,
+       288.2,
+       1069.7
+      ],
+      "score": 0.83
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1649.2,
+       1140.4
+      ],
+      "height_px": 127.2,
+      "bbox": [
+       1614.3,
+       1013.2,
+       1684.2,
+       1140.4
+      ],
+      "score": 0.806
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       757.5,
+       1159.1
+      ],
+      "height_px": 136.5,
+      "bbox": [
+       680.5,
+       1022.6,
+       834.6,
+       1159.1
+      ],
+      "score": 0.8
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1843.4,
+       1104.2
+      ],
+      "height_px": 109.5,
+      "bbox": [
+       1804.3,
+       994.7,
+       1882.1,
+       1104.2
+      ],
+      "score": 0.689
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     864.0,
+     1195.2
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     172.0,
+     26.0
+    ]
+   }
+  },
+  {
+   "id": "vx_hcm_phudong",
+   "file": "images/vx_hcm_phudong.jpg",
+   "sha256": "ba66bcfa2dc79d137fe739dd199738c85e700db1eca03e143c812edf21268231",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.69,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_hcm_phudong.ground.png",
+    "sha256": "1ac46d9dbfa6464a69a39d54beef81e7e3f9af0fc9279a3656494412d5cec579",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2539
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       629.5,
+       1051.6
+      ],
+      "height_px": 85.3,
+      "bbox": [
+       509.6,
+       966.2,
+       749.5,
+       1051.6
+      ],
+      "score": 0.872
+     },
+     {
+      "kind": "bus",
+      "feet": [
+       225.5,
+       1041.7
+      ],
+      "height_px": 107.1,
+      "bbox": [
+       151.0,
+       934.7,
+       300.0,
+       1041.7
+      ],
+      "score": 0.845
+     },
+     {
+      "kind": "car",
+      "feet": [
+       1041.6,
+       997.2
+      ],
+      "height_px": 49.7,
+      "bbox": [
+       961.7,
+       947.5,
+       1121.5,
+       997.2
+      ],
+      "score": 0.755
+     },
+     {
+      "kind": "bus",
+      "feet": [
+       1543.4,
+       1105.3
+      ],
+      "height_px": 226.9,
+      "bbox": [
+       1287.2,
+       878.3,
+       1799.6,
+       1105.3
+      ],
+      "score": 0.502
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       68.3,
+       1090.9
+      ],
+      "height_px": 106.9,
+      "bbox": [
+       12.8,
+       984.0,
+       123.8,
+       1090.9
+      ],
+      "score": 0.758
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       489.8,
+       1049.3
+      ],
+      "height_px": 74.0,
+      "bbox": [
+       463.5,
+       975.3,
+       516.0,
+       1049.3
+      ],
+      "score": 0.662
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       403.9,
+       1043.0
+      ],
+      "height_px": 64.2,
+      "bbox": [
+       375.9,
+       978.8,
+       432.2,
+       1043.0
+      ],
+      "score": 0.575
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1226.2,
+       1032.8
+      ],
+      "height_px": 75.0,
+      "bbox": [
+       1188.6,
+       957.8,
+       1263.9,
+       1032.8
+      ],
+      "score": 0.554
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       134.3,
+       1053.2
+      ],
+      "height_px": 71.7,
+      "bbox": [
+       119.9,
+       981.6,
+       150.4,
+       1053.2
+      ],
+      "score": 0.45
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     864.0,
+     1195.2
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     -179.0,
+     -12.0
+    ]
+   }
+  },
+  {
+   "id": "vx_hcm_phudong_dem",
+   "file": "images/vx_hcm_phudong_dem.jpg",
+   "sha256": "03dc6c298934d8c1c88ea5d3f771f29c70010837c1cbbd2f7a13f3d279e13541",
+   "width": 1920,
+   "height": 1081,
+   "category": "intersection",
+   "tags": [
+    "ground_level",
+    "night",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.62,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_hcm_phudong_dem.ground.png",
+    "sha256": "b74797d7240fa8bfffe8df28081efdffac7c6cd5fad2506127025c0d85974d94",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1997
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       643.0,
+       973.4
+      ],
+      "height_px": 292.1,
+      "bbox": [
+       343.9,
+       681.3,
+       942.0,
+       973.4
+      ],
+      "score": 0.955
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1010.2,
+       740.2
+      ],
+      "height_px": 41.6,
+      "bbox": [
+       993.9,
+       698.6,
+       1026.4,
+       740.2
+      ],
+      "score": 0.662
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1847.0,
+       864.6
+      ],
+      "height_px": 173.6,
+      "bbox": [
+       1774.2,
+       691.0,
+       1919.9,
+       864.6
+      ],
+      "score": 0.8
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1558.9,
+       833.3
+      ],
+      "height_px": 143.8,
+      "bbox": [
+       1504.7,
+       689.5,
+       1613.2,
+       833.3
+      ],
+      "score": 0.799
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1452.2,
+       750.4
+      ],
+      "height_px": 74.8,
+      "bbox": [
+       1432.1,
+       675.6,
+       1471.7,
+       750.4
+      ],
+      "score": 0.798
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1675.5,
+       876.5
+      ],
+      "height_px": 185.4,
+      "bbox": [
+       1589.3,
+       691.1,
+       1761.8,
+       876.5
+      ],
+      "score": 0.778
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1847.0,
+       864.6
+      ],
+      "height_px": 171.0,
+      "bbox": [
+       1774.2,
+       693.7,
+       1919.9,
+       864.6
+      ],
+      "score": 0.751
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1048.0,
+       736.1
+      ],
+      "height_px": 67.4,
+      "bbox": [
+       1034.5,
+       668.7,
+       1061.5,
+       736.1
+      ],
+      "score": 0.574
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1098.7,
+       740.0
+      ],
+      "height_px": 67.0,
+      "bbox": [
+       1083.5,
+       672.9,
+       1111.4,
+       740.0
+      ],
+      "score": 0.553
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       844.2,
+       761.8
+      ],
+      "height_px": 91.0,
+      "bbox": [
+       800.9,
+       670.7,
+       887.4,
+       761.8
+      ],
+      "score": 0.533
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1130.2,
+       758.9
+      ],
+      "height_px": 80.0,
+      "bbox": [
+       1113.8,
+       678.9,
+       1145.8,
+       758.9
+      ],
+      "score": 0.5
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       127.7,
+       869.5
+      ],
+      "height_px": 171.1,
+      "bbox": [
+       47.6,
+       698.4,
+       201.6,
+       869.5
+      ],
+      "score": 0.496
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1130.2,
+       758.9
+      ],
+      "height_px": 81.5,
+      "bbox": [
+       1114.7,
+       677.4,
+       1154.6,
+       758.9
+      ],
+      "score": 0.46
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     960.0,
+     810.8
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     9.0,
+     -175.0
+    ]
+   }
+  },
+  {
+   "id": "vx_hcm_vothisau",
+   "file": "images/vx_hcm_vothisau.jpg",
+   "sha256": "005ff3d14a7f4348d7109bf8636ad6a02a3ee1f58d40325f6cbf3be9c1a6c017",
+   "width": 1920,
+   "height": 1282,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.69,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_hcm_vothisau.ground.png",
+    "sha256": "6e885b527aa072a19f6538d530722bebc5ea765529f34e6e4891d56cc8c4b6b9",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2215
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "car",
+      "feet": [
+       1336.8,
+       965.7
+      ],
+      "height_px": 79.4,
+      "bbox": [
+       1236.1,
+       886.3,
+       1437.5,
+       965.7
+      ],
+      "score": 0.903
+     },
+     {
+      "kind": "bus",
+      "feet": [
+       270.1,
+       991.0
+      ],
+      "height_px": 179.7,
+      "bbox": [
+       16.8,
+       811.3,
+       523.4,
+       991.0
+      ],
+      "score": 0.865
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       552.1,
+       984.2
+      ],
+      "height_px": 48.5,
+      "bbox": [
+       537.1,
+       935.7,
+       567.1,
+       984.2
+      ],
+      "score": 0.725
+     },
+     {
+      "kind": "motorbike",
+      "feet": [
+       1667.6,
+       975.6
+      ],
+      "height_px": 50.0,
+      "bbox": [
+       1648.3,
+       925.6,
+       1686.9,
+       975.6
+      ],
+      "score": 0.568
+     },
+     {
+      "kind": "car",
+      "feet": [
+       732.3,
+       957.8
+      ],
+      "height_px": 58.0,
+      "bbox": [
+       703.6,
+       899.8,
+       761.0,
+       957.8
+      ],
+      "score": 0.514
+     }
+    ]
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1478.5,
+       1035.1
+      ],
+      "height_px": 149.8,
+      "bbox": [
+       1389.4,
+       885.3,
+       1567.5,
+       1035.1
+      ],
+      "score": 0.798
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       59.1,
+       1118.9
+      ],
+      "height_px": 195.2,
+      "bbox": [
+       0.2,
+       923.7,
+       118.0,
+       1118.9
+      ],
+      "score": 0.774
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1789.5,
+       1003.6
+      ],
+      "height_px": 128.6,
+      "bbox": [
+       1755.3,
+       874.9,
+       1818.6,
+       1003.6
+      ],
+      "score": 0.772
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       59.1,
+       1118.9
+      ],
+      "height_px": 203.5,
+      "bbox": [
+       0.2,
+       915.5,
+       118.7,
+       1118.9
+      ],
+      "score": 0.759
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1169.5,
+       1019.4
+      ],
+      "height_px": 123.1,
+      "bbox": [
+       1102.6,
+       896.3,
+       1236.3,
+       1019.4
+      ],
+      "score": 0.759
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       974.0,
+       972.4
+      ],
+      "height_px": 68.9,
+      "bbox": [
+       942.8,
+       903.4,
+       1005.2,
+       972.4
+      ],
+      "score": 0.719
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       916.3,
+       987.0
+      ],
+      "height_px": 84.6,
+      "bbox": [
+       879.3,
+       902.4,
+       953.3,
+       987.0
+      ],
+      "score": 0.703
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       843.3,
+       1010.5
+      ],
+      "height_px": 108.4,
+      "bbox": [
+       820.1,
+       902.2,
+       868.6,
+       1010.5
+      ],
+      "score": 0.685
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       612.4,
+       970.4
+      ],
+      "height_px": 66.2,
+      "bbox": [
+       600.2,
+       904.2,
+       628.1,
+       970.4
+      ],
+      "score": 0.644
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1718.5,
+       980.4
+      ],
+      "height_px": 100.0,
+      "bbox": [
+       1677.9,
+       880.4,
+       1759.2,
+       980.4
+      ],
+      "score": 0.637
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1055.8,
+       968.4
+      ],
+      "height_px": 68.4,
+      "bbox": [
+       1023.8,
+       900.0,
+       1087.8,
+       968.4
+      ],
+      "score": 0.614
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       375.9,
+       1031.5
+      ],
+      "height_px": 124.1,
+      "bbox": [
+       319.2,
+       907.4,
+       432.6,
+       1031.5
+      ],
+      "score": 0.539
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1718.5,
+       980.4
+      ],
+      "height_px": 95.7,
+      "bbox": [
+       1677.9,
+       884.7,
+       1759.2,
+       980.4
+      ],
+      "score": 0.464
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     960.0,
+     1076.9
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     180.0,
+     9.0
+    ]
+   }
+  },
+  {
+   "id": "vx_tayninh_tanchau",
+   "file": "images/vx_tayninh_tanchau.jpg",
+   "sha256": "09591053a50c4773c9c6707f43861f58adad54a09979bf6b8be6d31a21146433",
+   "width": 1920,
+   "height": 1311,
+   "category": "intersection",
+   "tags": [
+    "day",
+    "ground_level",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.78,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_tayninh_tanchau.ground.png",
+    "sha256": "094fea3b67c89aa248f3605e331ad77fb14b1af9c6e483cf5c3fee3971b2089c",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.1864
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     1056.0,
+     1153.7
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     -172.0
+    ]
+   }
+  },
+  {
+   "id": "vx_thuanan_chieu",
+   "file": "images/vx_thuanan_chieu.jpg",
+   "sha256": "9641cc13983717894f93d61797104f68ef28dbceab58c29567135511e01752b7",
+   "width": 1920,
+   "height": 1440,
+   "category": "intersection",
+   "tags": [
+    "dusk",
+    "ground_level",
+    "roundabout",
+    "urban",
+    "vn"
+   ],
+   "horizon_y_frac": 0.68,
+   "horizon_source": "manual",
+   "ground": {
+    "file": "images/vx_thuanan_chieu.ground.png",
+    "sha256": "7a7f2a24931929488fe6643174952d7f46b50f19a795415337a21eb7d184d6db",
+    "method": "segformer:nvidia/segformer-b5-finetuned-cityscapes-1024-1024:road+sidewalk",
+    "standable_frac": 0.2427
+   },
+   "objects": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": []
+   },
+   "people": {
+    "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       1741.2,
+       1049.6
+      ],
+      "height_px": 114.6,
+      "bbox": [
+       1707.1,
+       935.0,
+       1765.0,
+       1049.6
+      ],
+      "score": 0.803
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1790.1,
+       1067.1
+      ],
+      "height_px": 129.6,
+      "bbox": [
+       1749.2,
+       937.5,
+       1827.4,
+       1067.1
+      ],
+      "score": 0.723
+     },
+     {
+      "kind": "standing",
+      "feet": [
+       890.6,
+       1098.9
+      ],
+      "height_px": 126.9,
+      "bbox": [
+       858.7,
+       972.0,
+       922.5,
+       1104.2
+      ],
+      "score": 0.713
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       564.0,
+       1242.5
+      ],
+      "height_px": 261.5,
+      "bbox": [
+       423.9,
+       981.0,
+       704.0,
+       1242.5
+      ],
+      "score": 0.677
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1569.5,
+       1034.2
+      ],
+      "height_px": 98.0,
+      "bbox": [
+       1530.7,
+       936.2,
+       1608.3,
+       1034.2
+      ],
+      "score": 0.653
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       564.0,
+       1242.5
+      ],
+      "height_px": 263.0,
+      "bbox": [
+       423.9,
+       979.6,
+       704.0,
+       1242.5
+      ],
+      "score": 0.618
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       189.9,
+       1160.5
+      ],
+      "height_px": 160.7,
+      "bbox": [
+       99.9,
+       999.7,
+       279.8,
+       1160.5
+      ],
+      "score": 0.574
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       813.4,
+       1090.1
+      ],
+      "height_px": 129.1,
+      "bbox": [
+       784.2,
+       961.0,
+       845.3,
+       1090.1
+      ],
+      "score": 0.509
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1569.5,
+       1034.2
+      ],
+      "height_px": 93.1,
+      "bbox": [
+       1530.7,
+       941.1,
+       1612.7,
+       1034.2
+      ],
+      "score": 0.48
+     }
+    ]
+   },
+   "junction": {
+    "type": "roundabout",
+    "center": [
+     1056.0,
+     1152.0
+    ],
+    "arms_deg": [
+     -90.0,
+     90.0,
+     -5.0,
+     -168.0
+    ]
+   }
+  }
+ ]
+}

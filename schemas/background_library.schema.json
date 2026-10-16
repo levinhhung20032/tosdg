@@ -1,0 +1,307 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Backplate library index",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "backgrounds"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema_version": {
+   "type": "string",
+   "pattern": "^\\d+\\.\\d+$"
+  },
+  "backgrounds": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "id",
+     "file",
+     "sha256",
+     "width",
+     "height",
+     "tags"
+    ],
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+     },
+     "file": {
+      "type": "string"
+     },
+     "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     },
+     "width": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "height": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "category": {
+      "type": "string"
+     },
+     "tags": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "horizon_y_frac": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+     },
+     "scene": {
+      "type": "object",
+      "properties": {
+       "traffic_light_state": {
+        "enum": [
+         "RED",
+         "AMBER",
+         "GREEN",
+         "OFF",
+         "NONE"
+        ]
+       },
+       "traffic_signs": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "additionalProperties": false,
+      "description": "Libraries before 2026-10-16 only: traffic light / signs seen in the photo. No longer used: dropped when the library is loaded and not written again."
+     },
+     "ground": {
+      "description": "Standable-ground mask (schema 1.1): where the officer's feet may be. White = road / sidewalk. See src/tosdg/ground.py.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "file",
+       "sha256",
+       "method"
+      ],
+      "properties": {
+       "file": {
+        "type": "string"
+       },
+       "sha256": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+       },
+       "method": {
+        "type": "string",
+        "description": "segformer:<model>:<classes> | horizon (fixtures) | manual"
+       },
+       "standable_frac": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+       }
+      }
+     },
+     "people": {
+      "description": "Schema 1.2: reference people found in the photo (people.py): to size the officer from them (config size_reference \"people\") and to tell the camera that took the photo (calibrate.py, size_reference \"auto\"). Photo pixels. An empty list = searched, none usable.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "method",
+       "found"
+      ],
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "found": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "additionalProperties": false,
+         "required": [
+          "kind",
+          "feet",
+          "height_px",
+          "bbox",
+          "score"
+         ],
+         "properties": {
+          "kind": {
+           "enum": [
+            "standing",
+            "rider"
+           ]
+          },
+          "feet": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "height_px": {
+           "type": "number",
+           "exclusiveMinimum": 0
+          },
+          "bbox": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 4,
+           "maxItems": 4
+          },
+          "score": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 1
+          }
+         }
+        }
+       }
+      }
+     },
+     "objects": {
+      "description": "Schema 1.2: vehicles without a rider (detected with the people) and barriers marked by hand, of known typical height: calibrate.py tells the camera from them when the photo has fewer than 3 usable people. Photo pixels; \"feet\" = bottom centre of the box.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "method",
+       "found"
+      ],
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "found": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "additionalProperties": false,
+         "required": [
+          "kind",
+          "feet",
+          "height_px",
+          "bbox",
+          "score"
+         ],
+         "properties": {
+          "kind": {
+           "enum": [
+            "car",
+            "bus",
+            "truck",
+            "motorbike",
+            "bicycle",
+            "barrier"
+           ]
+          },
+          "feet": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "height_px": {
+           "type": "number",
+           "exclusiveMinimum": 0
+          },
+          "bbox": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 4,
+           "maxItems": 4
+          },
+          "score": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 1
+          },
+          "height_cm": {
+           "type": "number",
+           "exclusiveMinimum": 0,
+           "description": "Real height; default the kind's typical height (calibrate.PRIORS)."
+          },
+          "manual": {
+           "type": "boolean",
+           "description": "Marked by hand (`backgrounds objects --add`): kept when the photo is searched again."
+          }
+         }
+        }
+       }
+      }
+     },
+     "road_yaw_deg": {
+      "description": "Schema 1.2: direction of the road traffic relative to the photo's viewing direction (degrees, + = to the right); default 0 = the road runs along the view. Officer yaw mode \"road\" turns the officer 0/90/180/270 degrees from it.",
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+     },
+     "horizon_source": {
+      "enum": [
+       "manual",
+       "detected"
+      ],
+      "description": "Schema 1.2: manual = set by hand (--horizon, `backgrounds set`, dragged in the Studio); detected = the automatic estimate (sky/building contrast, often the skyline rather than the eye-level horizon). size_reference \"auto\" uses the horizon only when the photo has too few people / objects to tell its camera (calibrate.py)."
+     },
+     "camera_height_cm": {
+      "type": "number",
+      "minimum": 30,
+      "maximum": 1000,
+      "description": "Schema 1.2: height of the camera that took the photo, used by size_reference auto / people only when the photo is sized from its horizon and has no object to measure it from. Default 155 (photo taken at eye level), 125 with the tag dashcam."
+     },
+     "junction": {
+      "description": "Schema 1.2: the road layout of the photo, set by hand (`backgrounds junction`), for officer_yaw_mode \"junction\" (junction.py): type cross (ngã tư, also more roads), T, Y or roundabout; center = the ground point where the officer stands (photo pixels); arms_deg = the direction of each road leaving the junction, degrees from the photo's view direction (0 away from the camera, 90 right, 180 towards the camera, -90 left). No junction = a straight road.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "type",
+       "center",
+       "arms_deg"
+      ],
+      "properties": {
+       "type": {
+        "enum": [
+         "cross",
+         "T",
+         "Y",
+         "roundabout"
+        ]
+       },
+       "center": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        },
+        "minItems": 2,
+        "maxItems": 2
+       },
+       "arms_deg": {
+        "type": "array",
+        "items": {
+         "type": "number",
+         "minimum": -180,
+         "maximum": 180
+        },
+        "minItems": 2
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "thumb_up_l",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Tay tr\u00e1i g\u1eadp khu\u1ef7u, c\u1eb3ng tay \u0111\u01b0a l\u00ean ph\u00eda tr\u01b0\u1edbc, n\u1eafm tay gi\u01a1 ng\u00f3n c\u00e1i h\u01b0\u1edbng l\u00ean (thumbs up); tay ph\u1ea3i bu\u00f4ng xu\u00f4i.",
+  "joints": {
+    "clavicle_l": {
+      "elevation": 1.7146,
+      "protraction": 4.5985
+    },
+    "hand_l": {
+      "deviation": 29.9986,
+      "flexion": -0.8842
+    },
+    "lowerarm_l": {
+      "flexion": 94.1554,
+      "pronation": -21.0225
+    },
+    "lowerarm_r": {
+      "flexion": 10.0
+    },
+    "spine_01": {
+      "flexion": -0.4322,
+      "lateral": 1.3101,
+      "twist": 0.3777
+    },
+    "spine_02": {
+      "flexion": -0.2576,
+      "lateral": 0.9688,
+      "twist": 0.3771
+    },
+    "spine_03": {
+      "flexion": -0.0809,
+      "lateral": 0.5936,
+      "twist": 0.4161
+    },
+    "upperarm_l": {
+      "abduction": 4.5149,
+      "flexion": 29.6154,
+      "twist": 26.7919
+    },
+    "upperarm_r": {
+      "abduction": 6.0
+    }
+  }
+}

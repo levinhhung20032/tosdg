@@ -1,0 +1,38 @@
+{
+ "height_cm": 178.0,
+ "skin_hue_deg": [
+  0.0,
+  32.0
+ ],
+ "skin_saturation": [
+  0.12,
+  0.6
+ ],
+ "source": {
+  "name": "models/beta.glb",
+  "sha256": "b6ac9f921c8b13cdbf77b069c7b1cd34f4e0f173516284b1bdd32f4edf321f6d"
+ },
+ "shoulder_out_cm": 4.0,
+ "wrist_drop_cm": 3.0,
+ "forearm_scale": 0.9,
+ "belt_baton": {
+  "handle_cm": [
+   15.8,
+   -9.0,
+   102.0
+  ],
+  "direction": [
+   -0.1,
+   0.0,
+   -1.0
+  ],
+  "length_cm": 50.0,
+  "radius_cm": 1.5
+ },
+ "even_armpits": {
+  "inner_cm": 9.0,
+  "outer_cm": 15.0,
+  "keep": 0.25,
+  "below_shoulder_cm": 8.0
+ }
+}

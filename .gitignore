@@ -1,0 +1,27 @@
+__pycache__/
+*.pyc
+*.egg-info/
+# data/: the folder tree is kept (.gitkeep), the contents of its sub-folders are not (photos, masks, models, workspace)
+/data/*/**
+!/data/*/**/
+!/data/**/.gitkeep
+# hand-made, cannot be regenerated: horizons / junctions / tags of the photos, and their sources and licences
+!/data/backgrounds/index.json
+!/data/backgrounds/ATTRIBUTION.md
+/out/
+/datasets/
+*.png
+!docs/**/*.png
+.venv/
+
+# chi dung cuc bo, khong dua len git
+CLAUDE.md
+
+# version archives (rar), kept locally and shared via GitHub Releases
+/version/
+
+# cau hinh quyen cuc bo cua Claude Code
+/.claude/
+
+# backups of poses overwritten in Studio (Save over the gesture)
+/poses/body/.backup/

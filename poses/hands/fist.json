@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "kind": "hand",
+  "id": "fist",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Closed fist.",
+  "joints": {
+    "index_01": {
+      "flexion": 80.0
+    },
+    "index_02": {
+      "flexion": 100.0
+    },
+    "index_03": {
+      "flexion": 60.0
+    },
+    "middle_01": {
+      "flexion": 80.0
+    },
+    "middle_02": {
+      "flexion": 100.0
+    },
+    "middle_03": {
+      "flexion": 60.0
+    },
+    "pinky_01": {
+      "flexion": 80.0
+    },
+    "pinky_02": {
+      "flexion": 100.0
+    },
+    "pinky_03": {
+      "flexion": 60.0
+    },
+    "ring_01": {
+      "flexion": 80.0
+    },
+    "ring_02": {
+      "flexion": 100.0
+    },
+    "ring_03": {
+      "flexion": 60.0
+    },
+    "thumb_01": {
+      "flexion": 30.0
+    },
+    "thumb_02": {
+      "flexion": 45.0
+    },
+    "thumb_03": {
+      "flexion": 30.0
+    }
+  }
+}

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tosdg"
+version = "3.1.0"
+description = "Traffic Officer Synthetic Data Generator - engine-independent core"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "pillow>=10", "jsonschema>=4.20"]
+
+[project.optional-dependencies]
+# GPU mesh renderer (mesh_renderer "gpu", Studio "mesh - GPU"): OpenGL 4.3 through moderngl.
+gpu = ["moderngl>=5.8"]
+# Photo analysis on import: ground mask (SegFormer, transformers) and reference people (YOLO11, ultralytics).
+detect = ["torch>=2", "transformers>=4.40", "ultralytics>=8.3"]
+
+[project.scripts]
+tosdg = "tosdg.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"tosdg.studio" = ["static/*"]

@@ -1,0 +1,155 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Camera profiles",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "profiles"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema_version": {
+   "type": "string",
+   "pattern": "^\\d+\\.\\d+$"
+  },
+  "profiles": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+     "id",
+     "observer_role",
+     "distance_cm",
+     "height_cm",
+     "azimuth_deg",
+     "focal_length_mm",
+     "sensor_width_mm"
+    ],
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+     },
+     "description": {
+      "type": "string"
+     },
+     "observer_role": {
+      "enum": [
+       "road_user",
+       "infrastructure"
+      ]
+     },
+     "weight": {
+      "type": "number",
+      "minimum": 0
+     },
+     "distance_cm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "height_cm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "azimuth_deg": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "focal_length_mm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "sensor_width_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+     },
+     "aim_height_cm": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "aim_jitter_deg": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "roll_deg": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+     },
+     "background_tags_any": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "lens": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Lens of this camera type: [lo, hi] ranges sampled per image (stream 'lens'). k1 < 0 barrel, k1 > 0 pincushion; image_circle = lit radius as a fraction of the half-diagonal (0 = no black border).",
+      "properties": {
+       "k1": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        },
+        "minItems": 2,
+        "maxItems": 2
+       },
+       "k2": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        },
+        "minItems": 2,
+        "maxItems": 2
+       },
+       "image_circle": {
+        "type": "array",
+        "items": {
+         "type": "number"
+        },
+        "minItems": 2,
+        "maxItems": 2
+       },
+       "black_border_probability": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1,
+        "description": "Chance that a sample uses the image circle (black corners / border) at all; default 1."
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

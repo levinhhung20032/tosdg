@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "kind": "body",
+  "id": "neutral_stand",
+  "skeleton_family": "ue5_humanoid",
+  "description": "Standing, arms hanging slightly away from the body.",
+  "joints": {
+    "lowerarm_l": {
+      "flexion": 10.0
+    },
+    "lowerarm_r": {
+      "flexion": 10.0
+    },
+    "upperarm_l": {
+      "abduction": 6.0
+    },
+    "upperarm_r": {
+      "abduction": 6.0
+    }
+  }
+}

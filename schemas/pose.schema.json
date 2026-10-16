@@ -1,0 +1,43 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Pose (body or side-agnostic hand)",
+ "type": "object",
+ "required": [
+  "schema_version",
+  "kind",
+  "id",
+  "joints"
+ ],
+ "additionalProperties": false,
+ "properties": {
+  "schema_version": {
+   "type": "string",
+   "pattern": "^\\d+\\.\\d+$"
+  },
+  "kind": {
+   "enum": [
+    "body",
+    "hand"
+   ]
+  },
+  "id": {
+   "type": "string",
+   "pattern": "^[A-Za-z0-9_\\-]+$"
+  },
+  "skeleton_family": {
+   "type": "string"
+  },
+  "description": {
+   "type": "string"
+  },
+  "joints": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "additionalProperties": {
+     "type": "number"
+    }
+   }
+  }
+ }
+}
