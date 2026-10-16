@@ -1,0 +1,29 @@
+{
+ "schema_version": "1.6",
+ "name": "vn300",
+ "profile": "VN",
+ "character": "tripo_v1",
+ "backend": "mesh",
+ "mesh_renderer": "gpu",
+ "master_seed": 20261016,
+ "num_samples": 300,
+ "resolution": [
+  1280,
+  720
+ ],
+ "background_library": "../data/backgrounds",
+ "size_reference": "auto",
+ "officer_yaw_mode": "junction",
+ "match_backplate_light": true,
+ "min_officer_height_px": 64,
+ "officer_yaw_deg": [
+  0,
+  0
+ ],
+ "max_attempts_per_sample": 40,
+ "max_pose_tries": 200,
+ "uniform_brightness_range": [
+  0.9,
+  1.1
+ ]
+}
