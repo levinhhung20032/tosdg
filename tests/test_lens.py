@@ -278,7 +278,7 @@ class GenerationTests(unittest.TestCase):
             seen = False
             for s in man["samples"]:
                 meta = json.loads((out / s["metadata"]).read_text())
-                self.assertEqual(meta["schema_version"], "1.8")
+                self.assertEqual(meta["schema_version"], "1.9")
                 self.assertEqual(meta["camera"]["profile"], pid)
                 lens = meta["camera"]["lens"]
                 self.assertEqual(lens["model"], "brown_radial_k1k2")

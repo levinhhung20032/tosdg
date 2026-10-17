@@ -233,7 +233,7 @@ class RenderAndGroundTruthTests(unittest.TestCase):
             for s in man["samples"]:
                 meta = json.loads((td / "out" / s["metadata"]).read_text())
                 b = meta["officer"]["baton"]
-                self.assertEqual((meta["schema_version"], b["enabled"], b["hand"]), ("1.8", True, "r"))
+                self.assertEqual((meta["schema_version"], b["enabled"], b["hand"]), ("1.9", True, "r"))
                 length = np.linalg.norm(np.array(b["tip_world"]) - np.array(b["handle_world"]))
                 self.assertAlmostEqual(float(length), b["length_cm"], delta=0.05)
             (td / "c2").mkdir()

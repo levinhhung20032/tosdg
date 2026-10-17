@@ -1,9 +1,17 @@
 # CHANGELOG
 
-Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết kế: `docs/DECISIONS.md` (D1–D43). Bỏ qua các chỉnh nhỏ (chữ, căn lề, đổi tên biến).
+Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết kế: `docs/DECISIONS.md` (D1–D46). Bỏ qua các chỉnh nhỏ (chữ, căn lề, đổi tên biến).
 
-## Chưa phát hành
+## v4_beta_final — 2026-10-17
 
+Từ v3.0: bóng đổ của viên cảnh sát (D46), camera ảnh nền suy từ người / xe (D42), đứng giữa giao lộ (D43), gỡ tính năng ngoài phạm vi (D44), độ sáng có giới hạn (D45), notebook YOLO, README ngắn + `docs/HUONG_DAN.md`, sinh dữ liệu nhanh hơn ~35 %.
+
+- **Bóng đổ** (D46): bóng của viên cảnh sát trên mặt đường, đúng hình mesh ở mọi tư thế (cả gậy, bục), viền mềm theo độ cao, bóng tiếp xúc dưới chân; dùng cho renderer CPU và GPU (`shadows.py`). Config **1.7** `shadow` (tuỳ chọn): `source` `photo` | `random` | `fixed`, `strength`, `softness`, `contact`, `jitter_deg`, `unknown_sun`, `no_sun`; luồng RNG mới `shadow`; metadata **1.9** `lighting.shadow`; generator 0.7.0.
+  - Đọc thời tiết và bóng của người / xe trong ảnh nền (thư viện **1.3**, khối `shadows`): trời xanh mới có nắng; hướng nắng tìm theo mô hình (dải bóng của nhiều vật cùng tối); lưu vector chân → đỉnh bóng, chiếu ngược qua camera ảo của từng mẫu. CLI `tosdg backgrounds shadows` (`--force`, `--mark FU FV TU TV`, `--clear`, `--clear-marks`); `backgrounds import` và upload trong Studio tự đọc. Trên 50 ảnh: 1 nắng có hướng, 5 nắng chưa có hướng, 38 âm u, 6 đêm / chạng vạng. `vx_hcm_vothisau` tag `dusk`.
+  - Studio: panel **Shadow** (bật / tắt, theo ảnh hoặc vector tự chỉnh, độ đậm, độ mềm, bóng tiếp xúc), lớp bóng xem trực tiếp + mũi tên vector, "✎ mark a shadow" (bấm chân rồi đỉnh bóng), Render preview có bóng; Random generate thêm ô `shadow`. API `/api/shadow`, `/api/shadow_mark`, `/api/shadow_clear`, `/api/shadow_detect`.
+  - Bộ test: 324 → 339 (`tests/test_shadows.py`).
+- **Nhanh hơn ~35 %**: `lens.canvas_camera` / `canvas_size` cache kích thước canvas thay vì dựng lưới remap mỗi lần gọi (cùng kết quả, `reproduce` giống từng byte): 10 mẫu 1280×720 GPU 49,7 → 31,5 s.
+- **README ngắn gọn**: README chỉ còn tổng quan, cài đặt, bắt đầu nhanh và mục lục tài liệu; phần tham chiếu đầy đủ (CLI, Studio, config, định dạng mẫu, quy ước) chuyển sang `docs/HUONG_DAN.md`. Thêm sơ đồ kiến trúc `docs/images/architecture.svg` / `.png`.
 - **Gỡ tính năng ngoài phạm vi** (D44): công cụ chỉ xoay quanh việc đặt một viên cảnh sát vào bất kỳ ảnh nào với cử chỉ tuỳ chỉnh / ngẫu nhiên.
   - Trạng thái đèn giao thông và biển báo của ảnh nền (`scene`, `import --traffic-light / --sign`, ô *traffic light* trong Studio), thứ tự ưu tiên tín hiệu (`control_precedence`, profile 1.1) và các nhãn `signals` / `precedence` / `effective_instruction` / `effective_source` / `conflict`. `traffic_control` (metadata 1.8) còn: phía camera đứng và `instruction_for_observer`; `labels.csv` bỏ hai cột `effective_*`. Thư viện cũ có `scene` vẫn đọc được (bị bỏ khi nạp).
   - `size_reference: "people"` (định cỡ theo một người; `auto` thay thế) và `people.plan_from_person`.

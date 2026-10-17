@@ -1,5 +1,5 @@
 {
- "schema_version": "1.2",
+ "schema_version": "1.3",
  "backgrounds": [
   {
    "id": "dash_caotoc_bacnam",
@@ -30,6 +30,14 @@
    "people": {
     "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
     "found": []
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.105,
+    "found": [],
+    "reason": "grey sky (blueness 0.11 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -92,6 +100,14 @@
    "people": {
     "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
     "found": []
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.032,
+    "found": [],
+    "reason": "grey sky (blueness 0.03 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -170,6 +186,14 @@
       "score": 0.887
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.2,
+    "found": [],
+    "reason": "grey sky (blueness 0.20 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -213,6 +237,14 @@
      -90.0,
      100.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.0,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -423,6 +455,14 @@
      90.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.276,
+    "found": [],
+    "reason": "grey sky (blueness 0.28 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -663,6 +703,14 @@
      90.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.0,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -843,6 +891,14 @@
      90.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.045,
+    "found": [],
+    "reason": "grey sky (blueness 0.04 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -1053,6 +1109,14 @@
      -90.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.066,
+    "found": [],
+    "reason": "grey sky (blueness 0.07 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -1233,6 +1297,14 @@
      180.0,
      -80.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.027,
+    "found": [],
+    "reason": "grey sky (blueness 0.03 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -1249,7 +1321,7 @@
     "urban",
     "vn"
    ],
-   "horizon_y_frac": 0.56,
+   "horizon_y_frac": 0.5033588213882497,
    "ground": {
     "file": "images/nga3_khanhhoa_dienkhanh.ground.png",
     "sha256": "6f76b668b7be8444cc18f458fffb4cf4421ac156354bcb98d2573f7bc068aa9e",
@@ -1368,6 +1440,23 @@
      90.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "sunny",
+    "sky_blueness": 0.585,
+    "found": [],
+    "sun_nominal": {
+     "direction_deg": 0.0,
+     "elevation_deg": 14.999999999999998,
+     "score": -1.0,
+     "prominence": -0.954,
+     "distinct": -1.162,
+     "objects_scored": 0,
+     "objects_dark": 0
+    },
+    "reason": "sunny, direction unclear: no sun darkens the shadows of 3 or more people / vehicles with open road around them; mark a shadow by hand in Studio"
    }
   },
   {
@@ -1427,6 +1516,14 @@
      90.0,
      0.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.016,
+    "found": [],
+    "reason": "grey sky (blueness 0.02 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -1531,6 +1628,63 @@
      90.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "found",
+    "weather": "sunny",
+    "sky_blueness": 0.362,
+    "found": [
+     {
+      "kind": "rider",
+      "feet": [
+       788.4,
+       631.0
+      ],
+      "tip": [
+       840.2,
+       631.0
+      ],
+      "height_cm": 150.0,
+      "score": 0.264
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1434.3,
+       689.6
+      ],
+      "tip": [
+       1532.0,
+       689.6
+      ],
+      "height_cm": 150.0,
+      "score": 0.395
+     },
+     {
+      "kind": "rider",
+      "feet": [
+       1253.0,
+       700.1
+      ],
+      "tip": [
+       1358.9,
+       700.1
+      ],
+      "height_cm": 150.0,
+      "score": 0.373
+     }
+    ],
+    "sun_nominal": {
+     "direction_deg": 90.0,
+     "elevation_deg": 50.0,
+     "score": 0.344,
+     "prominence": 0.408,
+     "distinct": 0.22,
+     "objects_scored": 3,
+     "objects_dark": 3
+    },
+    "reason": "ok"
    }
   },
   {
@@ -1574,6 +1728,14 @@
      35.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.106,
+    "found": [],
+    "reason": "grey sky (blueness 0.11 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -1770,6 +1932,14 @@
      -8.0,
      177.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.0,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -1996,6 +2166,14 @@
      21.0,
      -165.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.0,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -2222,6 +2400,14 @@
      174.0,
      -4.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.008,
+    "found": [],
+    "reason": "grey sky (blueness 0.01 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -2373,6 +2559,14 @@
      0.0,
      -172.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.028,
+    "found": [],
+    "reason": "grey sky (blueness 0.03 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -2569,6 +2763,14 @@
      0.0,
      -171.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.0,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -2644,6 +2846,14 @@
      -21.0,
      167.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.146,
+    "found": [],
+    "reason": "grey sky (blueness 0.15 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -2812,6 +3022,14 @@
       "score": 0.463
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.01,
+    "found": [],
+    "reason": "grey sky (blueness 0.01 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -2933,6 +3151,14 @@
      22.0,
      -166.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.073,
+    "found": [],
+    "reason": "grey sky (blueness 0.07 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -3144,6 +3370,14 @@
      5.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.004,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -3475,6 +3709,14 @@
      -7.0,
      -173.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.073,
+    "found": [],
+    "reason": "grey sky (blueness 0.07 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -3628,6 +3870,23 @@
       "score": 0.546
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "sunny",
+    "sky_blueness": 0.573,
+    "found": [],
+    "sun_nominal": {
+     "direction_deg": 0.0,
+     "elevation_deg": 14.999999999999998,
+     "score": -1.0,
+     "prominence": -0.908,
+     "distinct": -1.161,
+     "objects_scored": 1,
+     "objects_dark": 0
+    },
+    "reason": "sunny, direction unclear: no sun darkens the shadows of 3 or more people / vehicles with open road around them; mark a shadow by hand in Studio"
    }
   },
   {
@@ -3809,6 +4068,14 @@
      11.0,
      172.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.072,
+    "found": [],
+    "reason": "grey sky (blueness 0.07 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -4005,6 +4272,14 @@
      120.0,
      -160.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.065,
+    "found": [],
+    "reason": "grey sky (blueness 0.06 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -4336,6 +4611,14 @@
      -171.0,
      0.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.043,
+    "found": [],
+    "reason": "grey sky (blueness 0.04 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -4607,6 +4890,13 @@
      0.0,
      -176.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "night",
+    "found": [],
+    "reason": "photo tagged night: no sun"
    }
   },
   {
@@ -4909,6 +5199,23 @@
    "objects": {
     "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
     "found": []
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "sunny",
+    "sky_blueness": 0.349,
+    "found": [],
+    "sun_nominal": {
+     "direction_deg": 290.0,
+     "elevation_deg": 25.0,
+     "score": 0.234,
+     "prominence": 0.288,
+     "distinct": 0.068,
+     "objects_scored": 3,
+     "objects_dark": 2
+    },
+    "reason": "sunny, direction unclear: at the best sun 2 of 3 object strips are dark (score 0.23, 0.29 above the median, 0.07 above other directions); mark a shadow by hand in Studio"
    }
   },
   {
@@ -5165,6 +5472,14 @@
      1.0,
      179.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.079,
+    "found": [],
+    "reason": "grey sky (blueness 0.08 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -5301,6 +5616,14 @@
      13.0,
      180.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.038,
+    "found": [],
+    "reason": "grey sky (blueness 0.04 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -5572,6 +5895,14 @@
      11.0,
      -177.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.137,
+    "found": [],
+    "reason": "grey sky (blueness 0.14 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -5860,6 +6191,14 @@
      37.0,
      -177.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.0,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -5952,6 +6291,14 @@
       "score": 0.85
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.0,
+    "found": [],
+    "reason": "grey sky (blueness 0.00 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -5998,6 +6345,14 @@
    "people": {
     "method": "yolo11:yolo11m.pt+yolo11m-pose.pt:standing+rider+vehicles",
     "found": []
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.012,
+    "found": [],
+    "reason": "grey sky (blueness 0.01 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -6135,6 +6490,14 @@
       "score": 0.624
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.03,
+    "found": [],
+    "reason": "grey sky (blueness 0.03 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -6317,6 +6680,13 @@
       "score": 0.592
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "night",
+    "found": [],
+    "reason": "photo tagged night: no sun"
    }
   },
   {
@@ -6544,6 +6914,14 @@
       "score": 0.576
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.066,
+    "found": [],
+    "reason": "grey sky (blueness 0.07 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -6621,6 +6999,14 @@
       "score": 0.683
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.188,
+    "found": [],
+    "reason": "grey sky (blueness 0.19 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -6698,6 +7084,14 @@
       "score": 0.848
      }
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.059,
+    "found": [],
+    "reason": "grey sky (blueness 0.06 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -6804,6 +7198,13 @@
      8.0,
      -173.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "night",
+    "found": [],
+    "reason": "photo tagged night: no sun"
    }
   },
   {
@@ -6894,6 +7295,23 @@
      -173.0,
      -18.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "sunny",
+    "sky_blueness": 0.436,
+    "found": [],
+    "sun_nominal": {
+     "direction_deg": 0.0,
+     "elevation_deg": 14.999999999999998,
+     "score": -1.0,
+     "prominence": -0.992,
+     "distinct": -1.217,
+     "objects_scored": 0,
+     "objects_dark": 0
+    },
+    "reason": "sunny, direction unclear: no sun darkens the shadows of 3 or more people / vehicles with open road around them; mark a shadow by hand in Studio"
    }
   },
   {
@@ -7060,6 +7478,14 @@
      171.0,
      19.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.24,
+    "found": [],
+    "reason": "grey sky (blueness 0.24 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -7300,6 +7726,14 @@
      180.0,
      20.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.071,
+    "found": [],
+    "reason": "grey sky (blueness 0.07 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -7406,6 +7840,23 @@
      172.0,
      26.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "sunny",
+    "sky_blueness": 0.566,
+    "found": [],
+    "sun_nominal": {
+     "direction_deg": 0.0,
+     "elevation_deg": 14.999999999999998,
+     "score": -1.0,
+     "prominence": -1.011,
+     "distinct": -1.099,
+     "objects_scored": 0,
+     "objects_dark": 0
+    },
+    "reason": "sunny, direction unclear: no sun darkens the shadows of 3 or more people / vehicles with open road around them; mark a shadow by hand in Studio"
    }
   },
   {
@@ -7587,6 +8038,14 @@
      -179.0,
      -12.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.101,
+    "found": [],
+    "reason": "grey sky (blueness 0.10 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -7828,6 +8287,13 @@
      9.0,
      -175.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "night",
+    "found": [],
+    "reason": "photo tagged night: no sun"
    }
   },
   {
@@ -7838,7 +8304,7 @@
    "height": 1282,
    "category": "intersection",
    "tags": [
-    "day",
+    "dusk",
     "ground_level",
     "roundabout",
     "urban",
@@ -8144,6 +8610,13 @@
      180.0,
      9.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "dusk",
+    "found": [],
+    "reason": "photo tagged dusk: no sun"
    }
   },
   {
@@ -8187,6 +8660,14 @@
      90.0,
      -172.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "overcast",
+    "sky_blueness": 0.159,
+    "found": [],
+    "reason": "grey sky (blueness 0.16 < 0.3): overcast or hazy, no sun shadows"
    }
   },
   {
@@ -8367,6 +8848,13 @@
      -5.0,
      -168.0
     ]
+   },
+   "shadows": {
+    "method": "sky>=0.3+strip-contrast:az5deg,el15-60,min0.22",
+    "status": "none",
+    "weather": "dusk",
+    "found": [],
+    "reason": "photo tagged dusk: no sun"
    }
   }
  ]

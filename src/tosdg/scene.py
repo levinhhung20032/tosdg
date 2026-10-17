@@ -29,6 +29,7 @@ from . import podium as podiummod
 from . import people as peoplemod
 from . import calibrate as calmod
 from . import junction as junctionmod
+from . import shadows as shadowmod
 from .gestures import GestureLibrary, SampledPose
 from .lens import canvas_camera, pinhole_horizon_row, sample_lens
 from .lighting import kelvin_to_rgb, sample_lighting
@@ -37,7 +38,7 @@ from .schema import SchemaError, load_json, repo_root, validate_instance
 from .skeleton import FKResult, Skeleton, axis_rotation
 from .uniform_mesh import UniformMesh, check_against_skeleton, read_glb, spec_sha256
 
-GENERATOR_VERSION = "0.6.0"          # 0.4.0: feet kept on the backplate's standable ground (ground.py); 0.5.0: size_reference, officer_yaw_mode, locks; 0.6.0: size_reference auto = calibrated camera (calibrate.py)
+GENERATOR_VERSION = "0.7.0"          # 0.4.0: feet kept on the backplate's standable ground (ground.py); 0.5.0: size_reference, officer_yaw_mode, locks; 0.6.0: size_reference auto = calibrated camera (calibrate.py); 0.7.0: config shadow (shadows.py)
 ROAD_YAW_JITTER_DEG = 5.0           # officer_yaw_mode "road": an officer is never exactly square to the road
 CAMERA_OVERRIDE_KEYS = ("distance_cm", "height_cm", "azimuth_deg", "focal_length_mm", "aim_height_cm", "roll_deg", "sensor_width_mm")
 IMPLEMENTED_BACKENDS = ("proxy", "mesh")
@@ -53,6 +54,10 @@ EXPOSURE_RANGE = (-2.5, 2.0)   # the final exposure_ev of any sample (drawn + ma
 NIGHT_SUN = 0.25       # ... photos tagged night: the "sun" is a street lamp: this much of its intensity, warm light
 NIGHT_AMBIENT = 0.6    # ... and this much of the sky / ambient light
 NIGHT_KELVIN = 3400.0
+SHADOW_DEFAULTS = {"source": "photo", "direction_deg": [-180.0, 180.0], "length_ratio": [0.4, 1.6], "strength": [0.45, 0.65],
+                   "softness": [0.15, 0.4], "contact": 0.5, "jitter_deg": 8.0, "unknown_sun": "random", "no_sun": "contact"}
+OVERCAST_SUN = 0.35    # config shadow, a sample without a sun (overcast / dusk / night photo): the sun light on the officer x this ...
+OVERCAST_AMBIENT = 1.25   # ... and the sky light x this (flat, shadowless light)
 
 DEFAULT_VALIDATION = {
     "min_bbox_height_px": 24, "min_keypoints_in_frame_frac": 0.25, "require_signal_arm_in_frame": False,
@@ -137,6 +142,17 @@ class GenerationContext:
         # size_reference auto: the camera of every photo (calibrate.py), from the stored detections (no detector here)
         self.calibrations = ({b["id"]: BackgroundLibrary.calibration(b) for b in self.backgrounds.index["backgrounds"]}
                              if cfg.get("size_reference") == "auto" else {})
+        # config shadow: normalised (None = off); source photo: the photos not searched yet are searched now (shadows.py)
+        sh = cfg.get("shadow") or {}
+        self.shadow = {**SHADOW_DEFAULTS, **sh} if sh.get("enabled") else None
+        if self.shadow is not None:
+            if cfg["backend"] != "mesh":
+                raise ValueError("config shadow is drawn by the 'mesh' backend only")
+            for key in ("direction_deg", "length_ratio", "strength", "softness"):
+                if self.shadow[key][0] > self.shadow[key][1]:
+                    raise ValueError(f"config shadow.{key} must be [min, max] with min <= max, got {self.shadow[key]}")
+            if self.shadow["source"] == "photo":
+                self._find_shadows(bg, log=print)
         self.baton = batonmod.normalise(cfg.get("baton"))             # None = no baton
         self.podium_probability = float((cfg.get("podium") or {}).get("probability", 0.0))   # chance that a sample stands on the traffic podium
         self.junction_mode = cfg.get("officer_yaw_mode") == "junction"
@@ -182,6 +198,21 @@ class GenerationContext:
                 lib.save()
         except peoplemod.PeopleDetectorUnavailable as e:
             log(f"warning: {e}; photos not searched yet are sized from their horizon")
+        keep = {b["id"] for b in self.backgrounds.index["backgrounds"]}
+        self.backgrounds = BackgroundLibrary(lib_dir)
+        self.backgrounds.index["backgrounds"] = [b for b in self.backgrounds.index["backgrounds"] if b["id"] in keep]
+
+    def _find_shadows(self, lib_dir: Path, log=print) -> None:
+        """config shadow, source photo: read the weather and shadows (shadows.py) of the photos not searched yet, once, before
+        any sampling, and store them in the library (like _find_people: the assets and their hash are fixed first)."""
+        need = [b["id"] for b in self.backgrounds.index["backgrounds"] if "shadows" not in b]
+        if not need:
+            return
+        lib = BackgroundLibrary(lib_dir)
+        for i in need:
+            e = lib.set_shadows(i)["shadows"]
+            log(f"shadows of {i}: {e.get('weather', '?')}, {len(e['found'])} found ({e['reason']})")
+        lib.save()
         keep = {b["id"] for b in self.backgrounds.index["backgrounds"]}
         self.backgrounds = BackgroundLibrary(lib_dir)
         self.backgrounds.index["backgrounds"] = [b for b in self.backgrounds.index["backgrounds"] if b["id"] in keep]
@@ -278,6 +309,7 @@ class Scene:
     ground_check: dict | None = None     # {"status": ok | shifted | not_visible | no_mask, "points"}: feet on the backplate's road/sidewalk
     size_reference: dict | None = None   # config size_reference auto: {"mode": "calibrated", ...} (how the photo was scaled)
     junction: dict | None = None         # officer_yaw_mode junction: junction type, road directions in the officer's frame, sides (junction.py)
+    shadow: dict | None = None           # config shadow: {"enabled", "sun", "sun_azimuth_deg", "sun_elevation_deg", "strength", "softness", "contact", "source", ...}
 
 
 def build_scene(ctx: GenerationContext, seed: int) -> Scene:
@@ -405,12 +437,56 @@ def build_scene(ctx: GenerationContext, seed: int) -> Scene:
         pc = canvas_camera(camera) if (camera.lens is not None and camera.lens.active) else camera
         lighting = match_light(lighting, backplate, pc.project_pinhole(np.array(list(fk_world.positions.values())))[0], bg)
     lighting = {**lighting, "exposure_ev": float(np.clip(lighting["exposure_ev"], *EXPOSURE_RANGE))}
+    shadow = None
+    if ctx.shadow is not None:                    # new stream "shadow", drawn only with config shadow on
+        pin = canvas_camera(camera) if (camera.lens is not None and camera.lens.active) else camera
+        shadow, lighting = _shadow(ctx.shadow, rngmod.stream(seed, "shadow"), bg, pin, composition, camera, lighting)
     # New named stream: existing streams (gesture, pose, camera, ...) draw exactly the same values as before for any seed.
     brightness = rngmod.uniform(rngmod.stream(seed, "uniform_brightness"), cfg.get("uniform_brightness_range", [1.0, 1.0]))
     return Scene(seed, ctx.gestures.gestures[gid], sp, uniform_id, officer_pos, officer_yaw, fk_world,
                  camera, cam_profile, placement, bg, backplate, composition, lighting, brightness,
                  {**baton, "mode": sp.baton["mode"], "closure": sp.baton["closure"], "thumb_closure": sp.baton["thumb_closure"]} if baton else None,
-                 podium, ground_check, size_reference, junction_report)
+                 podium, ground_check, size_reference, junction_report, shadow)
+
+
+def _shadow(sc: dict, r: np.random.Generator, bg: dict, pin_cam: Camera, composition: dict, camera: Camera, lighting: dict):
+    """config shadow: the sample's shadow and the lighting that goes with it. Always draws the same 4 numbers of the stream
+    "shadow" (strength, softness, two for the direction): the sun of the photo (shadows.sun_from_photo through the canvas
+    camera; jittered), or a random / fixed one (direction relative to the camera's view, length / height). A sunny photo
+    without a readable direction follows sc["unknown_sun"], a photo without sun (overcast / dusk / night) sc["no_sun"]:
+    "contact" draws only the soft contact shadow and makes the officer's light flat. Returns (shadow dict, lighting)."""
+    u = r.random(4)
+    lerp = lambda ab, t: float(ab[0] + (ab[1] - ab[0]) * t)
+    out = {"enabled": True, "strength": round(lerp(sc["strength"], u[0]), 6), "softness": round(lerp(sc["softness"], u[1]), 6),
+           "contact": float(sc["contact"])}
+    sh = bg.get("shadows")
+    weather = (sh or {}).get("weather")
+    policy, est = sc["source"], None
+    if sc["source"] == "photo":
+        est = shadowmod.sun_from_photo(sh, pin_cam, composition)
+        if est is None:
+            policy = sc["no_sun"] if weather in ("overcast", "night", "dusk") else sc["unknown_sun"]
+    out.update({"source": f"photo-{est['source']}" if est else policy, "weather": weather})
+    if est is not None:
+        j = float(sc["jitter_deg"])
+        az = est["azimuth_deg"] + (2.0 * u[2] - 1.0) * j
+        el = float(np.clip(est["elevation_deg"] + (u[3] - 0.5) * j, shadowmod.MIN_SUN_ELEVATION, shadowmod.MAX_SUN_ELEVATION))
+        out["vectors_used"] = est["vectors_used"]
+    elif policy in ("random", "fixed"):
+        az, el = shadowmod.sun_from_vector(camera.yaw, lerp(sc["direction_deg"], u[2]), lerp(sc["length_ratio"], u[3]))
+    elif policy == "contact":
+        out["sun"] = False
+        flat = {**lighting, "sun_intensity": float(lighting["sun_intensity"]) * OVERCAST_SUN,
+                "ambient_intensity": float(lighting["ambient_intensity"]) * OVERCAST_AMBIENT}
+        return out, flat
+    else:                                                         # "off": no shadow for this sample
+        return {"enabled": False, "source": "off", "weather": weather}, lighting
+    az = (az + 180.0) % 360.0 - 180.0
+    d, ratio = shadowmod.vector_of_sun(camera.yaw, az, el)
+    out.update({"sun": True, "sun_azimuth_deg": round(az, 4), "sun_elevation_deg": round(el, 4), "direction_deg": round(d, 4),
+                "length_ratio": round(ratio, 4)})
+    lit = {**lighting, "sun_azimuth_deg": az, "sun_elevation_deg": el, "sun_direction": shadowmod.sun_direction(az, el)}
+    return out, lit
 
 
 def _cal_report(cal: dict) -> dict:

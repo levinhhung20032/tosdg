@@ -116,6 +116,37 @@ class Workspace:
                 lib.set_people(bg_id, "detect")
             except PeopleDetectorUnavailable:
                 pass
+            lib.set_shadows(bg_id)                         # weather + shadows of the people / vehicles (shadows.py; numpy only)
+        lib.save()
+        return entry
+
+    def shadow_mark(self, bg_id: str, feet, tip, height_cm: float = 165.0) -> dict:
+        """A shadow of the photo marked by hand (photo pixels; shadows.py: marked shadows win over found ones)."""
+        lib = self._lib()
+        if bg_id not in lib.by_id:
+            raise WorkspaceError(f"unknown background '{bg_id}'")
+        try:
+            entry = lib.mark_shadow(bg_id, feet, tip, height_cm)
+        except ValueError as e:
+            raise WorkspaceError(str(e)) from None
+        lib.save()
+        return entry
+
+    def shadow_clear(self, bg_id: str) -> dict:
+        """Forget the shadows marked by hand on a photo (the found ones stay)."""
+        lib = self._lib()
+        if bg_id not in lib.by_id:
+            raise WorkspaceError(f"unknown background '{bg_id}'")
+        lib.clear_shadows(bg_id, manual_only=True)
+        lib.save()
+        return lib.by_id[bg_id]
+
+    def shadow_detect(self, bg_id: str) -> dict:
+        """Read the photo's weather and shadows again (shadows.py; marks by hand are kept)."""
+        lib = self._lib()
+        if bg_id not in lib.by_id:
+            raise WorkspaceError(f"unknown background '{bg_id}'")
+        entry = lib.set_shadows(bg_id)
         lib.save()
         return entry
 

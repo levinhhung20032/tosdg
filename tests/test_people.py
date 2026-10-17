@@ -80,7 +80,7 @@ class LibraryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             lib_dir = library_with_people(Path(td))
             lib = BackgroundLibrary(lib_dir)                                # loads against the schema (library 1.2)
-            self.assertEqual(lib.index["schema_version"], "1.2")
+            self.assertEqual(lib.index["schema_version"], "1.3")
             self.assertEqual(lib.by_id["fx_dusk"]["people"]["method"], "manual")
             self.assertEqual(lib.integrity_errors(), [])
             rc, out, _ = run_cli("backgrounds", "people", lib_dir, "--id", "fx_dusk", "--clear")

@@ -204,15 +204,25 @@ class _Plan:
         return plate.convert("RGB") if plate.size == (self.Wr, self.Hr) else plate.convert("RGB").resize((self.Wr, self.Hr), Image.BILINEAR)
 
 
+_CANVAS: dict = {}       # canvas size by (frame size, intrinsics, lens): it does not depend on where the camera is or looks
+
+
 def canvas_size(cam) -> tuple[int, int]:
     """Size (Wr, Hr) of the pinhole picture that has to be drawn for this lens camera: everything the distorted frame shows."""
-    plan = _Plan(cam)
-    return plan.Wr, plan.Hr
+    key = (cam.width, cam.height, float(cam.fx), float(cam.cx), float(cam.cy), repr(cam.lens))
+    if key not in _CANVAS:
+        if len(_CANVAS) > 512:
+            _CANVAS.clear()
+        plan = _Plan(cam)
+        _CANVAS[key] = (plan.Wr, plan.Hr)
+    return _CANVAS[key]
 
 
 def canvas_camera(cam):
-    """The pinhole camera that draws the render canvas of a lens camera (size `canvas_size(cam)`, no lens)."""
-    return _Plan(cam).cam
+    """The pinhole camera that draws the render canvas of a lens camera (size `canvas_size(cam)`, no lens); the same as
+    _Plan(cam).cam without building the remap grids."""
+    Wr, Hr = canvas_size(cam)
+    return dataclasses.replace(cam, lens=None, width=Wr, height=Hr, sensor_width_mm=cam.sensor_width_mm * Wr / cam.width)
 
 
 def pinhole_horizon_row(cam, canvas_height: int) -> float:

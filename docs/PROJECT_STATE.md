@@ -1,8 +1,8 @@
 # Trạng thái dự án
 
-**Phiên bản:** v3.0 (2026-10-15). **Giai đoạn:** MVP — phần lõi độc lập với engine đã hoàn thành và kiểm chứng trên backend proxy (capsule) và backend mesh (model 3D có skin, phần mềm).
+**Phiên bản:** v4_beta_final (2026-10-17). **Giai đoạn:** MVP — phần lõi độc lập với engine đã hoàn thành và kiểm chứng trên backend proxy (capsule) và backend mesh (model 3D có skin, phần mềm).
 Backend Unreal chưa bắt đầu (môi trường build hiện không có Unreal Engine hay Blender).
-**Cập nhật lần cuối:** 2026-10-15. Lịch sử thay đổi: `docs/CHANGELOG.md`; quyết định thiết kế: `docs/DECISIONS.md` (D1–D43).
+**Cập nhật lần cuối:** 2026-10-16. Lịch sử thay đổi: `docs/CHANGELOG.md`; quyết định thiết kế: `docs/DECISIONS.md` (D1–D46).
 
 ## Tóm tắt một dòng
 Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn giao thông) tái lập được từng byte, với model 3D Tripo đã được chỉnh theo giải phẫu và không còn lỗi hình học thấy được ở các tư thế đã thử; **chất lượng ảnh còn chưa đủ để huấn luyện nhận dạng cử chỉ bàn tay** (người quá nhỏ trong khung, nền không phải đường phố Việt Nam, không có bóng).
@@ -15,7 +15,7 @@ Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn
 - Lấy mẫu pose có ràng buộc theo seed (cử chỉ ≠ pose; loại bỏ và bốc lại), camera profile (5 loại, có ống kính Brown + viền đen), ánh sáng, nhập/gắn tag/chọn backplate và ghép theo đường chân trời; chân công an luôn ở trên mặt đường/vỉa hè của ảnh nền (mask vùng đứng được dò bằng SegFormer khi nhập; cắt lệch ngang hoặc loại mẫu; D37).
 - Ground truth: keypoint 2D/3D, bbox từ instance mask, lệnh của cử chỉ cho phía camera đứng; chủ thể được phép ra ngoài khung (`bbox.full_xyxy`).
 - Kiểm tra từng mẫu và cả dataset; sinh hàng loạt; manifest có hash; `reproduce` giống từng byte và kiểm tra cả file trên đĩa; `generate` không trộn vào dataset cũ (`--overwrite`).
-- Profile VN: **15 cử chỉ** (kể cả `VN_A_POSE`, weight 0) (đi nhanh/chậm trái-phải, dừng trái-phải, dừng phía trước, rẽ trái, tay thẳng đứng, dang ngang, tay phải đưa trước, không ra hiệu, vẫy chào, giơ ngón cái), 23 pose thân, 5 pose bàn tay, 4 camera profile. HELLO và THUMB_UP có `weight: 0`. Xem README mục 7b, DECISIONS D16.
+- Profile VN: **15 cử chỉ** (kể cả `VN_A_POSE`, weight 0) (đi nhanh/chậm trái-phải, dừng trái-phải, dừng phía trước, rẽ trái, tay thẳng đứng, dang ngang, tay phải đưa trước, không ra hiệu, vẫy chào, giơ ngón cái), 23 pose thân, 5 pose bàn tay, 4 camera profile. HELLO và THUMB_UP có `weight: 0`. Xem docs/HUONG_DAN.md mục 7b, DECISIONS D16.
 
 **Model 3D (D15, D29, D31, D32, D34)**
 - **Phạm vi v1:** viên cảnh sát là model 3D do người dùng cung cấp (`tosdg import-model model.glb` hoặc Studio → Officer model (3D) → Upload). Model hiện tại **`beta`** (Tripo, rig UE5, 22 296 đỉnh, 4096² texture) là uniform duy nhất, trên skeleton `tripo_v1`; mọi model cũ đã xoá.
@@ -28,18 +28,20 @@ Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn
 
 **Backend mesh** (D12/D14): `import_mesh.py`, `models.py`, `uniform_mesh.py`, `render_mesh.py` (skinning + z-buffer chính xác, siêu lấy mẫu 2×). Đo trên máy thử: 0,9 giây mỗi mẫu 640×360, 2,1 giây ở 1280×720, 4,0 giây ở 1920×1080 (một tiến trình; 100 000 ảnh Full HD ≈ 4,7 ngày máy). Độ sáng vải ngẫu nhiên theo mẫu (`uniform_brightness_range`).
 
-**Renderer GPU** (D35): `render_gl.py` (OpenGL 4.3/moderngl), bật bằng config `mesh_renderer: gpu`, Studio (mặc định khi có GPU) hoặc `pose-preview --renderer gpu`. PBR với normal/roughness map của model, bóng nắng mềm, ánh sáng trời/đất theo ảnh nền, SSAO, bóng trên mặt đường. Vẽ ~0,2–0,3 s/ảnh 1280×720 trên RTX 3060 Laptop; cả mẫu (ống kính, dựng cảnh, ghi file) ~3,7 s.
+**Renderer GPU** (D35): `render_gl.py` (OpenGL 4.3/moderngl), bật bằng config `mesh_renderer: gpu`, Studio (mặc định khi có GPU) hoặc `pose-preview --renderer gpu`. PBR với normal/roughness map của model, bóng nắng mềm, ánh sáng trời/đất theo ảnh nền, SSAO, bóng trên mặt đường. Vẽ ~0,2–0,3 s/ảnh 1280×720 trên RTX 3060 Laptop; cả mẫu (ống kính, dựng cảnh, ghi file) ~2,5 s sau khi cache kích thước canvas ống kính (trước ~3,7 s); bóng đổ +0,4 s.
 
 **Giao lộ** (D43, `junction.py`): `officer_yaw_mode: "junction"` — đứng giữa ngã ba / ngã tư / bùng binh, hướng mặt theo loại giao lộ (T thấy cả 3 nhánh, Y thấy ≥ 2 hoặc về một nhánh, ngã tư / bùng binh về một nhánh) và theo các phía mà cử chỉ ra lệnh; bùng binh có bục và gậy ngẫu nhiên. `match_backplate_light`: model tối theo ảnh nền (ảnh đêm).
 
 **Hiệu chỉnh camera ảnh nền** (D42, `calibrate.py`): độ cao camera + đường chân trời từ người / xe / rào chắn đánh dấu tay, khớp bền vững có kiểm tra độ tin cậy; `backgrounds calibrate`, `backgrounds objects`.
+
+**Bóng đổ** (D46, `shadows.py`): bóng đúng hình mesh trên mặt đường (viền mềm, bóng tiếp xúc), config `shadow` tuỳ chọn; thời tiết + hướng nắng đọc từ bóng của người / xe trong ảnh nền (thư viện 1.3) hoặc đánh dấu tay; Studio panel Shadow.
 
 **Studio** (`tosdg studio`, `start_studio.bat`): upload nền 2D (đường chân trời tự dò, kéo tay được), camera (quỹ đạo, ống kính, méo, viền đen) với thước FOV và góc nhìn từ trên/bên, kéo skeleton (IK bình phương tối thiểu có giảm chấn trên FK thật, gizmo xoay Alt + nhấp), Gesture match, Generator check, Render preview (mesh hoặc capsule, ⬇ PNG/JPG), model 3D trực tiếp trong khung camera, baton và bục, lưu pose/cảnh, đổi model. Cổng độc quyền, khoá workspace, `start_studio.bat` đóng bản đang chạy trước khi mở bản mới, tự dừng khi đóng tab. Thư mục làm việc `data/studio/` (git bỏ qua). **Random generate** (D40): sinh một lô với các thông số khoá theo cảnh (cử chỉ, loại camera, góc nhìn, ảnh nền, baton, bục), phần còn lại ngẫu nhiên. Render preview / Generator check của Studio vẫn căn theo đường chân trời đã lưu (chưa dùng camera hiệu chỉnh).
 
 **CLI** (`python -m tosdg`): `generate`, `validate`, `reproduce`, `validate-profile`, `fixtures`, `backgrounds import|ground|people|objects|calibrate|set|remove|check`, `overlay`, `export` (COCO / YOLO-pose / CVAT), `pose-preview`, `import-model`, `studio`. Lỗi đầu vào là một dòng `error: ...` với mã thoát 2 (`TOSDG_DEBUG=1` hiện traceback).
 
 ## Kiểm thử
-`python -m unittest discover -s tests -t tests` → **324 test, tất cả đều qua** (~135 giây; renderer GPU tự bỏ qua khi máy không có), gồm:
+`python -m unittest discover -s tests -t tests` → **339 test, tất cả đều qua** (~135 giây; renderer GPU tự bỏ qua khi máy không có), gồm:
 - Smoke E2E: 3 mẫu, đủ file, kiểm tra dataset đạt, sinh lại giống từng byte (cả theo chỉ số), seed khác ⇒ dữ liệu khác.
 - Các ca kiểm tra âm: ảnh trống, thiếu chủ thể, bbox diện tích 0/bị cắt, keypoint ngoài bbox, tay ra hiệu ngoài khung, vi phạm schema, tên file không khớp, file bị sửa/thiếu/thừa; chủ thể ra ngoài khung bị loại và bốc lại.
 - Camera: góc quay khớp công thức đóng của FRotationMatrix; ống kính, viền đen, remap mask.
@@ -54,7 +56,7 @@ Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn
 - Cỡ viên cảnh sát: với `size_reference: "auto"` (D42) camera ảo là camera đã chụp ảnh nền, suy từ ≥ 3 người (165 cm), không đủ thì người + xe, cuối cùng đường chân trời; trên 20 ảnh thư viện: 8 từ người, 6 từ người + xe, 6 từ đường chân trời. Giả định mặt đường phẳng và người lớn cao gần như nhau; ảnh có người dồn cùng một dải khoảng cách không hiệu chỉnh được; người ngồi xe máy bị xe khác che bánh thì hàng chân lệch. Config cũ (`horizon`) viên cảnh sát vẫn có thể nhỏ.
 - Viền đen do ống kính: 35 % mẫu có > 10 % diện tích đen (dashcam trung bình 10 %, xe máy 9,6 %); cần hiệu chỉnh `k1`, `k2`, vòng ảnh theo ảnh thật.
 - Nền: thư viện cục bộ (dùng chung cho Studio và `generate`, D39) **50 ảnh** đường phố Việt Nam (Wikimedia Commons): 10 bùng binh, 17 ngã tư (kể cả ngã sáu), 9 ngã ba chữ T, 1 chữ Y, còn lại đường thẳng / camera hành trình; 4 ảnh đêm, 1 chiều tối; 37 ảnh có bố cục giao lộ đặt tay. Chưa có mưa; chữ Y chỉ 1 ảnh; bố cục giao lộ và đường chân trời đặt bằng mắt (sai số vài %). Mask vùng đứng được không xét che khuất (công an vẫn được vẽ đè lên xe phía trước nếu chân ở sau xe).
-- Ảnh ghép chưa thật: không có bóng dưới chân, người nét hơn hẳn nền, ánh sáng ngẫu nhiên không ước lượng từ ảnh nền, không có nhiễu/nén khớp nền.
+- Ảnh ghép chưa thật: bóng đổ đã có (D46, tuỳ chọn) nhưng chỉ trên mặt đất phẳng và hướng nắng tự dò chỉ có ở 1/50 ảnh (thư viện chủ yếu trời âm u), người nét hơn hẳn nền, ánh sáng ngẫu nhiên không ước lượng từ ảnh nền, không có nhiễu/nén khớp nền.
 - Độ đa dạng thấp: một model, một gương mặt, một dáng; không có xe/người đi đường che khuất, áo mưa, áo phản quang.
 - Ảnh mesh là ảnh tổng hợp: renderer GPU có PBR, bóng và ánh sáng môi trường nhưng không có chiếu sáng toàn cục giữa người và cảnh, ánh sáng không suy từ ảnh nền thật; cần đối chiếu với ảnh thật/Unreal trước khi huấn luyện (D2/D12, D35). Vệt nâu ở nách khi giơ tay nằm sẵn trong texture gốc. Ảnh capsule (proxy) chỉ để test.
 

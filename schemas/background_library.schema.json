@@ -299,6 +299,129 @@
         "minItems": 2
        }
       }
+     },
+     "shadows": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+       "method",
+       "status",
+       "found"
+      ],
+      "description": "Library 1.3: the photo's weather and the shadows its people / vehicles cast (shadows.py): image vectors feet -> shadow tip, photo pixels. 'manual' = marked by hand (wins).",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "status": {
+        "enum": [
+         "found",
+         "none"
+        ]
+       },
+       "weather": {
+        "enum": [
+         "sunny",
+         "overcast",
+         "night",
+         "dusk"
+        ]
+       },
+       "sky_blueness": {
+        "type": "number"
+       },
+       "found": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "additionalProperties": false,
+         "required": [
+          "kind",
+          "feet",
+          "tip",
+          "height_cm"
+         ],
+         "properties": {
+          "kind": {
+           "type": "string"
+          },
+          "feet": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "tip": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "height_cm": {
+           "type": "number",
+           "exclusiveMinimum": 0
+          },
+          "score": {
+           "type": "number"
+          }
+         }
+        }
+       },
+       "manual": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "additionalProperties": false,
+         "required": [
+          "kind",
+          "feet",
+          "tip",
+          "height_cm"
+         ],
+         "properties": {
+          "kind": {
+           "type": "string"
+          },
+          "feet": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "tip": {
+           "type": "array",
+           "items": {
+            "type": "number"
+           },
+           "minItems": 2,
+           "maxItems": 2
+          },
+          "height_cm": {
+           "type": "number",
+           "exclusiveMinimum": 0
+          },
+          "score": {
+           "type": "number"
+          }
+         }
+        }
+       },
+       "sun_nominal": {
+        "type": "object"
+       },
+       "candidates": {
+        "type": "integer"
+       },
+       "reason": {
+        "type": "string"
+       }
+      }
      }
     }
    }

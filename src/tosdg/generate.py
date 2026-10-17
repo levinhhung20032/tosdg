@@ -41,11 +41,12 @@ from .ground import PlacementError
 from .lens import render_with_lens
 from . import baton as batonmod
 from . import podium as podiummod
+from . import shadows as shadowmod
 from .schema import repo_root
 from .scene import GENERATOR_VERSION, GenerationContext, SizeReferenceError, build_scene
 from .validate import check_ground_truth, check_metadata, check_render
 
-METADATA_SCHEMA_VERSION = "1.8"        # 1.8: background.size_reference, camera.placement.road_quarter
+METADATA_SCHEMA_VERSION = "1.9"        # 1.8: background.size_reference, camera.placement.road_quarter; 1.9: lighting.shadow
 MANIFEST_SCHEMA_VERSION = "1.1"        # 1.1: background_library_resolved is repo-relative (or absolute outside the repo), "/" separators
 
 
@@ -84,9 +85,20 @@ def _render_pinhole(ctx: GenerationContext, scene, camera, backplate):
         mesh = batonmod.mesh_with_officer_baton(mesh, scene.baton, scene.baton["mode"] if scene.baton else "across", prop=ctx.baton_prop)
         if scene.podium:
             mesh = podiummod.mesh_with_podium(mesh, ctx.podium_prop, scene.podium["sole_z_cm"])
-        return render_mesh(mesh, scene.fk_world, camera, backplate,
-                           ctx.uniforms[scene.uniform_id]["proxy_colors"], scene.lighting, scene.uniform_brightness)
+        if scene.shadow and scene.shadow.get("enabled"):          # the officer's shadow on the photo, then the officer over it
+            backplate = cast_shadow(mesh, scene.fk_world, camera, backplate, scene.shadow)
+        return render_mesh(mesh, scene.fk_world, camera, backplate, ctx.uniforms[scene.uniform_id]["proxy_colors"],
+                           scene.lighting, scene.uniform_brightness, ground_shadow=ctx.shadow is None)
     raise NotImplementedError(f"backend '{backend}' is not implemented yet (see docs/ARCHITECTURE.md)")
+
+
+def cast_shadow(mesh, fk_world, camera, backplate, shadow: dict):
+    """The backplate (pinhole canvas of `camera`) darkened by the posed mesh's shadow (shadows.py)."""
+    from .render_mesh import skin_mesh
+    pos, _ = skin_mesh(mesh, fk_world)
+    sun = shadowmod.sun_direction(shadow.get("sun_azimuth_deg", 0.0), shadow.get("sun_elevation_deg", 90.0))
+    cov = shadowmod.cast(pos, mesh.triangles, sun, camera, shadow["softness"], shadow["contact"], bool(shadow.get("sun")))
+    return shadowmod.apply(backplate, cov, shadow["strength"])
 
 
 def generate_sample(ctx: GenerationContext, index: int, sample_seed: int, attempt: int) -> SampleResult:
@@ -147,7 +159,8 @@ def generate_sample(ctx: GenerationContext, index: int, sample_seed: int, attemp
                        **({"junction": scene.junction} if scene.junction else {}),
                        "composition": {**scene.composition, "scale": _r(scene.composition["scale"], 6),
                                        "camera_horizon_v": _r(scene.composition["camera_horizon_v"])}},
-        "lighting": {k: ([_r(x, 6) for x in v] if isinstance(v, list) else _r(v, 6)) for k, v in scene.lighting.items()},
+        "lighting": {**{k: ([_r(x, 6) for x in v] if isinstance(v, list) else _r(v, 6)) for k, v in scene.lighting.items()},
+                     **({"shadow": scene.shadow} if scene.shadow is not None else {})},
         "traffic_control": gt.traffic_control(scene, ctx.validation["side_ambiguity_margin_deg"]),
     }
     meta = json.loads(json.dumps(meta))  # normalise numpy types / tuples

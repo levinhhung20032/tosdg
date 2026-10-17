@@ -6,6 +6,8 @@ Library layout:
     <library>/images/<id>.ground.png   optional standable-ground mask (see ground.py)
     index "people" / "objects" of a background: reference people / vehicles and barriers found in the photo (people.py),
     from which calibrate.py tells the height and horizon of the camera that took it
+    index "shadows": the weather of the photo and the shadows its people / vehicles cast (shadows.py), found or marked by
+    hand, from which the generator points the officer's shadow
 
 Contents:
   constants: INDEX_VERSION, MAX_COVER_SCALE, PHOTO_CAMERA_HEIGHT_CM, DASHCAM_CAMERA_HEIGHT_CM
@@ -32,7 +34,7 @@ from . import ground as groundmod
 from .horizon import detect_horizon
 from .schema import load_json, validate_instance
 
-INDEX_VERSION = "1.2"                       # 1.1: optional "ground" mask per background; 1.2: "people", "road_yaw_deg"
+INDEX_VERSION = "1.3"                       # 1.1: optional "ground" mask per background; 1.2: "people", "road_yaw_deg"; 1.3: "shadows"
 MAX_COVER_SCALE = 4.0
 PHOTO_CAMERA_HEIGHT_CM = 155.0              # a street photo taken at eye level (default camera_height_cm)
 DASHCAM_CAMERA_HEIGHT_CM = 125.0            # ... with the tag "dashcam": behind a car's windscreen
@@ -170,6 +172,43 @@ class BackgroundLibrary:
             found, method = list(people), "manual"
         entry["people"] = {"method": method, "found": found}
         return entry
+
+    def set_shadows(self, bg_id: str) -> dict:
+        """Read the photo's weather and the shadows of its people / vehicles (shadows.find_photo_shadows) and store them in
+        "shadows"; shadows marked by hand ("manual") are kept. Needs the people / vehicles (set_people) for a direction."""
+        from . import shadows as shadowmod
+        from .calibrate import reference_objects
+        entry = self.by_id[bg_id]
+        cal = self.calibration(entry)
+        horizon = cal["horizon_y_frac"] * entry["height"] if cal.get("horizon_y_frac") is not None else None
+        with Image.open(self.path(entry)) as im:
+            res = shadowmod.find_photo_shadows(im, reference_objects(entry), self.ground_mask(entry), horizon,
+                                               cal.get("camera_height_cm"), entry.get("tags", []))
+        manual = (entry.get("shadows") or {}).get("manual") or []
+        entry["shadows"] = {**res, **({"manual": manual} if manual else {})}
+        return entry
+
+    def mark_shadow(self, bg_id: str, feet, tip, height_cm: float = 165.0, kind: str = "standing") -> dict:
+        """A shadow marked by hand (photo pixels: the object's feet, the tip of its shadow; the object's height). Marked
+        shadows win over found ones (shadows.sun_from_photo)."""
+        entry = self.by_id[bg_id]
+        for name, pt in (("feet", feet), ("tip", tip)):
+            if len(pt) != 2 or not (0 <= float(pt[0]) <= entry["width"] and 0 <= float(pt[1]) <= entry["height"]):
+                raise ValueError(f"shadow {name} {list(pt)} is outside the photo ({entry['width']} x {entry['height']})")
+        if not 20.0 <= float(height_cm) <= 2000.0:
+            raise ValueError("shadow height_cm must be 20..2000")
+        sh = entry.setdefault("shadows", {"method": "manual", "status": "none", "found": [], "reason": "not searched"})
+        sh.setdefault("manual", []).append({"kind": kind, "feet": [round(float(x), 1) for x in feet], "tip": [round(float(x), 1) for x in tip],
+                                           "height_cm": round(float(height_cm), 1), "score": 1.0})
+        return entry
+
+    def clear_shadows(self, bg_id: str, manual_only: bool = False) -> None:
+        """Forget the shadows of a photo (or only those marked by hand)."""
+        entry = self.by_id[bg_id]
+        if manual_only:
+            (entry.get("shadows") or {}).pop("manual", None)
+        else:
+            entry.pop("shadows", None)
 
     def set_junction(self, bg_id: str, junction: dict | None) -> dict:
         """The road layout of a photo (junction.py; photo pixels), or None to remove it (a straight road)."""

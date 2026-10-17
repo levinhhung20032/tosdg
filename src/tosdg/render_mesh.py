@@ -417,8 +417,9 @@ def _tex_of(mesh: UniformMesh) -> np.ndarray:
 
 
 def render(mesh: UniformMesh, fk_world: FKResult, camera: Camera, backplate: Image.Image, colors: dict[str, list[int]],
-           lighting: dict, brightness: float = 1.0) -> tuple[np.ndarray, np.ndarray]:
-    """Returns (rgb uint8 HxWx3, mask bool HxW). `brightness` scales the albedo of materials flagged "jitter" (the cloth)."""
+           lighting: dict, brightness: float = 1.0, ground_shadow: bool = True) -> tuple[np.ndarray, np.ndarray]:
+    """Returns (rgb uint8 HxWx3, mask bool HxW). `brightness` scales the albedo of materials flagged "jitter" (the cloth).
+    `ground_shadow` is accepted for symmetry with render_gl: this renderer draws no shadow of its own (see shadows.py)."""
     W, H, S = camera.width, camera.height, SUPERSAMPLE
     shade, cov, inst = _shade(mesh, fk_world, camera, colors, lighting, brightness)
     img = np.asarray(backplate.convert("RGB").resize((W * S, H * S), Image.BILINEAR), dtype=np.float32) / 255.0

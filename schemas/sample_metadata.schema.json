@@ -31,7 +31,8 @@
     "1.5",
     "1.6",
     "1.7",
-    "1.8"
+    "1.8",
+    "1.9"
    ]
   },
   "sample_id": {
@@ -596,7 +597,57 @@
     "color_temperature_k",
     "exposure_ev",
     "sun_direction"
-   ]
+   ],
+   "properties": {
+    "shadow": {
+     "type": "object",
+     "required": [
+      "enabled"
+     ],
+     "description": "Metadata 1.9: the officer's cast shadow (config shadow on). enabled false: no shadow drawn for this sample.",
+     "properties": {
+      "enabled": {
+       "type": "boolean"
+      },
+      "sun": {
+       "type": "boolean"
+      },
+      "source": {
+       "type": "string"
+      },
+      "weather": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "sun_azimuth_deg": {
+       "type": "number"
+      },
+      "sun_elevation_deg": {
+       "type": "number"
+      },
+      "direction_deg": {
+       "type": "number"
+      },
+      "length_ratio": {
+       "type": "number"
+      },
+      "strength": {
+       "type": "number"
+      },
+      "softness": {
+       "type": "number"
+      },
+      "contact": {
+       "type": "number"
+      },
+      "vectors_used": {
+       "type": "integer"
+      }
+     }
+    }
+   }
   },
   "traffic_control": {
    "type": "object",

@@ -740,12 +740,13 @@ def _down(a: np.ndarray, S: int) -> np.ndarray:
 
 
 def render(mesh: UniformMesh, fk_world: FKResult, camera: Camera, backplate: Image.Image, colors: dict[str, list[int]],
-           lighting: dict, brightness: float = 1.0) -> tuple[np.ndarray, np.ndarray]:
-    """Returns (rgb uint8 HxWx3, mask bool HxW) like render_mesh.render; the mask is the officer's own coverage (>= 0.5 of the samples)."""
+           lighting: dict, brightness: float = 1.0, ground_shadow: bool = True) -> tuple[np.ndarray, np.ndarray]:
+    """Returns (rgb uint8 HxWx3, mask bool HxW) like render_mesh.render; the mask is the officer's own coverage (>= 0.5 of the samples).
+    `ground_shadow` False: no shadow-map ground pass (the caller drew the shadow on the backplate, shadows.py)."""
     gl = _GL.get()
     W, H = camera.width, camera.height
     plate = np.asarray(backplate.convert("RGB").resize((W, H), Image.BILINEAR), dtype=np.float32)
-    f = gl.run(lambda g: _frame(g, mesh, fk_world, camera, colors, lighting, brightness, plate.astype(np.uint8)))
+    f = gl.run(lambda g: _frame(g, mesh, fk_world, camera, colors, lighting, brightness, plate.astype(np.uint8), ground=ground_shadow))
     S = f["S"]
     col = _down(f["col"], S)
     rgb_p, alpha = col[..., :3], col[..., 3:4]

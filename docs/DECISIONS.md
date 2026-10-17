@@ -282,3 +282,42 @@ Người dùng: chỉnh brightness quá đà có thể làm hỏng (crash) model
 - **Schema**: `sun_elevation_deg` −90..90, `sun_azimuth_deg` −360..360, `sun_intensity` 0..5, `ambient_intensity` 0..3, `color_temperature_k` 1500..15000, `exposure_ev` −3..3; `uniform_brightness_range` đã có 0,3..2 (như Studio).
 - **Code**: exposure cuối của mẫu (bốc + khớp ảnh nền) kẹp trong `EXPOSURE_RANGE` [−2,5; 2]; khớp ảnh nền chỉ làm tối tới −2 EV (đủ cho ảnh đêm thử ở D43: −1,1..−1,6 EV).
 - **Kiểm tra ảnh đã render**: mức sRGB trung bình (luma Rec. 709) của các pixel viên cảnh sát phải trong [`min_officer_level` 12, `max_officer_level` 245], không thì loại mẫu (`rejection_counts.render`) và bốc lại. Ngưỡng nằm trong `validation`, đổi được trong config.
+
+## D46 — Bóng đổ của viên cảnh sát; hướng nắng đọc từ bóng trong ảnh nền (2026-10-16)
+Người dùng: vật thể cần bóng đủ chân thực; không xác định được mặt trời ở đâu trong ảnh 2D nên cần mục chỉnh bóng trong Studio
+(hình dáng đúng hình viên cảnh sát, chỉnh được vector bóng, bật / tắt), không bắt buộc khi sinh dữ liệu; randomizer cần đọc bóng
+của các vật xung quanh để ra hướng và độ dài tương đối của bóng.
+- **Vẽ bóng** (`shadows.cast`, `generate.cast_shadow`): mọi tam giác của mesh đã skin (cùng hình học với ảnh và ground truth; gồm cả
+  gậy, bục) được trượt theo hướng mặt trời xuống mặt đất z = 0 rồi raster bằng camera — bóng là đúng hình viên cảnh sát ở mọi tư thế.
+  Viền mềm (penumbra) rộng dần theo độ cao điểm đổ bóng (`softness`: 0,01–0,12 × độ cao), thêm bóng tiếp xúc dưới đế giày (`contact`).
+  Bóng làm tối ảnh nền (× (1 − strength · phủ), xanh bớt một chút) **trước** khi vẽ viên cảnh sát, trên canvas pinhole nên méo ống kính
+  áp chung; không bao giờ thuộc mask / bbox. Dùng chung cho renderer CPU và GPU; khi bật, pass bóng mặt đất riêng của renderer GPU tắt
+  và mặt trời chiếu viên cảnh sát chính là mặt trời đổ bóng. Chi phí đo trên 10 mẫu 1280×720 (GPU, RTX 3060 Laptop): +0,37 s/mẫu (bóng raster tối đa 800 px chiều rộng rồi phóng lên). Khi đo phát hiện `lens.canvas_camera` dựng cả lưới remap của ống kính chỉ để lấy kích thước canvas, nhiều lần mỗi mẫu: nay cache kích thước theo (khung, nội tham số, ống kính) — cùng kết quả (`reproduce` giống từng byte), sinh dữ liệu không bóng 49,7 → 31,5 s / 10 mẫu, có bóng 35,2 s.
+- **Đọc ảnh nền** (`shadows.find_photo_shadows`, thư viện **1.3**, khối `shadows`): (1) **thời tiết** — ảnh tag `night` / `dusk`
+  hoặc trời không xanh (`sky_blueness` < 0,3: độ bão hoà trung vị của pixel trời sáng, hơi xanh ở 1/5 trên ảnh) là không có nắng;
+  (2) ảnh nắng: tìm theo mô hình — camera danh định (tiêu cự = chiều rộng ảnh, độ cao và đường chân trời từ hiệu chỉnh D42) đặt mọi
+  người / xe lên mặt đất; với mỗi mặt trời (azimuth mỗi 5°, độ cao 15–60°) dải bóng của mỗi vật được chấm bằng độ tối so với mặt
+  đường hai bên (bỏ 40 cm đầu ở chân — vùng tối tiếp xúc có cả khi âm u — và phạt nếu mặt đường ngay sau đỉnh bóng cũng tối). Mặt trời
+  đúng là mặt trời làm tối dải của **nhiều vật cùng lúc** (mép vỉa hè, vết nứt, gầm xe chỉ khớp một vật); cần ≥ 3 vật chấm được, ≥ 60 %
+  trong đó tối, điểm nổi hơn trung vị và hơn mọi hướng cách > 60°. Kết quả lưu dạng vector ảnh chân → đỉnh bóng.
+- **Thử trước khi chốt**: bản đầu (tìm vùng tối nối từ chân rồi đo trục dài) báo "có bóng" ở 12 ảnh, kiểm tra bằng mắt sai gần hết
+  (mép vỉa hè, gầm xe, đường ướt, ảnh chạng vạng); bản theo mô hình không có cổng thời tiết còn 5 ảnh, sai 4. Bản chốt trên 50 ảnh:
+  38 âm u, 4 đêm, 2 chạng vạng, 5 nắng nhưng không đủ vật để ra hướng, **1 nắng có hướng** (`nga3_uyban`: bóng xe máy đổ sang phải,
+  khớp kết quả 90°) — không ảnh nào ra hướng sai. Thư viện chủ yếu ảnh trời âm u nên tự động ít khi ra hướng; đó là kết quả đúng
+  (âm u không có bóng nắng). `vx_hcm_vothisau` đổi tag `day` → `dusk` (đèn đã bật, mặt trời đã lặn).
+- **Đánh dấu tay** (`backgrounds shadows --mark`, Studio "✎ mark a shadow": bấm chân một người, rồi đỉnh bóng của họ): lưu trong
+  `shadows.manual`, **được ưu tiên** hơn bóng tự dò.
+- **Khi sinh dữ liệu** (config **1.7** `shadow`, tuỳ chọn; tắt khi không có): `source` `photo` (mặc định) | `random` | `fixed`.
+  `photo`: vector của ảnh được chiếu ngược lên mặt đất **qua chính camera ảo của mẫu** (ảnh được ghép cho camera đó), nên bóng viên cảnh
+  sát hướng về cùng điểm tụ với bóng trong ảnh; lệch ngẫu nhiên tới `jitter_deg` (8°). Ảnh nắng không ra hướng → `unknown_sun`
+  (mặc định `random`); ảnh âm u / đêm / chạng vạng → `no_sun` (mặc định `contact`: chỉ bóng tiếp xúc mềm, ánh nắng trên người còn 35 %,
+  ánh trời ×1,25 — ánh sáng phẳng). Luồng RNG mới `shadow` (luôn bốc đúng 4 số khi bật) nên các luồng khác không đổi: cùng seed, cùng
+  cử chỉ / camera / bbox như khi tắt bóng. Metadata **1.9** `lighting.shadow`; generator 0.7.0.
+- Studio: panel **Shadow** (bật / tắt, hướng theo ảnh hoặc vector tự chỉnh: hướng so với camera, dài × chiều cao; độ đậm, độ mềm, bóng
+  tiếp xúc), lớp bóng xem trực tiếp dưới model 3D, mũi tên vector bóng, Render preview vẽ cùng bóng; Studio tắt bóng = không bóng
+  (trước đó renderer GPU luôn vẽ bóng theo ánh sáng xem trước). Random generate: ô `shadow` (off / theo ảnh / ngẫu nhiên).
+- Giới hạn: mặt đất phẳng (bóng không leo lên xe, tường, bậc thềm; không bị xe phía trước che); ánh sáng trời không ước lượng từ ảnh
+  nên màu bóng là độ tối đồng đều; tự dò cần ≥ 3 người / xe có mặt đường quanh bóng; tiêu cự danh định và hiệu chỉnh camera sai thì
+  hướng / độ dài tự dò sai theo.
+- Tương thích: thư viện, metadata và config cũ vẫn đọc được; nhưng `index.json` đổi (khối `shadows`, tag `dusk`) và metadata 1.9 nên
+  dataset sinh trước đó không còn tái lập từng byte (như D37).

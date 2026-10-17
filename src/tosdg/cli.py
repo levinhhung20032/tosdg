@@ -10,6 +10,7 @@ Contents:
   cmd_bg_ground — Detect (or set by hand, or remove) the standable-ground masks
   cmd_bg_people — Find (or remove) the reference people of a library's backgrounds
   cmd_bg_objects — List, mark by hand (barriers...) or remove the reference objects of a background
+  cmd_bg_shadows — Read (or mark by hand, or remove) the weather and shadows of backgrounds (the officer's shadow direction)
   cmd_bg_calibrate — The camera of each background as size_reference auto sees it
   cmd_bg_junction — Set, show or remove the road layout (junction) of a background
   cmd_bg_set — Set by hand a background's horizon, camera height, road direction, tags
@@ -186,6 +187,9 @@ def cmd_bg_import(a) -> int:
             except PeopleDetectorUnavailable as err:
                 print(f"warning: {err}; imported without reference people / vehicles (the officer is sized from the horizon)")
                 find = False
+        if find:                                       # the weather and shadows (shadows.py), from the people / vehicles just found
+            sh = lib.set_shadows(e["id"])["shadows"]
+            note += f" shadows={sh.get('weather', '?')}/{len(sh['found'])}"
         print(f"imported {e['id']} ({e['width']}x{e['height']}) tags={e['tags']}{note}")
     lib.save()
     return 0
@@ -244,6 +248,43 @@ def cmd_bg_people(a) -> int:
         kinds = ", ".join(f"{p['kind']} {p['height_px']:.0f}px" for p in e["people"]["found"] + e["objects"]["found"]) or "none usable"
         print(f"{i}: {kinds}")
         lib.save()
+    lib.save()
+    return 0
+
+
+def cmd_bg_shadows(a) -> int:
+    """Read (or mark by hand, or remove) the weather and the shadows of a library's backgrounds (shadows.py): the direction and
+    length of the officer's shadow in config shadow source "photo"."""
+    from .backgrounds import BackgroundLibrary
+    lib = BackgroundLibrary(a.library)
+    ids = a.id or sorted(lib.by_id)
+    unknown = [i for i in ids if i not in lib.by_id]
+    if unknown:
+        raise ValueError(f"unknown background id(s) {unknown}")
+    if a.mark:
+        if len(ids) != 1:
+            raise ValueError("--mark needs exactly one --id")
+        fu, fv, tu, tv = a.mark
+        e = lib.mark_shadow(ids[0], (fu, fv), (tu, tv), a.height_cm, a.kind)
+        lib.save()
+        print(f"{ids[0]}: {len(e['shadows']['manual'])} shadow(s) marked by hand")
+        return 0
+    for i in ids:
+        e = lib.by_id[i]
+        if a.clear or a.clear_marks:
+            lib.clear_shadows(i, manual_only=a.clear_marks)
+            print(f"{i}: {'marked shadows' if a.clear_marks else 'shadows'} removed")
+            continue
+        if "shadows" in e and not a.force:
+            sh = e["shadows"]
+        else:
+            if lib.absent() and i in lib.absent():
+                print(f"{i}: photo not on this machine, skipped")
+                continue
+            sh = lib.set_shadows(i)["shadows"]
+        marks = len(sh.get("manual") or [])
+        print(f"{i}: {sh.get('weather', '?')}, {sh['status']}, {len(sh['found'])} found" + (f", {marks} marked" if marks else "")
+              + ("" if sh["status"] == "found" else f" ({sh['reason']})"))
     lib.save()
     return 0
 
@@ -595,6 +636,16 @@ def main(argv=None) -> int:
     s.add_argument("--force", action="store_true", help="search again even if already searched")
     s.add_argument("--clear", action="store_true", help="remove the reference people")
     s.set_defaults(func=cmd_bg_people)
+    s = bg.add_parser("shadows", help="read / mark by hand / remove the weather and shadows of the backgrounds (config shadow source photo)")
+    s.add_argument("library"); s.add_argument("--id", action="append", help="only these backgrounds (default: all)")
+    s.add_argument("--force", action="store_true", help="read again even if already read (marks by hand are kept)")
+    s.add_argument("--clear", action="store_true", help="remove the shadows (and the marks)")
+    s.add_argument("--clear-marks", action="store_true", help="remove only the shadows marked by hand")
+    s.add_argument("--mark", nargs=4, type=float, metavar=("FEET_U", "FEET_V", "TIP_U", "TIP_V"),
+                   help="mark one shadow by hand (photo pixels: where an object stands, where its shadow ends); needs one --id")
+    s.add_argument("--height-cm", type=float, default=165.0, help="--mark: height of the object that casts it (default 165, a person)")
+    s.add_argument("--kind", default="standing", help="--mark: what casts it (default standing)")
+    s.set_defaults(func=cmd_bg_shadows)
     s = bg.add_parser("objects", help="list / mark by hand / remove the reference objects (vehicles, barriers) of a background")
     s.add_argument("library"); s.add_argument("id")
     s.add_argument("--add", nargs=5, metavar=("KIND", "X0", "Y0", "X1", "Y1"),

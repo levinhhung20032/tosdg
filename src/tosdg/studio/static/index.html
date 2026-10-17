@@ -132,6 +132,7 @@ body.single.single-cam #vcam,body.single.single-plan #vplan,body.single.single-p
   <details open data-k="officer"><summary>Officer</summary><div id="pOfficer"></div></details>
   <details open data-k="camera"><summary>Camera</summary><div id="pCamera"></div></details>
   <details open data-k="background"><summary>Background (2D plate)</summary><div id="pBg"></div></details>
+  <details open data-k="shadow"><summary>Shadow</summary><div id="pShadow"></div></details>
   <details open data-k="pose"><summary>Pose &amp; gesture</summary><div id="pPose"></div></details>
   <details open data-k="model"><summary>Officer model (3D)</summary><div id="pModel"></div></details>
   <details open data-k="random"><summary>Random generate</summary><div id="pRandom"></div></details>
@@ -267,6 +268,7 @@ const guard = fn => async (...a) => { try { return await fn(...a); } catch (e) {
 // ============================================================ state
 const S = { init: null, pose: {}, officer: {}, camera: {}, bgId: null, ev: null, selJoint: 'upperarm_r',
   bgImg: null, bgKey: '', drag: null, hover: null, viewZoom: { plan: 1, prof: 1, cam: 1 }, camPan: { fx: 0, fy: 0 }, model: { img: null, key: '' },
+  shadow: { img: null, key: '', info: null, arrow: null }, markShadow: null,
   ui: { capsules: true, bones: true, handles: true, hands: false, spine: true, guides: true, rulers: true, horizon: true, bbox: true, bg: true,
     previewUniform: '', renderer: 'mesh', uniBrightness: 1.0, model3d: true, face: true, axes: true, alignAxis: null, baton: { enabled: false, hand: 'r', mode: 'across' }, podium: false } };
 let camType = 'default'; // which entry of the camera list is in force: 'default', a camera type id, or 'custom' (the user changed a camera setting by hand)
@@ -342,7 +344,7 @@ const defaultRenderer = () => (S.init?.gpu?.available ? 'gpu' : 'mesh');   // th
 const modelKey = () => JSON.stringify([S.pose, S.officer, S.camera, S.ui.uniBrightness, baseUniform().id, S.ui.baton, !!S.ui.podium, S.ui.renderer]);
 const modelFresh = () => wantsModel() && S.model.img && S.model.key === modelKey();
 let modelTimer, modelBusy = false;
-function scheduleModel() { clearTimeout(modelTimer); if (wantsModel()) modelTimer = setTimeout(refreshModel, 220); }
+function scheduleModel() { scheduleShadow(); clearTimeout(modelTimer); if (wantsModel()) modelTimer = setTimeout(refreshModel, 220); }
 async function refreshModel() {
   if (!S.ev) { scheduleModel(); return; }   // the first evaluation is not back yet: try again, do not drop the request
   if (!wantsModel() || modelBusy || modelFresh()) return;
@@ -516,7 +518,7 @@ const uploadBackgrounds = guard(async files => {
   S.bgKey = ''; buildBg(); scheduleBackplate(); requestEval(); broadcast();
   toast_ok(`${n} photo${n > 1 ? 's' : ''} added.`);
 });
-function selectBg(id) { S.bgId = id; S.bgKey = ''; buildBg(); buildRandom(); scheduleBackplate(); scheduleSave(); broadcast(); }
+function selectBg(id) { S.bgId = id; S.bgKey = ''; buildBg(); buildShadow(); buildRandom(); scheduleBackplate(); scheduleSave(); broadcast(); }
 const deleteBackground = guard(async id => {
   const r = await api('/api/background_delete', { id }); S.init.backgrounds = r.backgrounds;
   if (S.bgId === id) { S.bgId = S.init.backgrounds[0]?.id || null; S.bgKey = ''; S.bgImg = null; }
@@ -573,9 +575,99 @@ function buildBg() {
     onclick: guard(async () => { const r = await api('/api/background_update', { id: b.id, tags: tags.value.split(',').map(t => t.trim()).filter(Boolean), road_yaw_deg: +road.value || 0, camera_height_cm: +camH.value || null }); Object.assign(b, r.background); toast_ok(`saved "${b.id}": ${b.tags.join(', ') || 'no tags'}` + (b.ground ? ` · road/sidewalk ${Math.round(b.ground.standable_frac * 100)}% of the photo` : ` · no ground mask: the officer's feet are not checked on it`)); }) }, 'save')));
 }
 // ---- random generate: a batch with some values locked to the Studio scene, the rest drawn by the generator
-const RND = { gesture: 'random', camera_type: 'random', lockCamera: false, background: 'random', baton: false, podium: 0,
+const RND = { gesture: 'random', camera_type: 'random', lockCamera: false, background: 'random', baton: false, podium: 0, shadow: 'off',
   turn: 'junction', people: true, minHeight: 0, lens: true, n: 20, seed: Math.floor(Math.random() * 1e6), renderer: 'gpu' };
 let rndPoll = null;
+// ============================================================ shadow (shadows.py): the officer's cast shadow on the photo
+// The layer is the exact shadow of the posed 3D mesh (server /api/shadow), drawn under the officer in the camera view; the
+// Render preview draws the same shadow into the photo. "from the photo": the sun read from the shadows in the photo (marked by
+// hand first); "custom": a direction relative to this view and a length / height ratio.
+const SH_DEFAULT = { on: false, mode: 'photo', direction_deg: 30, length_ratio: 0.8, strength: 0.55, softness: 0.25, contact: 0.5 };
+const shadowUi = () => (S.ui.shadow ||= { ...SH_DEFAULT });
+const wantsShadow = () => !!(shadowUi().on && S.init && baseUniform().has_mesh);
+const shadowKey = () => JSON.stringify([S.pose, S.officer, S.camera, S.ui.baton, !!S.ui.podium, baseUniform().id, shadowUi(), S.bgId,
+  (bgEntry()?.shadows?.manual || []).length]);
+const shadowFresh = () => wantsShadow() && S.shadow.img && S.shadow.key === shadowKey();
+let shadowTimer, shadowBusy = false;
+function scheduleShadow() { clearTimeout(shadowTimer); if (wantsShadow()) shadowTimer = setTimeout(refreshShadow, 260); }
+async function refreshShadow() {
+  if (!S.ev) { scheduleShadow(); return; }
+  if (!wantsShadow() || shadowBusy || shadowFresh()) return;
+  shadowBusy = true; const key = shadowKey();
+  try {
+    const r = await api('/api/shadow', { ...scene(), shadow: shadowUi(), bg_id: S.bgId });
+    let img = null; if (r.image) { img = new Image(); img.src = r.image; await img.decode(); }
+    S.shadow = { img, key, info: r.shadow, arrow: r.arrow }; buildShadowInfo(); redraw();
+  } catch (e) { toast('shadow: ' + e.message); S.shadow = { img: null, key, info: null, arrow: null }; }
+  finally { shadowBusy = false; if (wantsShadow() && !shadowFresh()) scheduleShadow(); }
+}
+function drawShadowCam(g, k) {
+  if (!wantsShadow()) return;
+  const W = S.ev.camera.width, H = S.ev.camera.height;
+  if (S.shadow.img && S.shadow.key === shadowKey()) g.drawImage(S.shadow.img, 0, 0, W, H);
+  const a = S.shadow.arrow;
+  if (a && S.shadow.key === shadowKey()) {               // the shadow's direction and length from the officer's feet
+    g.save(); g.strokeStyle = '#ffd166'; g.fillStyle = '#ffd166'; g.lineWidth = 2 / k; g.setLineDash([7 / k, 5 / k]);
+    g.beginPath(); g.moveTo(a[0][0], a[0][1]); g.lineTo(a[1][0], a[1][1]); g.stroke(); g.setLineDash([]);
+    const ang = Math.atan2(a[1][1] - a[0][1], a[1][0] - a[0][0]), L = 10 / k;
+    g.beginPath(); g.moveTo(a[1][0], a[1][1]); g.lineTo(a[1][0] - L * Math.cos(ang - 0.45), a[1][1] - L * Math.sin(ang - 0.45));
+    g.lineTo(a[1][0] - L * Math.cos(ang + 0.45), a[1][1] - L * Math.sin(ang + 0.45)); g.closePath(); g.fill(); g.restore();
+  }
+  const m = S.markShadow;
+  if (m && m.feet) { g.save(); g.fillStyle = '#ff6b6b'; g.beginPath(); g.arc(m.feet[0], m.feet[1], 5 / k, 0, 7); g.fill(); g.restore(); }
+}
+function buildShadowInfo() {
+  const box = $('#shInfo'); if (!box) return;
+  const b = bgEntry(), ph = b?.shadows, i = S.shadow.info;
+  const lines = [];
+  if (b) lines.push(ph ? `photo: ${ph.weather || '?'} · ${ph.status === 'found' ? ph.found.length + ' shadow(s) found' : 'no direction read'}${ph.manual?.length ? ' · ' + ph.manual.length + ' marked by hand' : ''}` : 'photo: not read yet (read again below)');
+  if (i) lines.push(i.sun ? `in use: ${i.source} · direction ${fmt(i.direction_deg, 0)}° · length ${fmt(i.length_ratio, 2)} × height · sun ${fmt(i.sun_elevation_deg, 0)}° high` : `in use: ${i.source} (no sun shadow)`);
+  if (i?.note) lines.push(i.note);
+  box.replaceChildren(...lines.map(t => el('div', {}, t)));
+}
+function buildShadow() {
+  const p = $('#pShadow'); p.replaceChildren(); resetInfo(p);
+  const sh = shadowUi();
+  const changed = () => { scheduleShadow(); scheduleSave(); redraw(); broadcast(); };
+  const on = el('input', { type: 'checkbox', checked: !!sh.on, onchange: () => { sh.on = on.checked; if (!sh.on) S.shadow = { img: null, key: '', info: null, arrow: null }; buildShadow(); changed(); } });
+  p.append(el('label', { class: 'check-line' }, on, ' cast a shadow (exact shape of the 3D officer)'));
+  if (!baseUniform().has_mesh) p.append(el('div', { class: 'hint' }, 'the shadow needs a 3D model (Officer model panel)'));
+  const mode = el('select', {}, [['photo', 'from the photo (marked / found shadows)'], ['custom', 'custom vector']].map(([v, t]) => el('option', { value: v }, t)));
+  mode.value = sh.mode; mode.addEventListener('change', () => { sh.mode = mode.value; buildShadow(); changed(); });
+  p.append(el('div', { class: 'row two' }, el('label', {}, 'direction from'), Object.assign(mode, { style: 'grid-column: span 2' })));
+  const sub = el('div', {}); p.append(sub);
+  if (sh.mode === 'custom') {
+    numField(sub, 'direction (°)', sh, 'direction_deg', -180, 180, 1, changed);
+    numField(sub, 'length × height', sh, 'length_ratio', 0.1, 3, 0.01, changed);
+  }
+  numField(sub, 'darkness', sh, 'strength', 0, 1, 0.01, changed);
+  numField(sub, 'softness', sh, 'softness', 0, 1, 0.01, changed);
+  numField(sub, 'contact', sh, 'contact', 0, 1, 0.01, changed);
+  p.append(el('div', { class: 'hint', id: 'shInfo' }));
+  const b = bgEntry();
+  if (b) p.append(el('div', { class: 'line' },
+    el('button', { title: 'Click where a person / vehicle in the photo stands, then where its shadow ends. Marked shadows decide the direction for this photo (here and in generate).',
+      onclick: () => { if (!S.ui.bg) toast('turn the background on to see the photo', 'info'); S.markShadow = { feet: null }; toast('click the feet of a person in the photo, then the end of their shadow (Esc cancels)', 'info'); redraw(); } }, '✎ mark a shadow'),
+    el('button', { title: 'Forget the shadows marked by hand on this photo', onclick: guard(async () => { const r = await api('/api/shadow_clear', { bg_id: b.id }); Object.assign(b, r.background); delete b.shadows?.manual; if (!r.background.shadows?.manual) delete b.shadows?.manual; buildShadow(); changed(); }) }, 'clear marks'),
+    el('button', { title: 'Read the photo again: weather (blue sky?) and the shadows of its people / vehicles', onclick: guard(async () => { const r = await api('/api/shadow_detect', { bg_id: b.id }); b.shadows = r.background.shadows; buildShadow(); changed(); toast_ok(`photo read: ${b.shadows.weather}, ${b.shadows.found.length} shadow(s)`); }) }, '↻ read photo')));
+  buildShadowInfo();
+  secInfo(p, 'shadow', 'The shadow is the 3D officer projected along the sun onto the ground, so its shape follows every pose; it darkens the photo under the officer and is never part of the mask. ' +
+    '"From the photo" points it like the shadows already in the photo: marked by hand first (✎ mark a shadow: click a person\'s feet, then the end of their shadow), else found automatically (sunny photos only); an overcast, dusk or night photo gets only the soft contact shadow; when no direction is known the custom vector is used. ' +
+    'Custom direction: 0° = away from the camera, 90° = to the right, 180° = towards the camera, -90° = left; length = shadow length / officer height (a high sun gives a short shadow). ' +
+    'The dashed arrow shows the direction and length; Render preview draws the same shadow. In generate the shadow is optional (config "shadow"; Random generate: shadow).');
+}
+async function markShadowClick(uv) {
+  const m = S.markShadow; if (!m) return false;
+  if (!m.feet) { m.feet = uv; redraw(); return true; }
+  const b = bgEntry(); S.markShadow = null;
+  if (!b) { toast('choose a background photo first'); redraw(); return true; }
+  try {
+    const r = await api('/api/shadow_mark', { ...scene(), bg_id: b.id, feet: m.feet, tip: uv, height_cm: 165 });
+    b.shadows = r.background.shadows; shadowUi().mode = 'photo'; buildShadow(); scheduleShadow(); scheduleSave();
+    toast_ok(`shadow marked on ${b.id} (photo pixels ${r.photo_feet.map(Math.round).join(',')} → ${r.photo_tip.map(Math.round).join(',')})`);
+  } catch (e) { toast(e.message); }
+  redraw(); return true;
+}
 function buildRandom() {
   const p = $('#pRandom'); p.replaceChildren(); resetInfo(p);
   const row = (label, input) => el('div', { class: 'row two' }, el('label', {}, label), Object.assign(input, { style: 'grid-column: span 2' }));
@@ -591,6 +683,7 @@ function buildRandom() {
     row('officer turn', sel('turn', [['junction', 'junction: in its middle, facing its roads'], ['road', '0 / 90 / 180 / 270° from the road'], ...(RND.lockCamera ? [['studio', 'as in this view']] : [])])),
     row('baton', sel('baton', [['false', 'on the belt'], ['true', 'held (right hand)']])),
     row('podium', sel('podium', [['0', 'never'], ['0.15', 'sometimes (15 %)'], ['1', 'always']])),
+    row('shadow', sel('shadow', [['off', 'off'], ['photo', 'from the photo (overcast: contact only)'], ['random', 'random sun']])),
     chk('people', 'consistent size (reliable horizon, else the people in the photo)', buildRandom),
     ...(RND.people && !RND.lockCamera ? [row('min height px', num('minHeight', 0, 2000))] : []),
     chk('lens', 'lens distortion and black border'),
@@ -604,7 +697,7 @@ function buildRandom() {
 const startRandom = guard(async () => {
   const body = { num_samples: RND.n, seed: RND.seed, resolution: [S.camera.width, S.camera.height], gesture: RND.gesture, camera_type: RND.camera_type,
     background: RND.background, baton: RND.baton === true || RND.baton === 'true', podium_probability: +RND.podium, officer_turn: RND.turn,
-    size_from_people: RND.people, min_officer_height_px: RND.people ? RND.minHeight : 0, lens: RND.lens, renderer: RND.renderer };
+    size_from_people: RND.people, min_officer_height_px: RND.people ? RND.minHeight : 0, lens: RND.lens, renderer: RND.renderer, shadow: RND.shadow };
   if (RND.lockCamera) { const c = S.camera; body.camera_lock = { distance_cm: c.distance_cm, height_cm: c.height_cm, azimuth_deg: c.azimuth_deg, focal_length_mm: c.focal_length_mm, aim_height_cm: c.aim_height_cm, roll_deg: c.roll_deg, sensor_width_mm: c.sensor_width_mm }; }
   showRandom(await api('/api/random_generate', body));
   clearInterval(rndPoll); rndPoll = setInterval(guard(async () => { const r = await api('/api/random_status', {}); showRandom(r); if (!r.running) { clearInterval(rndPoll); r.error ? toast('random generate: ' + r.error) : toast_ok(`random generate: ${r.samples.length} sample(s) in ${r.out_dir}`); } }), 1500);
@@ -859,6 +952,7 @@ function drawCam() {
     g.textAlign = 'left'; const vmax = c.vfov_deg / 2, vs = c.vfov_deg > 40 ? 10 : 5; // vertical ruler relative to the optical axis, horizon-independent
     for (let a = -Math.floor(vmax / vs) * vs; a <= vmax; a += vs) { const v = c.cy - c.fx * Math.tan(rad(a)); g.beginPath(); g.moveTo(0, v); g.lineTo(8 / k, v); g.stroke(); if (a % (2 * vs) === 0) g.fillText(a + '°', 12 / k, v + 3 / k); } g.textAlign = 'start'; }
   const MC = modelColors(), mesh3d = modelFresh();
+  drawShadowCam(g, k);
   if (!mesh3d) drawPodiumCam(g, k);
   if (mesh3d) g.drawImage(S.model.img, 0, 0, W, H);
   else if (S.ui.capsules) for (const s of [...ev.segments].sort((a, b) => b.depth - a.depth)) { g.fillStyle = hex(MC[s.region] || [170, 170, 170]) + 'b0'; g.strokeStyle = '#00000060'; g.lineWidth = lw;
@@ -1031,6 +1125,8 @@ function alignView(k) {
     Object.assign(c, { azimuth_deg: az, distance_cm: clamp(reach, MIN_DIST, MAX_DIST), height_cm: clamp(c.aim_height_cm, 20, 1500) }); }
   Object.assign(c, { yaw_offset_deg: 0, pitch_offset_deg: 0, roll_deg: 0 }); S.ui.alignAxis = k;
   markCustom(); syncCam(); requestEval(); redraw(); }
+cam.addEventListener('pointerdown', e => { if (!S.markShadow || !S.ev || e.button !== 0) return; e.stopImmediatePropagation(); e.preventDefault();
+  const p = ptr(cam, e), k = cam.width / S.ev.camera.width; markShadowClick([p[0] / k, p[1] / k]); }, true);
 cam.addEventListener('pointerdown', e => { if (!S.ev || e.button !== 0) return; const k = axisHit(rawPtr(cam, e)); if (!k) return;
   e.stopImmediatePropagation(); e.preventDefault(); alignView(k); }, { capture: true });
 // rotation gizmo: drag a ring to turn the joint about that axis
@@ -1091,7 +1187,7 @@ function buildToolbar() {
   for (const [k, l] of [['bg', 'background'], ['model3d', '3D uniform'], ['capsules', 'capsules'], ['bones', 'skeleton'], ['handles', 'handles'], ['bbox', 'bbox'], ['guides', 'thirds'], ['rulers', 'FOV rulers'], ['horizon', 'horizon'], ['axes', 'axes']])
     t.append(el('label', { title: tips[k] }, el('input', { type: 'checkbox', ...(S.ui[k] ? { checked: true } : {}), onchange: e => { S.ui[k] = e.target.checked; redraw(); scheduleSave(); broadcast(); } }), l));
 }
-$('#btnRender').addEventListener('click', guard(async () => { $('#btnRender').disabled = true; try { const r = await api('/api/render', { ...scene(), bg_id: S.bgId, profile_uniform: baseUniform().id, renderer: S.ui.renderer, brightness: S.ui.uniBrightness });
+$('#btnRender').addEventListener('click', guard(async () => { $('#btnRender').disabled = true; try { const r = await api('/api/render', { ...scene(), shadow: shadowUi(), bg_id: S.bgId, profile_uniform: baseUniform().id, renderer: S.ui.renderer, brightness: S.ui.uniBrightness });
   $('#renderBox').style.display = 'block'; $('#renderImg').onload = () => $('#renderBox').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('#renderImg').src = r.image; const b = r.bbox; $('#renderInfo').textContent = ` [${r.renderer}${r.renderer !== 'proxy' ? ', cloth brightness ' + r.brightness.toFixed(2) : ''}]` + (b ? ` — mask bbox ${b.xyxy.join(', ')}  (${b.xywh[3]} px tall${b.truncated ? ', TRUNCATED at image edge' : ''})` : ' — officer not visible'); } finally { $('#btnRender').disabled = false; } }));
 for (const [id, type, ext] of [['#btnSavePng', 'image/png', 'png'], ['#btnSaveJpg', 'image/jpeg', 'jpg']]) $(id).addEventListener('click', () => { // save the render preview in the chosen format
   const im = $('#renderImg'), c = document.createElement('canvas'); c.width = im.naturalWidth; c.height = im.naturalHeight;
@@ -1127,7 +1223,7 @@ const toggleHelp = open => { helpModal.hidden = open === undefined ? !helpModal.
 $('#btnHelp').addEventListener('click', () => toggleHelp(true)); $('#helpClose').addEventListener('click', () => toggleHelp(false));
 helpModal.addEventListener('click', e => { if (e.target === helpModal) toggleHelp(false); });
 addEventListener('keydown', e => {
-  if (e.key === 'Escape') { if (S.rot) { leaveRot(); redraw(); } hideCtx(); toggleHelp(false); return; }
+  if (e.key === 'Escape') { if (S.markShadow) { S.markShadow = null; redraw(); } if (S.rot) { leaveRot(); redraw(); } hideCtx(); toggleHelp(false); return; }
   const t = e.target, typing = !!t && (t.isContentEditable || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || (t.tagName === 'INPUT' && !['range', 'checkbox', 'color', 'file', 'button'].includes(t.type)));
   if ((e.ctrlKey || e.metaKey) && !e.altKey) { // undo / redo live in the main window only (a pop-out has no history of its own)
     const k = e.key.toLowerCase(); if (SINGLE || typing) return;
@@ -1150,7 +1246,7 @@ wireDrop($('#pBg'), uploadBackgrounds);
     const st = S.init.state || {}; S.pose = st.pose && Object.keys(st.pose).length ? st.pose : S.init.defaults.pose; S.officer = { ...S.init.defaults.officer, ...(st.officer || {}) }; S.officerPrev = { ...S.officer }; S.camera ={ ...S.init.defaults.camera, ...(st.camera || {}) };
     S.bgId = S.init.backgrounds.some(b => b.id === st.bgId) ? st.bgId : (S.init.backgrounds[0]?.id || null); Object.assign(S.ui, st.ui || {}); S.ui.alignAxis = null;   // the default view below is not aligned to an axis
     applyDefaultView(bgEntry()); // every start-up begins from the default view (the saved pose is kept)
-    buildOfficer(); buildCamera(); buildBg(); buildPose(); buildModelPanel(); buildRandom(); wireModelDrop(); buildToolbar(); buildRenderOpts();
+    buildOfficer(); buildCamera(); buildBg(); buildShadow(); buildPose(); buildModelPanel(); buildRandom(); wireModelDrop(); buildToolbar(); buildRenderOpts();
     $('#status').textContent = 'ready · data/studio'; requestEval(); historyCommit();
     if (chan) chan.postMessage({ type: 'boot', from: WIN, boot: S.init.boot }); // pages of an older Studio run close (see retire)
     if (SINGLE && chan) chan.postMessage({ type: 'hello', from: WIN, boot: S.init.boot }); // ask the main window for its live state

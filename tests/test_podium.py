@@ -100,7 +100,7 @@ class GeneratorTests(unittest.TestCase):
             man0 = run(GenerationContext(make_config(td / "n", num_samples=2, max_attempts_per_sample=50)), td / "out0", log=lambda *_: None)
             for s, s0 in zip(man["samples"], man0["samples"]):
                 meta = json.loads((td / "out" / s["metadata"]).read_text())
-                self.assertEqual(meta["schema_version"], "1.8")
+                self.assertEqual(meta["schema_version"], "1.9")
                 self.assertTrue(meta["officer"]["podium"]["enabled"])
                 self.assertAlmostEqual(meta["officer"]["world_position"][2], meta["officer"]["podium"]["lift_cm"], places=2)
                 self.assertEqual(json.loads((td / "out0" / s0["metadata"]).read_text())["officer"]["podium"], {"enabled": False})

@@ -85,7 +85,7 @@ class LibraryTests(unittest.TestCase):
         g = e["ground"]
         self.assertEqual((g["file"], g["method"], g["standable_frac"]), ("images/photo.ground.png", "manual", 0.3333))
         idx = json.loads((self.td / "lib" / "index.json").read_text())
-        self.assertEqual(idx["schema_version"], "1.2")
+        self.assertEqual(idx["schema_version"], "1.3")
         validate_instance(idx, "background_library")
         lib = BackgroundLibrary(self.td / "lib")
         self.assertEqual(lib.integrity_errors(), [])
@@ -167,7 +167,7 @@ class GenerationTests(unittest.TestCase):
         self.assertTrue(man["samples"])
         for s in man["samples"]:
             meta = json.loads((out / s["metadata"]).read_text())
-            self.assertEqual(meta["schema_version"], "1.8")
+            self.assertEqual(meta["schema_version"], "1.9")
             self.assertIn(meta["background"]["ground_check"]["status"], ("ok", "shifted", "not_visible"))
         (self.td / "b").mkdir(exist_ok=True)
         again = run(GenerationContext(make_config(self.td / "b", background_library=str(self.lib_dir), **FAST)),

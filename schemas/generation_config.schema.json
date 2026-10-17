@@ -394,6 +394,95 @@
   "match_backplate_light": {
    "type": "boolean",
    "description": "Optional (config 1.6): true = the officer is darkened to the photo around them (night, dusk, shade): exposure change log2(luminance / 0.2) in [-4, 0] EV (log-average luminance around the officer and of the whole photo); photos tagged night also get a weak warm street-lamp light instead of the sun. Default false."
+  },
+  "shadow": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": [
+    "enabled"
+   ],
+   "description": "Config 1.7, optional (off when absent): the officer's cast shadow on the ground (shadows.py), the exact shape of the posed mesh projected along the sun, plus a contact shadow under the shoes; needs backend 'mesh'. With it on, the GPU renderer's own ground shadow is off and the sun that lights the officer is the shadow's sun. source 'photo': the sun read from the shadows in the photo (library 'shadows', manual marks first; found or detected when the config is loaded); 'random' / 'fixed': direction / length drawn from the ranges. New RNG stream 'shadow'.",
+   "properties": {
+    "enabled": {
+     "type": "boolean"
+    },
+    "source": {
+     "enum": [
+      "photo",
+      "random",
+      "fixed"
+     ]
+    },
+    "direction_deg": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+     },
+     "minItems": 2,
+     "maxItems": 2,
+     "description": "Shadow direction on the ground relative to the camera's view: 0 = away from the camera, 90 = right, 180 = towards it, -90 = left (sources random / fixed, and unknown_sun random)."
+    },
+    "length_ratio": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": 0.05,
+      "maximum": 4.5
+     },
+     "minItems": 2,
+     "maxItems": 2,
+     "description": "Shadow length / object height (sun elevation = atan(1 / ratio))."
+    },
+    "strength": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "softness": {
+     "type": "array",
+     "items": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+     },
+     "minItems": 2,
+     "maxItems": 2
+    },
+    "contact": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 1
+    },
+    "jitter_deg": {
+     "type": "number",
+     "minimum": 0,
+     "maximum": 45,
+     "description": "source photo: the read sun is moved by up to this much (azimuth; half on the elevation)."
+    },
+    "unknown_sun": {
+     "enum": [
+      "random",
+      "contact",
+      "off"
+     ],
+     "description": "source photo, a sunny photo whose shadow direction could not be read: a random sun ('random'), only the contact shadow, or no shadow."
+    },
+    "no_sun": {
+     "enum": [
+      "contact",
+      "random",
+      "off"
+     ],
+     "description": "source photo, an overcast / dusk / night photo: only the soft contact shadow (default), a random sun, or no shadow."
+    }
+   }
   }
  },
  "$comment": "1.1: backend 'mesh' (skinned uniform mesh, software renderer) and uniform_brightness_range. 1.0 configs stay valid. 1.4: mesh_renderer (cpu | gpu). 1.5: min_officer_height_px. 1.6: size_reference, officer_yaw_mode, road_yaw_jitter_deg, background_ids, camera_overrides."

@@ -36,12 +36,13 @@ from urllib.parse import parse_qs, urlparse
 import numpy as np
 from PIL import Image
 
-from ..backgrounds import compose_backplate
+from ..backgrounds import compose_backplate, plan_backplate
 from ..cli import COCO_EDGES
 from ..gestures import GestureLibrary, pose_validity
 from ..groundtruth import bbox_from_mask
 from .. import baton as batonmod
 from .. import podium as podiummod
+from .. import shadows as shadowmod
 from ..poses import PoseLibrary, merge, mirror_name, mirror_pose, save_pose
 from .. import mesh_renderer
 from ..camera import Camera
@@ -381,6 +382,157 @@ class StudioApp:
         Image.fromarray(rgba, "RGBA").save(buf, "PNG", compress_level=1)
         return buf.getvalue(), "image/png"
 
+    # ----------------------------------------------------------------------------- shadow (shadows.py)
+    def _plate_geometry(self, bg: dict, cam):
+        """(pinhole canvas camera, composition) of the background as this page composes it (_compose_jpeg / _pin_jpeg):
+        photo pixel p -> canvas pixel p * scale + offset."""
+        if cam.lens is not None and cam.lens.active:
+            pin = _cam_from_key(_cam_key(cam))
+            Wr, Hr = canvas_size(pin)
+            hv = pinhole_horizon_row(pin, Hr)
+            canvas = canvas_camera_of(cam)
+        else:
+            Wr, Hr = cam.width, cam.height
+            hv = round(float(core.camera_summary(cam)["horizon_v"]), 1)
+            canvas = cam
+        comp = plan_backplate((int(bg["width"]), int(bg["height"])), {"horizon_y_frac": bg.get("horizon_y_frac")}, hv, Wr, Hr,
+                              np.random.default_rng(0), best_effort=True)
+        return canvas, comp
+
+    def _shadow_spec(self, body: dict, cam) -> dict | None:
+        """The page's Shadow panel as a shadow (generate.cast_shadow), or None when it is off. mode "photo": the sun read from
+        the photo's shadows (marked ones first) through this view; an overcast / dusk / night photo gets the contact shadow
+        only; a sunny photo without a readable direction falls back to the custom vector (noted)."""
+        sh = body.get("shadow") or {}
+        if not sh.get("on"):
+            return None
+
+        def num(key, lo, hi, default):
+            v = sh.get(key, default)
+            if not isinstance(v, (int, float)) or not lo <= v <= hi:
+                raise ApiError(f"shadow.{key} must be a number {lo}..{hi}")
+            return float(v)
+        out = {"enabled": True, "strength": num("strength", 0, 1, 0.55), "softness": num("softness", 0, 1, 0.25),
+               "contact": num("contact", 0, 1, 0.5)}
+        direction, ratio = num("direction_deg", -180, 180, 30.0), num("length_ratio", 0.05, 4.5, 0.8)
+        az = el = None
+        source, note, weather = "custom", None, None
+        if sh.get("mode") == "photo":
+            bg = self.ws.get_background(str(body.get("bg_id"))) if body.get("bg_id") else None
+            if bg is None:
+                note = "no background photo: the custom vector is used"
+            else:
+                weather = (bg.get("shadows") or {}).get("weather")
+                canvas, comp = self._plate_geometry(bg, cam)
+                est = shadowmod.sun_from_photo(bg.get("shadows"), canvas, comp)
+                if est is not None:
+                    az, el, source = est["azimuth_deg"], est["elevation_deg"], f"photo-{est['source']}"
+                elif weather in ("overcast", "night", "dusk"):
+                    return {**out, "sun": False, "source": "contact", "weather": weather,
+                            "note": f"{weather} photo: no sun shadow, only the soft contact shadow"}
+                else:
+                    note = ("the photo has not been read for shadows" if weather is None else
+                            "the photo's shadow direction is unknown (mark one on the photo)") + ": the custom vector is used"
+        if az is None:
+            az, el = shadowmod.sun_from_vector(cam.yaw, direction, ratio)
+        d, r = shadowmod.vector_of_sun(cam.yaw, az, el)
+        return {**out, "sun": True, "sun_azimuth_deg": round(az, 3), "sun_elevation_deg": round(el, 3), "direction_deg": round(d, 2),
+                "length_ratio": round(r, 3), "source": source, "weather": weather, "note": note}
+
+    @staticmethod
+    def _light_for(spec: dict | None) -> dict:
+        """PREVIEW_LIGHT with the shadow's sun (the officer is lit by the sun that casts the shadow)."""
+        if not spec:
+            return PREVIEW_LIGHT
+        if not spec.get("sun"):
+            return {**PREVIEW_LIGHT, "sun_intensity": PREVIEW_LIGHT["sun_intensity"] * 0.35,
+                    "ambient_intensity": PREVIEW_LIGHT["ambient_intensity"] * 1.25}
+        return {**PREVIEW_LIGHT, "sun_direction": shadowmod.sun_direction(spec["sun_azimuth_deg"], spec["sun_elevation_deg"])}
+
+    def _posed_mesh(self, body: dict):
+        """(mesh with baton / podium, fk) of the page's scene; ApiError 404 without a 3D mesh."""
+        officer, _ = self._scene_args(body)
+        pose = self._pose(body)
+        uni = self._uniform_for(body)
+        mesh = self.mesh_for(uni)
+        if mesh is None:
+            raise ApiError(f"uniform '{uni['id']}' has no 3D mesh: the shadow needs one", 404)
+        pose, bspec = self._gripped(pose, body)
+        mesh = batonmod.mesh_with_officer_baton(mesh, bspec, bspec["mode"] if bspec else "across", prop=self.baton_prop())
+        mesh = self._with_podium(mesh, body)
+        R, t = core.officer_transform(officer)
+        return mesh, self.sk.fk(pose).transformed(R, t)
+
+    def api_shadow(self, body) -> dict:
+        """The officer's shadow alone for the camera view: {"image": RGBA PNG (black, alpha = darkness), "shadow": the
+        parameters in force, "arrow": [feet, tip] (frame pixels) of the shadow's direction and length}."""
+        from ..generate import cast_shadow
+        officer, cam_params = self._scene_args(body)
+        cam = core.make_camera(cam_params, officer)
+        spec = self._shadow_spec(body, cam)
+        if spec is None:
+            return {"image": None, "shadow": None, "arrow": None}
+        mesh, fk = self._posed_mesh(body)
+        scale = min(1.0, MODEL_LAYER_MAX_W / cam_params["width"])
+        small = core.make_camera({**cam_params, "width": max(16, round(cam_params["width"] * scale)),
+                                  "height": max(16, round(cam_params["height"] * scale))}, officer)
+
+        def draw(c):
+            white = Image.new("RGB", (c.width, c.height), (255, 255, 255))
+            dark = 255.0 - np.asarray(cast_shadow(mesh, fk, c, white, {**spec, "strength": 1.0}).convert("L"), np.float32)
+            out = np.zeros((c.height, c.width, 4), np.uint8)
+            out[..., 3] = np.clip(dark * spec["strength"] + 0.5, 0, 255).astype(np.uint8)
+            return out
+        rgba = layer_with_lens(draw, small) if small.lens is not None and small.lens.active else draw(small)
+        buf = io.BytesIO()
+        Image.fromarray(rgba, "RGBA").save(buf, "PNG", compress_level=1)
+        arrow = None
+        if spec.get("sun"):
+            a = np.radians(spec["sun_azimuth_deg"] + 180.0)
+            top = max(p[2] for p in fk.positions.values()) - float(officer.get("z", 0.0))
+            g = np.array([officer["x"], officer["y"], 0.0])
+            tip = g + np.array([np.cos(a), np.sin(a), 0.0]) * spec["length_ratio"] * top
+            uv, _ = cam.project(np.array([g, tip]))
+            if np.isfinite(uv).all():
+                arrow = [[round(float(x), 1) for x in uv[0]], [round(float(x), 1) for x in uv[1]]]
+        return {"image": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode(), "shadow": spec, "arrow": arrow}
+
+    def _frame_to_photo(self, bg: dict, cam, uv) -> list[float]:
+        """A pixel of the camera view (distorted frame) -> the photo pixel the page shows there."""
+        uv = np.asarray(uv, float).reshape(1, 2)
+        canvas, comp = self._plate_geometry(bg, cam)
+        if cam.lens is not None and cam.lens.active:
+            uv = cam.undistort_uv(uv) + [(canvas.width - cam.width) / 2.0, (canvas.height - cam.height) / 2.0]
+        s, (ox, oy) = comp["scale"], comp["offset_px"]
+        return [round(float((uv[0, 0] - ox) / s), 1), round(float((uv[0, 1] - oy) / s), 1)]
+
+    def api_shadow_mark(self, body) -> dict:
+        """Mark a shadow of the photo by hand from two clicks in the camera view (where an object stands, where its shadow
+        ends); stored in photo pixels in the library (marked shadows win over found ones)."""
+        bg = self.ws.get_background(str(body.get("bg_id")))
+        if bg is None:
+            raise ApiError("unknown background", 404)
+        officer, cam_params = self._scene_args(body)
+        cam = core.make_camera(cam_params, officer)
+        try:
+            feet, tip = (self._frame_to_photo(bg, cam, body[k]) for k in ("feet", "tip"))
+            entry = self.ws.shadow_mark(bg["id"], feet, tip, float(body.get("height_cm", 165.0)))
+        except (KeyError, TypeError, ValueError, WorkspaceError) as e:
+            raise ApiError(f"shadow mark: {e}") from None
+        return {"background": entry, "photo_feet": feet, "photo_tip": tip}
+
+    def api_shadow_clear(self, body) -> dict:
+        try:
+            return {"background": self.ws.shadow_clear(str(body.get("bg_id")))}
+        except WorkspaceError as e:
+            raise ApiError(str(e)) from None
+
+    def api_shadow_detect(self, body) -> dict:
+        try:
+            return {"background": self.ws.shadow_detect(str(body.get("bg_id")))}
+        except WorkspaceError as e:
+            raise ApiError(str(e)) from None
+
     def api_render(self, body) -> dict:
         """Render with the project's proxy backend over the composed backplate: the generator's own pipeline."""
         officer, cam_params = self._scene_args(body)
@@ -411,17 +563,22 @@ class StudioApp:
         R, t = core.officer_transform(officer)
         fk = self.sk.fk(pose).transformed(R, t)
         extra = [(*batonmod.segment(self.sk, fk, bspec, bspec["mode"]), bspec["radius_cm"], "leather")] if bspec else None
+        spec = self._shadow_spec(body, cam) if mesh is not None else None
+        light = self._light_for(spec)
 
         def draw(c, bg):
             if mesh is not None:
-                return render_mesh(mesh, fk, c, bg, colors, PREVIEW_LIGHT, float(brightness))
+                if spec:                                          # the officer's shadow on the photo, the officer over it
+                    from ..generate import cast_shadow
+                    bg = cast_shadow(mesh, fk, c, bg, spec)
+                return render_mesh(mesh, fk, c, bg, colors, light, float(brightness), ground_shadow=False)
             return render(self.sk, fk, c, bg, colors, PREVIEW_LIGHT, extra_capsules=extra)   # uniforms without a mesh (or an explicit request): capsule proxy
         rgb, mask = render_with_lens(draw, cam, plate) if lensed else draw(cam, plate)
         buf = io.BytesIO()
         Image.fromarray(rgb).save(buf, "PNG")
         return {"image": "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode(),
                 "bbox": bbox_from_mask(mask), "uniform": uni["id"], "renderer": want if mesh is not None else "proxy",
-                "brightness": float(brightness) if mesh is not None else 1.0}
+                "brightness": float(brightness) if mesh is not None else 1.0, "shadow": spec}
 
     def api_save_pose(self, body) -> dict:
         pid, kind = str(body.get("id", "")), body.get("kind")
@@ -641,6 +798,12 @@ class StudioApp:
             cfg["lens_distortion"] = False
         if body.get("renderer", "gpu") == "gpu" and self.gpu_info().get("available"):
             cfg["mesh_renderer"] = "gpu"
+        shadow = body.get("shadow", "off")
+        if shadow not in ("off", "photo", "random"):
+            raise ApiError("shadow must be 'off', 'photo' or 'random'")
+        if shadow != "off":                                     # config 1.7: the officer's shadow (shadows.py)
+            cfg["schema_version"] = "1.7"
+            cfg["shadow"] = {"enabled": True, "source": shadow}
         return cfg
 
     def api_random_generate(self, body) -> dict:
@@ -698,6 +861,8 @@ class StudioApp:
         "/api/state": api_state,
         "/api/background_update": api_background_update, "/api/background_delete": api_background_delete,
         "/api/random_generate": api_random_generate, "/api/random_status": api_random_status,
+        "/api/shadow": api_shadow, "/api/shadow_mark": api_shadow_mark, "/api/shadow_clear": api_shadow_clear,
+        "/api/shadow_detect": api_shadow_detect,
         "/api/models": api_models, "/api/model_activate": api_model_activate,
     }
 
@@ -715,6 +880,12 @@ def _compose_jpeg(ws_root: str, rel: str, horizon_frac, width: int, height: int,
 def _cam_key(cam) -> tuple:
     """Hashable essentials of a lens camera (what the backplate composition depends on)."""
     return (cam.width, cam.height, cam.focal_length_mm, cam.sensor_width_mm, round(cam.pitch, 3), cam.lens.k1, cam.lens.k2, cam.lens.image_circle)
+
+
+def canvas_camera_of(cam):
+    """The pinhole canvas camera the page's lens background is drawn for (the same key as _pin_jpeg)."""
+    from ..lens import canvas_camera
+    return canvas_camera(_cam_from_key(_cam_key(cam)))
 
 
 def _cam_from_key(key: tuple) -> Camera:

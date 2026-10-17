@@ -37,7 +37,7 @@ về cử chỉ/quốc gia ra khỏi code engine, và cho phép kiểm tra mọi
 | Prop | `profiles/<CC>/props/baton.glb`, `podium.glb` | không thuộc model người; renderer thêm vào mesh. Baton: cầm tay (gắn vào khớp tay) hoặc treo ở thắt lưng (gắn vào `pelvis`, vị trí trong fit `belt_baton`); bục gắn vào `root` (D23, D33) |
 | Backplate | `<library>/index.json` | sha256, tag, hàng chân trời, người / xe tham chiếu, bố cục giao lộ, mask vùng đứng được `images/<id>.ground.png` (thư viện 1.1, `src/tosdg/ground.py`, D37) |
 
-Mọi file đều mang `schema_version` và được kiểm tra theo `schemas/*.schema.json`. Phiên bản hiện tại: metadata 1.7, thư viện backplate 1.1, manifest 1.1, uniforms 1.3, gestures 1.2.
+Mọi file đều mang `schema_version` và được kiểm tra theo `schemas/*.schema.json`. Phiên bản hiện tại: metadata 1.9, generation config 1.7, thư viện backplate 1.3, manifest 1.1, uniforms 1.3, gestures 1.2.
 
 ## Quy ước
 
@@ -65,7 +65,7 @@ Các ràng buộc được tính trên hình học FK (hướng chi, hướng l�
 ## Ground truth
 
 - Keypoint 2D: điểm khớp/ổ 3D (FK, toạ độ thế giới) → phép chiếu camera. Các bộ: `coco17`, `hand21_l`, `hand21_r`. Keypoint 3D thế giới cũng được xuất.
-- Khả năng nhìn thấy: chỉ có `in_frame`. **Chưa** mô hình hoá tự che khuất (cần độ sâu từ backend).
+- Khả năng nhìn thấy: `in_frame` và `occluded` (tự che khuất bởi capsule cơ thể / gậy, D41); chưa có che khuất bởi vật trong ảnh nền.
 - BBox: phạm vi sát nhất của instance mask của viên cảnh sát do backend trả về (`source: instance_mask`).
 - Chỉ dẫn giao thông: phía của viên cảnh sát mà camera đứng, và lệnh của cử chỉ cho phía đó (`instruction_for_observer`).
   Không chú thích đèn / biển báo trên ảnh nền (D44).
@@ -104,3 +104,12 @@ mặt phẳng căn theo camera/lớp composure, ánh sáng định hướng + b�
 (tiêu cự, filmback = cảm biến). Render RGB bằng Movie Render Queue và instance mask của viên cảnh sát
 bằng pass Custom Depth/Stencil. Nó phải trả lại biến đổi thế giới của các xương để phần lõi
 kiểm tra phép chiếu keypoint của mình so với engine (test có dung sai).
+
+## Bóng đổ (D46, `shadows.py`)
+
+Ảnh 2D không cho biết mặt trời ở đâu, nên hướng nắng đến từ dữ liệu: (1) bóng đánh dấu tay hoặc tự dò của người / xe trong ảnh nền
+(thư viện, khối `shadows`, vector chân → đỉnh bóng theo pixel ảnh, tính một lần khi nhập — `generate` không chạy thuật toán dò), chiếu
+ngược lên mặt đất qua camera ảo của mẫu; (2) vector tự chỉnh / ngẫu nhiên so với hướng nhìn của camera. Bóng được vẽ bằng cách trượt mọi
+đỉnh của mesh đã skin theo hướng mặt trời xuống z = 0 và raster qua camera pinhole (`shadows.cast`), rồi làm tối ảnh nền
+(`shadows.apply`) trước khi renderer vẽ viên cảnh sát — độc lập renderer, không thuộc mask. Ánh nắng chiếu viên cảnh sát dùng cùng
+mặt trời; ảnh không có nắng chỉ có bóng tiếp xúc và ánh sáng phẳng.
