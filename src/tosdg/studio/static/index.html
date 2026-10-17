@@ -70,13 +70,16 @@ th{color:var(--dim);font-size:11px}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 #busy{color:var(--warn);font-size:12px;display:none}
 #ctx{position:fixed;z-index:70;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:4px;min-width:200px;box-shadow:0 6px 22px #000b}
-#ctx[hidden],#helpModal[hidden]{display:none}
+#ctx[hidden],#helpModal[hidden],#shModal[hidden]{display:none}
 #ctx button{display:block;width:100%;text-align:left;background:none;border:0;padding:7px 10px;border-radius:4px}
 #ctx button:hover{background:#344057}#ctx button.danger{color:var(--bad)}
 #ctx .ctxhead{color:var(--dim);font-size:11px;padding:4px 10px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tip{background:#1f2b3d;border:1px solid #35527a;border-radius:6px;padding:7px 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#cfe0f5}
 .tip[hidden]{display:none}.tip button{padding:1px 8px;font-size:12px;margin-left:auto}.tip button+button{margin-left:0}
-#helpModal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:30}
+#helpModal,#shModal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:30}
+#shModal .shlist{max-height:46vh;overflow:auto;margin:10px 0;display:grid;gap:6px}
+#shModal .shlist button{display:flex;justify-content:space-between;gap:12px;text-align:left}
+#shModal .actions{display:flex;gap:8px;justify-content:flex-end}
 .helpgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}.helpgrid h4{margin:10px 0 4px;color:var(--acc);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
 @media (max-width:760px){.helpgrid{grid-template-columns:1fr}}
 kbd{background:#12151a;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;font:11px monospace}
@@ -165,6 +168,14 @@ body.single.single-cam #vcam,body.single.single-plan #vplan,body.single.single-p
   <details data-k="warn"><summary>Pose warnings</summary><div id="rWarn"></div></details>
 </aside>
 </main>
+<div id="shModal" hidden role="dialog" aria-modal="true" aria-labelledby="shTitle">
+  <div class="mbox" style="max-width:620px">
+    <div class="vh"><b id="shTitle">Photos without a shadow</b></div>
+    <div class="hint" id="shText"></div>
+    <div class="shlist" id="shList"></div>
+    <div class="actions"><button id="shCancel">Cancel and mark shadows</button><button class="primary" id="shGo">Continue (random sun for these)</button></div>
+  </div>
+</div>
 <div id="helpModal" hidden>
   <div class="mbox" style="max-width:760px">
     <div class="vh"><b>Controls &amp; shortcuts</b><span class="sp"></span><button id="helpClose">✕ Close (Esc)</button></div>
@@ -683,7 +694,7 @@ function buildRandom() {
     row('officer turn', sel('turn', [['junction', 'junction: in its middle, facing its roads'], ['road', '0 / 90 / 180 / 270° from the road'], ...(RND.lockCamera ? [['studio', 'as in this view']] : [])])),
     row('baton', sel('baton', [['false', 'on the belt'], ['true', 'held (right hand)']])),
     row('podium', sel('podium', [['0', 'never'], ['0.15', 'sometimes (15 %)'], ['1', 'always']])),
-    row('shadow', sel('shadow', [['off', 'off'], ['photo', 'from the photo (overcast: contact only)'], ['random', 'random sun']])),
+    row('shadow', sel('shadow', [['off', 'off'], ['photo', 'from the photo (overcast: contact only)'], ['marks', 'from marked / found shadows (check photos first)'], ['random', 'random sun']])),
     chk('people', 'consistent size (reliable horizon, else the people in the photo)', buildRandom),
     ...(RND.people && !RND.lockCamera ? [row('min height px', num('minHeight', 0, 2000))] : []),
     chk('lens', 'lens distortion and black border'),
@@ -694,7 +705,29 @@ function buildRandom() {
   p.append(el('div', { class: 'line' }, el('button', { class: 'primary', onclick: startRandom }, '▶ start random generate')), status, grid,
     secInfo(p, 'random', 'Locked values come from this Studio scene; everything set to "random" is drawn by the generator from the camera profiles, gestures and photos, like `tosdg generate`. With "0 / 90 / 180 / 270° from the road" the officer always faces along or across the traffic (+ up to 5°). "Size from people" scales the photo so that a person standing or riding in it is as tall as the officer (x 0.9-1.1); min height then zooms the whole scene, not only the officer. Output: out/studio_random/<time>/ (images, masks, labels, manifest).'));
 }
+// "from marked / found shadows": before a run, the photos without a shadow direction (no mark, nothing found) are listed;
+// Continue = they get a random sun, Cancel = close and mark them (click one to open it with the mark tool on).
+function shadowMarksReady() {
+  return new Promise(async resolve => {
+    let r;
+    try { r = await api('/api/shadow_status', { background: RND.background }); } catch (e) { toast('shadow check: ' + e.message); resolve(false); return; }
+    if (!r.missing.length) { toast_ok(`shadow: every photo has a direction (${r.photos.length})`); resolve(true); return; }
+    const m = $('#shModal'), done = ok => { m.hidden = true; resolve(ok); };
+    $('#shText').textContent = `${r.missing.length} of ${r.photos.length} photo(s) have no shadow direction: no shadow marked by hand and none found ` +
+      'automatically (overcast / night photos, or too few people / vehicles). Continue: they get a random sun direction. ' +
+      'Cancel: mark a shadow on each (click a photo below to open it with "✎ mark a shadow" on: click a person\'s feet, then the end of their shadow).';
+    const by = Object.fromEntries(r.photos.map(p => [p.id, p]));
+    $('#shList').replaceChildren(...r.missing.map(id => el('button', { title: 'open this photo and mark a shadow', onclick: () => {
+      done(false); selectBg(id); $('details[data-k=shadow]').open = true; const sh = shadowUi(); sh.on = true; sh.mode = 'photo'; buildShadow();
+      S.markShadow = { feet: null }; toast('click the feet of a person in the photo, then the end of their shadow (Esc cancels)', 'info'); redraw(); } },
+      el('span', {}, id), el('span', { class: 'hint' }, by[id].weather || 'not read'))));
+    $('#shGo').onclick = () => done(true);
+    $('#shCancel').onclick = () => done(false);
+    m.hidden = false; $('#shGo').focus();
+  });
+}
 const startRandom = guard(async () => {
+  if (RND.shadow === 'marks' && !(await shadowMarksReady())) return;   // photos without a shadow: continue, or cancel and mark them
   const body = { num_samples: RND.n, seed: RND.seed, resolution: [S.camera.width, S.camera.height], gesture: RND.gesture, camera_type: RND.camera_type,
     background: RND.background, baton: RND.baton === true || RND.baton === 'true', podium_probability: +RND.podium, officer_turn: RND.turn,
     size_from_people: RND.people, min_officer_height_px: RND.people ? RND.minHeight : 0, lens: RND.lens, renderer: RND.renderer, shadow: RND.shadow };
@@ -1223,7 +1256,7 @@ const toggleHelp = open => { helpModal.hidden = open === undefined ? !helpModal.
 $('#btnHelp').addEventListener('click', () => toggleHelp(true)); $('#helpClose').addEventListener('click', () => toggleHelp(false));
 helpModal.addEventListener('click', e => { if (e.target === helpModal) toggleHelp(false); });
 addEventListener('keydown', e => {
-  if (e.key === 'Escape') { if (S.markShadow) { S.markShadow = null; redraw(); } if (S.rot) { leaveRot(); redraw(); } hideCtx(); toggleHelp(false); return; }
+  if (e.key === 'Escape') { if (!$('#shModal').hidden) { $('#shCancel').click(); return; } if (S.markShadow) { S.markShadow = null; redraw(); } if (S.rot) { leaveRot(); redraw(); } hideCtx(); toggleHelp(false); return; }
   const t = e.target, typing = !!t && (t.isContentEditable || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || (t.tagName === 'INPUT' && !['range', 'checkbox', 'color', 'file', 'button'].includes(t.type)));
   if ((e.ctrlKey || e.metaKey) && !e.altKey) { // undo / redo live in the main window only (a pop-out has no history of its own)
     const k = e.key.toLowerCase(); if (SINGLE || typing) return;

@@ -316,6 +316,9 @@ của các vật xung quanh để ra hướng và độ dài tương đối củ
 - Studio: panel **Shadow** (bật / tắt, hướng theo ảnh hoặc vector tự chỉnh: hướng so với camera, dài × chiều cao; độ đậm, độ mềm, bóng
   tiếp xúc), lớp bóng xem trực tiếp dưới model 3D, mũi tên vector bóng, Render preview vẽ cùng bóng; Studio tắt bóng = không bóng
   (trước đó renderer GPU luôn vẽ bóng theo ánh sáng xem trước). Random generate: ô `shadow` (off / theo ảnh / ngẫu nhiên).
+- Random generate *from marked / found shadows* (2026-10-17): dùng hướng bóng đã lưu của từng ảnh (dấu tay trước, tự dò sau); trước khi
+  chạy, popup liệt kê ảnh chưa có hướng — Continue (ảnh đó nhận nắng ngẫu nhiên, `unknown_sun` / `no_sun: random`) hoặc Cancel để vẽ tay.
+  Khác *from the photo* ở chỗ ảnh âm u cũng nhận nắng ngẫu nhiên thay vì chỉ bóng tiếp xúc: người dùng đã chọn có bóng nắng.
 - Giới hạn: mặt đất phẳng (bóng không leo lên xe, tường, bậc thềm; không bị xe phía trước che); ánh sáng trời không ước lượng từ ảnh
   nên màu bóng là độ tối đồng đều; tự dò cần ≥ 3 người / xe có mặt đường quanh bóng; tiêu cự danh định và hiệu chỉnh camera sai thì
   hướng / độ dài tự dò sai theo.

@@ -355,7 +355,12 @@ Bóng của viên cảnh sát trên mặt đường, đúng hình model 3D ở m
 - Khung camera: lớp bóng nằm dưới model 3D, mũi tên vàng nét đứt là hướng và độ dài bóng; Render preview vẽ cùng bóng vào ảnh.
 - **✎ mark a shadow**: bấm vào chân một người trong ảnh, rồi bấm vào đỉnh bóng của họ (Esc huỷ). Bóng được lưu vào thư viện (pixel ảnh)
   và quyết định hướng cho ảnh này ở Studio lẫn `generate`. **clear marks** xoá dấu tay; **↻ read photo** đọc lại ảnh.
-- Random generate: ô **shadow** (off / from the photo / random sun) thêm khối `shadow` vào config.
+- Random generate: ô **shadow** thêm khối `shadow` vào config:
+  - *off*; *from the photo* (ảnh âm u / đêm chỉ có bóng tiếp xúc); *random sun*;
+  - *from marked / found shadows*: mỗi ảnh lấy hướng từ bóng đánh dấu tay hoặc tự dò của nó. Khi bấm ▶ start, Studio đọc những ảnh
+    chưa đọc rồi kiểm tra ảnh nào **chưa có hướng bóng** (không có dấu tay, không dò được); nếu có, một popup liệt kê chúng:
+    **Continue** — tiếp tục, các ảnh đó nhận hướng nắng ngẫu nhiên; **Cancel** — dừng để vẽ tay (bấm một ảnh trong danh sách:
+    ảnh được mở, panel Shadow bật sẵn chế độ ✎ mark a shadow). Dấu tay được lưu trong thư viện nên dùng lại cho mọi lần sinh.
 
 ### 4.5 Pose & gesture
 - **apply preset** — chọn một pose thân và một pose cho mỗi bàn tay, rồi áp dụng.

@@ -521,6 +521,28 @@ class StudioApp:
             raise ApiError(f"shadow mark: {e}") from None
         return {"background": entry, "photo_feet": feet, "photo_tip": tip}
 
+    def api_shadow_status(self, body) -> dict:
+        """Which photos of a Random generate run have a shadow direction: {"photos": [{"id", "direction": "manual" | "found" |
+        None, "marks", "weather"}], "missing": [ids]}. body.background: one photo id, or "random" / absent = every photo on
+        this machine. Photos never read are read now (shadows.py; stored in the library)."""
+        bg = body.get("background")
+        ids = [b["id"] for b in self.ws.list_backgrounds()]
+        if bg not in (None, "", "random"):
+            if bg not in ids:
+                raise ApiError(f"unknown background {bg!r}")
+            ids = [bg]
+        photos = []
+        for i in ids:
+            e = self.ws.get_background(i)
+            if "shadows" not in e:
+                e = self.ws.shadow_detect(i)
+            sh = e.get("shadows") or {}
+            marks = len(sh.get("manual") or [])
+            found = sh.get("status") == "found" and bool(sh.get("found"))
+            photos.append({"id": i, "direction": "manual" if marks else ("found" if found else None), "marks": marks,
+                           "weather": sh.get("weather")})
+        return {"photos": photos, "missing": [x["id"] for x in photos if x["direction"] is None]}
+
     def api_shadow_clear(self, body) -> dict:
         try:
             return {"background": self.ws.shadow_clear(str(body.get("bg_id")))}
@@ -799,11 +821,13 @@ class StudioApp:
         if body.get("renderer", "gpu") == "gpu" and self.gpu_info().get("available"):
             cfg["mesh_renderer"] = "gpu"
         shadow = body.get("shadow", "off")
-        if shadow not in ("off", "photo", "random"):
-            raise ApiError("shadow must be 'off', 'photo' or 'random'")
+        if shadow not in ("off", "photo", "marks", "random"):
+            raise ApiError("shadow must be 'off', 'photo', 'marks' or 'random'")
         if shadow != "off":                                     # config 1.7: the officer's shadow (shadows.py)
             cfg["schema_version"] = "1.7"
-            cfg["shadow"] = {"enabled": True, "source": shadow}
+            cfg["shadow"] = {"enabled": True, "source": "random" if shadow == "random" else "photo"}
+            if shadow == "marks":                               # the photo's marked / found shadow; a photo without one: a random sun
+                cfg["shadow"].update({"unknown_sun": "random", "no_sun": "random"})
         return cfg
 
     def api_random_generate(self, body) -> dict:
@@ -862,7 +886,7 @@ class StudioApp:
         "/api/background_update": api_background_update, "/api/background_delete": api_background_delete,
         "/api/random_generate": api_random_generate, "/api/random_status": api_random_status,
         "/api/shadow": api_shadow, "/api/shadow_mark": api_shadow_mark, "/api/shadow_clear": api_shadow_clear,
-        "/api/shadow_detect": api_shadow_detect,
+        "/api/shadow_detect": api_shadow_detect, "/api/shadow_status": api_shadow_status,
         "/api/models": api_models, "/api/model_activate": api_model_activate,
     }
 

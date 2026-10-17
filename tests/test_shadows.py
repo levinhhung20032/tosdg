@@ -286,10 +286,36 @@ class Studio(unittest.TestCase):
         self.assertEqual(sh["source"], "photo-manual")
         self.assertNotIn("manual", self.app.api_shadow_clear({"bg_id": self.bg})["background"]["shadows"])
 
+    def test_shadow_status_lists_the_photos_without_a_direction(self):
+        lib = BackgroundLibrary(self.app.ws.lib_dir)
+        for i in lib.by_id:                                          # forget what was read: the status reads them again
+            lib.clear_shadows(i)
+        lib.save()
+        r = self.app.api_shadow_status({"background": "random"})
+        ids = {p["id"] for p in r["photos"]}
+        self.assertEqual(ids, {b["id"] for b in self.app.ws.list_backgrounds()})
+        self.assertTrue(all("shadows" in self.app.ws.get_background(i) for i in ids))   # read and stored
+        self.assertIn(self.bg, r["missing"])                          # fixture photos: no people, no direction
+        body = self.base()
+        officer, cam_params = self.app._scene_args(body)
+        from tosdg.studio import core
+        cam = core.make_camera(cam_params, officer)
+        _, comp = self.app._plate_geometry(self.app.ws.get_background(self.bg), cam)
+        s, (ox, oy) = comp["scale"], comp["offset_px"]
+        self.app.api_shadow_mark({**body, "feet": [200 * s + ox, 230 * s + oy], "tip": [260 * s + ox, 250 * s + oy]})
+        one = self.app.api_shadow_status({"background": self.bg})
+        self.assertEqual((one["photos"][0]["direction"], one["missing"]), ("manual", []))
+        self.app.api_shadow_clear({"bg_id": self.bg})
+        with self.assertRaises(Exception):
+            self.app.api_shadow_status({"background": "no-such-photo"})
+
     def test_random_config_shadow(self):
         cfg = self.app.random_config({"shadow": "photo", "officer_turn": "road"})
         self.assertEqual((cfg["shadow"], cfg["schema_version"]), ({"enabled": True, "source": "photo"}, "1.7"))
         self.assertNotIn("shadow", self.app.random_config({"officer_turn": "road"}))
+        marks = self.app.random_config({"shadow": "marks", "officer_turn": "road"})["shadow"]
+        self.assertEqual(marks, {"enabled": True, "source": "photo", "unknown_sun": "random", "no_sun": "random"})
+        self.assertEqual(self.app.random_config({"shadow": "random", "officer_turn": "road"})["shadow"]["source"], "random")
         with self.assertRaises(Exception):
             self.app.random_config({"shadow": "sometimes", "officer_turn": "road"})
 
