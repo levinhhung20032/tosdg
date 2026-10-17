@@ -2,7 +2,7 @@
 
 **Phiên bản:** v4_beta_final (2026-10-17). **Giai đoạn:** MVP — phần lõi độc lập với engine đã hoàn thành và kiểm chứng trên backend proxy (capsule) và backend mesh (model 3D có skin, phần mềm).
 Backend Unreal chưa bắt đầu (môi trường build hiện không có Unreal Engine hay Blender).
-**Cập nhật lần cuối:** 2026-10-16. Lịch sử thay đổi: `docs/CHANGELOG.md`; quyết định thiết kế: `docs/DECISIONS.md` (D1–D46).
+**Cập nhật lần cuối:** 2026-10-16. Lịch sử thay đổi: `docs/CHANGELOG.md`; quyết định thiết kế: `docs/DECISIONS.md` (D1–D47).
 
 ## Tóm tắt một dòng
 Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn giao thông) tái lập được từng byte, với model 3D Tripo đã được chỉnh theo giải phẫu và không còn lỗi hình học thấy được ở các tư thế đã thử; **chất lượng ảnh còn chưa đủ để huấn luyện nhận dạng cử chỉ bàn tay** (người quá nhỏ trong khung, nền không phải đường phố Việt Nam, không có bóng).
@@ -34,6 +34,8 @@ Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn
 
 **Hiệu chỉnh camera ảnh nền** (D42, `calibrate.py`): độ cao camera + đường chân trời từ người / xe / rào chắn đánh dấu tay, khớp bền vững có kiểm tra độ tin cậy; `backgrounds calibrate`, `backgrounds objects`.
 
+**Sinh song song** (D47, `parallel.py`): `generate` / `reproduce --workers N|auto`, file giống từng byte với mọi N; N tối đa đọc từ máy (CPU, bộ nhớ commit, VRAM), đo một lần và lưu ở `data/machine.json` (`tosdg machine --refresh` đo lại); `--renderer cpu|gpu`. 40 mẫu: GPU 107 → 60 s, CPU 96 → 49 s.
+
 **Bóng đổ** (D46, `shadows.py`): bóng đúng hình mesh trên mặt đường (viền mềm, bóng tiếp xúc), config `shadow` tuỳ chọn; thời tiết + hướng nắng đọc từ bóng của người / xe trong ảnh nền (thư viện 1.3) hoặc đánh dấu tay; Studio panel Shadow.
 
 **Studio** (`tosdg studio`, `start_studio.bat`): upload nền 2D (đường chân trời tự dò, kéo tay được), camera (quỹ đạo, ống kính, méo, viền đen) với thước FOV và góc nhìn từ trên/bên, kéo skeleton (IK bình phương tối thiểu có giảm chấn trên FK thật, gizmo xoay Alt + nhấp), Gesture match, Generator check, Render preview (mesh hoặc capsule, ⬇ PNG/JPG), model 3D trực tiếp trong khung camera, baton và bục, lưu pose/cảnh, đổi model. Cổng độc quyền, khoá workspace, `start_studio.bat` đóng bản đang chạy trước khi mở bản mới, tự dừng khi đóng tab. Thư mục làm việc `data/studio/` (git bỏ qua). **Random generate** (D40): sinh một lô với các thông số khoá theo cảnh (cử chỉ, loại camera, góc nhìn, ảnh nền, baton, bục), phần còn lại ngẫu nhiên. Render preview / Generator check của Studio vẫn căn theo đường chân trời đã lưu (chưa dùng camera hiệu chỉnh).
@@ -41,7 +43,7 @@ Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn
 **CLI** (`python -m tosdg`): `generate`, `validate`, `reproduce`, `validate-profile`, `fixtures`, `backgrounds import|ground|people|objects|calibrate|set|remove|check`, `overlay`, `export` (COCO / YOLO-pose / CVAT), `pose-preview`, `import-model`, `studio`. Lỗi đầu vào là một dòng `error: ...` với mã thoát 2 (`TOSDG_DEBUG=1` hiện traceback).
 
 ## Kiểm thử
-`python -m unittest discover -s tests -t tests` → **339 test, tất cả đều qua** (~135 giây; renderer GPU tự bỏ qua khi máy không có), gồm:
+`python -m unittest discover -s tests -t tests` → **349 test, tất cả đều qua** (~135 giây; renderer GPU tự bỏ qua khi máy không có), gồm:
 - Smoke E2E: 3 mẫu, đủ file, kiểm tra dataset đạt, sinh lại giống từng byte (cả theo chỉ số), seed khác ⇒ dữ liệu khác.
 - Các ca kiểm tra âm: ảnh trống, thiếu chủ thể, bbox diện tích 0/bị cắt, keypoint ngoài bbox, tay ra hiệu ngoài khung, vi phạm schema, tên file không khớp, file bị sửa/thiếu/thừa; chủ thể ra ngoài khung bị loại và bốc lại.
 - Camera: góc quay khớp công thức đóng của FRotationMatrix; ống kính, viền đen, remap mask.
@@ -70,14 +72,13 @@ Sinh được dataset (ảnh + mask + nhãn keypoint/bbox/cử chỉ/chỉ dẫn
 - **Dữ liệu luật VN chưa được xác minh** (`verified: false`): ý nghĩa cử chỉ mới đối chiếu với tóm tắt thứ cấp của luật 2008 và infographic LuatVietnam; một số tư thế (đi nhanh/chậm, tay nào dùng cho phía nào) được suy từ hình/mô tả nên cần người có chuyên môn kiểm tra; số điều của luật 2024 cần rà soát.
 - Che khuất: có tự che khuất bởi capsule cơ thể (D41), chưa có che khuất bởi vật trong ảnh nền. Méo ống kính chỉ xuyên tâm k1/k2. Bỏ qua roll khi căn chân trời. Trạng thái đèn trên backplate được giả định quay về phía camera.
 - Studio: IK không có tiếp xúc mặt đất (kéo bàn chân thì chân di chuyển chứ pelvis không đổi); JSON cảnh của Studio chỉ là bản chụp để soạn thảo, `generate` chưa đọc nó.
-- Sinh dữ liệu chạy một tiến trình (chưa có `--workers`).
 
 ## Mốc tiếp theo
 **Việc nên làm trước (ngắn hạn):**
 1. ~~Cho viên cảnh sát to hơn trong khung~~ — đã có `min_officer_height_px` (v3.0); phân phối kích thước và tỉ lệ cử chỉ/camera/ngày-đêm theo yêu cầu để sau.
 2. Thu ~200 ảnh ngã tư Việt Nam (dashcam, xe máy, người lái) kèm đường chân trời; hiệu chỉnh ống kính theo ảnh thật.
 3. Ghép ảnh thật hơn: bóng tiếp xúc dưới chân theo hướng mặt trời, khớp nhiễu/độ mờ/nén, cân màu theo nền.
-4. Ghi baton đeo vào metadata (1.7), sinh song song (`--workers`), cho `reproduce` so sánh với file.
+4. Ghi baton đeo vào metadata, cho `reproduce` so sánh với file. (Sinh song song `--workers`: đã có, D47.)
 5. Đo trên 100–200 ảnh cảnh sát thật: huấn luyện trên dữ liệu tổng hợp rồi đánh giá trên tập thật, để biết cải tiến nào đáng làm.
 
 **M2 — Lát cắt dọc cho backend Unreal:** project UE + plugin nạp JSON `Scene`, nhập `profiles/VN/assets/beta.glb`, đặt tư thế cho UE5 Mannequin từ các DOF, đặt CineCamera/backplate/ánh sáng, render RGB + stencil mask cho 5 mẫu smoke, và xuất toạ độ thế giới của xương; test ở phần lõi kiểm tra keypoint chiếu của engine khớp với phần lõi trong vòng 1 px. Cần: phiên bản UE, hệ điều hành/GPU, lựa chọn nhân vật. Blender (Cycles/EEVEE) là bước trung gian có thể.

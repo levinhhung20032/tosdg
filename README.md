@@ -1,6 +1,6 @@
 # Traffic Officer Synthetic Data Generator (`tosdg`)
 
-**v4_beta_final** (2026-10-17) · Python ≥ 3.11 · 339 test · hướng dẫn đầy đủ: [`docs/HUONG_DAN.md`](docs/HUONG_DAN.md)
+**v4_beta_final** (2026-10-17) · Python ≥ 3.11 · 349 test · hướng dẫn đầy đủ: [`docs/HUONG_DAN.md`](docs/HUONG_DAN.md)
 
 Sinh ảnh tổng hợp **cảnh sát giao thông Việt Nam ra hiệu lệnh** trên ảnh đường phố thật, kèm nhãn chính xác:
 bbox, instance mask, 59 keypoint (thân COCO 17 + 2 bàn tay × 21), cử chỉ và **lệnh cho người quan sát** ở vị trí camera.
@@ -35,6 +35,8 @@ Windows: nhấp đúp **`start_studio.bat`**, file này tự cài gói thiếu v
 ```
 python -m tosdg validate-profile configs/smoke.json             # kiểm tra config + profile
 python -m tosdg generate configs/smoke.json --out out/smoke     # sinh lô nhỏ (--overwrite để thay lô cũ)
+python -m tosdg machine                                         # cấu hình máy + số tiến trình tối đa (lưu ở data/machine.json; --refresh đo lại)
+python -m tosdg generate configs/dataset_300.json --out out/vn300 --workers auto --renderer gpu   # song song, cùng file
 python -m tosdg validate out/smoke                              # kiểm tra dataset
 python -m tosdg reproduce out/smoke                             # sinh lại, so từng byte
 python -m tosdg overlay out/smoke --zoom --out overlay.png      # xem nhãn vẽ lên ảnh
@@ -69,7 +71,7 @@ tư thế A (weight 0). Bảng đầy đủ: [HUONG_DAN mục 7b](docs/HUONG_DAN
 ## Kiểm thử
 
 ```
-python -m unittest discover -s tests -t tests     # 339 test, ~2–3 phút; test renderer GPU tự bỏ qua khi máy không có GPU
+python -m unittest discover -s tests -t tests     # 349 test, ~2–3 phút; test renderer GPU tự bỏ qua khi máy không có GPU
 ```
 
 ## Hạn chế chính

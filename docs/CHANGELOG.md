@@ -1,6 +1,10 @@
 # CHANGELOG
 
-Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết kế: `docs/DECISIONS.md` (D1–D46). Bỏ qua các chỉnh nhỏ (chữ, căn lề, đổi tên biến).
+Các thay đổi theo phiên bản, mới nhất ở trên. Chi tiết thiết kế: `docs/DECISIONS.md` (D1–D47). Bỏ qua các chỉnh nhỏ (chữ, căn lề, đổi tên biến).
+
+## Chưa phát hành
+
+- **Sinh song song** (D47): `tosdg generate --workers N|auto` và `tosdg reproduce --workers N|auto` — N tiến trình, file giống từng byte với 1 tiến trình; `auto` = N tối đa máy chạy được (CPU, bộ nhớ commit, VRAM khi dùng GPU), xin nhiều hơn thì giới hạn lại và in lý do; tiến trình con chết thì mẫu được làm lại ở tiến trình chính. Lệnh mới `tosdg machine` (cấu hình máy, N tối đa theo renderer). Cấu hình máy đo **một lần** và lưu ở `data/machine.json` (schema `machine` 1.0, git bỏ qua); lần sau chỉ đọc; `tosdg machine --refresh` đo lại (tự đo lại khi file của máy khác / hỏng). `generate --renderer cpu|gpu` chọn renderer tay. 40 mẫu: GPU 107 → 60 s (3 tiến trình), CPU 96 → 49 s (4). Module `parallel.py`; `generate.run` tách thành `generate_index` + `build_manifest`; `rejection_counts` trong manifest sắp theo tên. Bộ test: 339 → 349 (`tests/test_parallel.py`).
 
 ## v4_beta_final — 2026-10-17
 

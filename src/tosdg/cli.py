@@ -6,6 +6,7 @@ Contents:
   cmd_generate
   cmd_validate
   cmd_reproduce — Check the files, then regenerate samples and compare hashes
+  cmd_machine — CPUs, RAM, GPU of this machine and the --workers it runs
   cmd_bg_import
   cmd_bg_ground — Detect (or set by hand, or remove) the standable-ground masks
   cmd_bg_people — Find (or remove) the reference people of a library's backgrounds
@@ -105,8 +106,13 @@ def cmd_generate(a) -> int:
         ov["background_library"] = str(Path(a.background_library).resolve())
     if a.image_format:
         ov["image_format"] = a.image_format
+    if a.renderer:                                      # cpu / gpu by hand: part of the config (the pictures differ)
+        ov["mesh_renderer"] = a.renderer
     ctx = GenerationContext(a.config, ov)
-    man = run(ctx, a.out, overwrite=a.overwrite)
+    workers, note = _plan_workers(a.workers, ctx)
+    print(f"workers: {note}")
+    from .parallel import run_parallel
+    man = run_parallel(ctx, a.config, ov, a.out, workers, overwrite=a.overwrite)
     errs = validate_dataset(a.out)
     for e in errs:
         print("INVALID", e)
@@ -114,6 +120,48 @@ def cmd_generate(a) -> int:
     print(f"generated {n_ok} sample(s), {n_fail} failure(s), rejections={man['rejection_counts']}, "
           f"dataset validation: {'OK' if not errs else f'{len(errs)} error(s)'}")
     return 1 if (errs or n_fail) else 0
+
+
+def _renderer_of(ctx) -> str:
+    cfg = ctx.config
+    return "proxy" if cfg["backend"] == "proxy" else cfg.get("mesh_renderer", "cpu")
+
+
+def _plan_workers(requested, ctx) -> tuple[int, str]:
+    """--workers N | auto, capped by this machine for the config's renderer (parallel.plan; the machine profile saved in
+    data/machine.json, measured on first use)."""
+    from .parallel import plan
+    return plan(requested, _renderer_of(ctx), log=print)
+
+
+def _workers_arg(v: str):
+    if v == "auto":
+        return "auto"
+    try:
+        n = int(v)
+    except ValueError:
+        raise argparse.ArgumentTypeError("must be a whole number >= 1 or 'auto'") from None
+    if n < 1:
+        raise argparse.ArgumentTypeError("must be >= 1 or 'auto'")
+    return n
+
+
+def cmd_machine(a) -> int:
+    """This machine's CPUs, RAM and GPU, and how many generation workers it runs per renderer (parallel.py): the saved
+    profile (data/machine.json), measured and saved when there is none or with --refresh."""
+    from .parallel import default_profile_path, load_profile
+    path = Path(a.file) if a.file else default_profile_path()
+    prof = load_profile(path, refresh=a.refresh, log=print)
+    ram = (f"{prof['ram_free_mb'] / 1024:.1f} GB free of {prof['ram_total_mb'] / 1024:.1f} GB" if prof["ram_free_mb"] is not None else "unknown")
+    g = prof["gpu"]
+    print(f"{prof['host']} ({prof['os']}), measured {prof['saved_utc']} · profile {path}")
+    print(f"CPU: {prof['cpus']} logical · RAM: {ram} · GPU: " +
+          (f"{g['name']}, {g['vram_free_mb'] / 1024:.1f} GB free of {g['vram_total_mb'] / 1024:.1f} GB" if g else "none found (nvidia-smi)"))
+    for r in ("gpu", "cpu", "proxy"):
+        print(f"  --workers auto with the {r} renderer: {prof['max_workers'][r]}  ({'; '.join(prof['limits'][r])})")
+    if not a.refresh:
+        print("(saved profile: `tosdg machine --refresh` measures the machine again)")
+    return 0
 
 
 def cmd_validate(a) -> int:
@@ -150,7 +198,11 @@ def cmd_reproduce(a) -> int:
             print("WARNING assets changed since generation; byte-identical output not expected")
         idx = a.index if a.index else [s["index"] for s in man["samples"]]
         out = Path(td) / "out"
-        rerun = run(ctx, out, idx, log=lambda *_: None)
+        workers, note = _plan_workers(a.workers, ctx)
+        if workers > 1:
+            print(f"workers: {note}")
+        from .parallel import run_parallel
+        rerun = run_parallel(ctx, cfg_path, {"background_library": str(library)}, out, workers, idx, log=lambda *_: None)
     orig = {s["index"]: s for s in man["samples"]}
     bad = 0
     for s in rerun["samples"]:
@@ -609,7 +661,15 @@ def main(argv=None) -> int:
     s.add_argument("--overwrite", action="store_true",
                    help="replace the dataset already in --out (only dataset files are deleted; other files make it refuse)")
     s.add_argument("--image-format", choices=["png", "jpg"], help="file format of the rgb images (default: the config's image_format, else png)")
+    s.add_argument("--renderer", choices=["cpu", "gpu"], help="mesh renderer (overrides the config's mesh_renderer; backend mesh only)")
+    s.add_argument("--workers", type=_workers_arg, default=1,
+                   help="worker processes: N or 'auto' (capped by this machine's CPUs, RAM and, for the GPU renderer, video "
+                        "memory; see `tosdg machine`). Same files for any N. Default 1")
     s.set_defaults(func=cmd_generate)
+    s = sub.add_parser("machine", help="this machine's CPUs, RAM, GPU and how many --workers it runs (saved in data/machine.json)")
+    s.add_argument("--refresh", action="store_true", help="measure the machine again and save it (free memory changes)")
+    s.add_argument("--file", help="profile file (default: <repo>/data/machine.json)")
+    s.set_defaults(func=cmd_machine)
 
     s = sub.add_parser("validate", help="validate a generated dataset directory")
     s.add_argument("dataset"); s.set_defaults(func=cmd_validate)
@@ -617,6 +677,7 @@ def main(argv=None) -> int:
     s = sub.add_parser("reproduce", help="check the files against the manifest, then regenerate the samples and compare hashes")
     s.add_argument("dataset"); s.add_argument("--index", type=int, nargs="*")
     s.add_argument("--background-library", help="where the background library is now (default: the one recorded in the manifest)")
+    s.add_argument("--workers", type=_workers_arg, default=1, help="worker processes: N or 'auto' (as generate)")
     s.set_defaults(func=cmd_reproduce)
 
     bg = sub.add_parser("backgrounds", help="backplate library").add_subparsers(dest="bgcmd", required=True)

@@ -35,6 +35,7 @@ về cử chỉ/quốc gia ra khỏi code engine, và cho phép kiểm tra mọi
 | Camera profile | `profiles/<CC>/camera_profiles.json` | các khoảng bị ràng buộc; `observer_role` = road_user / infrastructure |
 | Nhân vật | `characters/<id>/skeleton.json` | các khớp (tên theo UE5 Mannequin), DOF giải phẫu + giới hạn, capsule va chạm, các bộ keypoint. `proxy_v1` là chuẩn; `tripo_v1` giữ DOF/giới hạn/capsule nhưng lấy vị trí khớp từ rig của model Tripo và keypoint mặt đo trên mesh (`tools/build_tripo_skeleton.py`, D29) |
 | Prop | `profiles/<CC>/props/baton.glb`, `podium.glb` | không thuộc model người; renderer thêm vào mesh. Baton: cầm tay (gắn vào khớp tay) hoặc treo ở thắt lưng (gắn vào `pelvis`, vị trí trong fit `belt_baton`); bục gắn vào `root` (D23, D33) |
+| Cấu hình máy | `data/machine.json` | CPU, bộ nhớ, GPU và N tối đa cho `--workers` theo renderer (`parallel.py`, D47); đo lần đầu, lưu, git bỏ qua |
 | Backplate | `<library>/index.json` | sha256, tag, hàng chân trời, người / xe tham chiếu, bố cục giao lộ, mask vùng đứng được `images/<id>.ground.png` (thư viện 1.1, `src/tosdg/ground.py`, D37) |
 
 Mọi file đều mang `schema_version` và được kiểm tra theo `schemas/*.schema.json`. Phiên bản hiện tại: metadata 1.9, generation config 1.7, thư viện backplate 1.3, manifest 1.1, uniforms 1.3, gestures 1.2.
@@ -113,3 +114,10 @@ ngược lên mặt đất qua camera ảo của mẫu; (2) vector tự chỉnh 
 đỉnh của mesh đã skin theo hướng mặt trời xuống z = 0 và raster qua camera pinhole (`shadows.cast`), rồi làm tối ảnh nền
 (`shadows.apply`) trước khi renderer vẽ viên cảnh sát — độc lập renderer, không thuộc mask. Ánh nắng chiếu viên cảnh sát dùng cùng
 mặt trời; ảnh không có nắng chỉ có bóng tiếp xúc và ánh sáng phẳng.
+
+## Sinh song song (D47, `parallel.py`)
+
+Mỗi mẫu chỉ phụ thuộc (config, asset, seed của nó), nên N tiến trình (`spawn`) mỗi tiến trình một `GenerationContext` làm mẫu theo
+chỉ số (`generate.generate_index`), tiến trình chính gom kết quả và ghi manifest (`generate.build_manifest`) — file giống từng byte với
+một tiến trình. N tối đa theo cấu hình máy đã lưu (`data/machine.json`): CPU − 1, bộ nhớ (commit) trống / bộ nhớ mỗi tiến trình, VRAM
+trống / VRAM mỗi tiến trình (renderer GPU). Tiến trình chết thì mẫu được làm lại ở tiến trình chính.

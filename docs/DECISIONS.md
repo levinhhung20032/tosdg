@@ -321,3 +321,30 @@ của các vật xung quanh để ra hướng và độ dài tương đối củ
   hướng / độ dài tự dò sai theo.
 - Tương thích: thư viện, metadata và config cũ vẫn đọc được; nhưng `index.json` đổi (khối `shadows`, tag `dusk`) và metadata 1.9 nên
   dataset sinh trước đó không còn tái lập từng byte (như D37).
+
+## D47 — Sinh song song theo tiến trình, N tối đa đọc từ máy; chọn renderer CPU / GPU tay (2026-10-17)
+Người dùng: thêm sinh song song; chọn tay CPU hay GPU; tool đọc cấu hình máy trước khi chạy để xác định N tối đa.
+- **Đúng từng byte với mọi N**: mỗi mẫu có seed riêng H(master_seed, index) và chỉ bốc từ luồng có tên của nó, nên làm theo thứ tự
+  nào, ở tiến trình nào cũng ra cùng file. `parallel.run_parallel`: N tiến trình `spawn` (Windows), mỗi tiến trình tự dựng
+  `GenerationContext` từ đường dẫn config + override (và ngữ cảnh OpenGL riêng khi dùng GPU), làm mẫu theo chỉ số
+  (`generate.generate_index`, dùng chung với `run`); tiến trình chính gom kết quả, ghi manifest (`generate.build_manifest`: mẫu và
+  lỗi theo chỉ số, `rejection_counts` theo tên — manifest giống hệt, trừ `created_utc`). Bước dò người / xe / bóng ghi `index.json`
+  chạy một lần ở tiến trình chính trước khi tách. Mỗi tiến trình 1 luồng BLAS (`OMP_NUM_THREADS=1` nếu chưa đặt).
+- **N tối đa** (`parallel.max_workers`, lệnh `tosdg machine`): min(CPU logic − 1; (bộ nhớ trống − 2 GB) / bộ nhớ mỗi tiến trình;
+  với GPU: (VRAM trống − 0,5 GB) / 1,3 GB, VRAM đọc bằng `nvidia-smi`, không đọc được thì 2). Bộ nhớ trống = min(RAM vật lý trống,
+  commit còn lại) — đo trên máy không có pagefile, 11 tiến trình CPU (theo working set 1,2 GB) **hết bộ nhớ** vì commit đỉnh mỗi tiến
+  trình là 1,8 GB (chuỗi mip của texture 4096²) và 3,3 GB với GPU (driver); hằng số nay 2,2 / 3,5 GB. `--workers auto` = N tối đa;
+  xin nhiều hơn thì chạy N tối đa và in lý do. Tiến trình con chết (hết bộ nhớ, bị kill) không làm dừng lần chạy: mẫu dở được làm lại
+  ở tiến trình chính (cùng file), kèm cảnh báo.
+- **Renderer tay**: `generate --renderer cpu|gpu` ghi đè `mesh_renderer` của config (thuộc config và hash của nó: ảnh hai renderer
+  khác nhau); `reproduce` luôn dùng renderer trong manifest. `--workers` không thuộc config (không đổi hash).
+- **Đo** (RTX 3060 Laptop, 16 luồng, 40 mẫu 1280×720 có bóng): GPU 1 → 107,5 s, 2 → 71,7 s, 3 → 60,2 s; CPU 1 → 92,3–96,5 s,
+  4 → 48,0–49,2 s, 8 → 44,5 s. Mỗi tiến trình khởi động ~5–7 s (nạp model, texture) nên lô nhỏ lợi ít. Băng thông bộ nhớ làm CPU
+  > 4 tiến trình lợi thêm không đáng kể.
+- **Lưu cấu hình máy** (`data/machine.json`, schema `machine` 1.0, git bỏ qua): lần đầu dùng `--workers` (hoặc `tosdg machine`) tool đo
+  máy (CPU, RAM / commit trống, GPU / VRAM trống) và tính N tối đa cho từng renderer (gpu, cpu, proxy), lưu lại; các lần sau chỉ đọc
+  file, không đo lại. Đo lại khi: `tosdg machine --refresh`; file của máy khác (tên máy, số CPU); file làm với hằng số bộ nhớ mỗi
+  tiến trình khác; file hỏng / sai schema. `--workers 1` không đọc file. Bộ nhớ trống thay đổi theo thời gian nên N đã lưu có thể
+  cao hơn lúc chạy; khi đó tiến trình hết bộ nhớ được bù bằng cách làm lại mẫu ở tiến trình chính (cùng file) — `--refresh` cập
+  nhật N. `TOSDG_MACHINE_FILE` đổi chỗ lưu (test).
+- Chưa làm: Studio "Random generate" vẫn một tiến trình (luồng nền của server).

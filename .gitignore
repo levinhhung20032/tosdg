@@ -8,6 +8,8 @@ __pycache__/
 # hand-made, cannot be regenerated: horizons / junctions / tags of the photos, and their sources and licences
 !/data/backgrounds/index.json
 !/data/backgrounds/ATTRIBUTION.md
+# this machine's CPUs / memory / GPU and --workers caps (parallel.py): one per machine
+/data/machine.json
 /out/
 /datasets/
 *.png

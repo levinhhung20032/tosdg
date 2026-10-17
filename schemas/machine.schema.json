@@ -1,0 +1,45 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Machine profile (data/machine.json)",
+ "description": "This machine's CPUs, memory and GPU and the number of generation worker processes each renderer runs here (parallel.py). Measured on first use of --workers and saved; `tosdg machine --refresh` measures again. Git-ignored: it belongs to one machine.",
+ "type": "object",
+ "additionalProperties": false,
+ "required": ["schema_version", "saved_utc", "host", "os", "cpus", "ram_total_mb", "ram_free_mb", "gpu", "per_worker_mb", "max_workers", "limits"],
+ "properties": {
+  "schema_version": {"type": "string", "pattern": "^\\d+\\.\\d+$"},
+  "saved_utc": {"type": "string"},
+  "host": {"type": "string"},
+  "os": {"type": "string"},
+  "cpus": {"type": "integer", "minimum": 1},
+  "ram_total_mb": {"type": ["number", "null"]},
+  "ram_free_mb": {"type": ["number", "null"], "description": "free memory when measured: the smaller of free RAM and the commit still available (Windows)"},
+  "gpu": {
+   "type": ["object", "null"],
+   "additionalProperties": false,
+   "required": ["name", "vram_total_mb", "vram_free_mb"],
+   "properties": {"name": {"type": "string"}, "vram_total_mb": {"type": "number"}, "vram_free_mb": {"type": "number"}}
+  },
+  "per_worker_mb": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["ram", "vram"],
+   "properties": {"ram": {"type": "object", "additionalProperties": {"type": "number"}}, "vram": {"type": "number"}}
+  },
+  "max_workers": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["gpu", "cpu", "proxy"],
+   "properties": {"gpu": {"type": "integer", "minimum": 1}, "cpu": {"type": "integer", "minimum": 1}, "proxy": {"type": "integer", "minimum": 1}}
+  },
+  "limits": {
+   "type": "object",
+   "additionalProperties": false,
+   "required": ["gpu", "cpu", "proxy"],
+   "properties": {
+    "gpu": {"type": "array", "items": {"type": "string"}},
+    "cpu": {"type": "array", "items": {"type": "string"}},
+    "proxy": {"type": "array", "items": {"type": "string"}}
+   }
+  }
+ }
+}

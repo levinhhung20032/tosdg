@@ -90,6 +90,7 @@ hợp lệ thất bại, và `2` khi tham số hoặc file đầu vào sai (mộ
 ### `generate` — sinh một lô
 ```
 python -m tosdg generate CONFIG --out DIR [--num N] [--seed S] [--background-library DIR] [--image-format {png,jpg}] [--overwrite]
+                         [--renderer {cpu,gpu}] [--workers N|auto]
 ```
 | Tuỳ chọn | Ý nghĩa |
 |---|---|
@@ -99,6 +100,8 @@ python -m tosdg generate CONFIG --out DIR [--num N] [--seed S] [--background-lib
 | `--num N` | Ghi đè `num_samples` (≥ 1). |
 | `--seed S` | Ghi đè `master_seed` (≥ 0). |
 | `--background-library DIR` | Ghi đè `background_library` của config. |
+| `--renderer cpu\|gpu` | Renderer mesh, ghi đè `mesh_renderer` của config (thuộc config: ảnh hai renderer khác nhau). Chỉ backend `mesh`. |
+| `--workers N\|auto` | Số tiến trình sinh song song (mặc định 1). File giống từng byte với mọi N. N được giới hạn theo cấu hình máy (CPU, bộ nhớ, VRAM khi dùng GPU) đo lần đầu và lưu ở `data/machine.json`; `auto` = N tối đa; xem `tosdg machine`. Mỗi tiến trình khởi động ~5–7 s nên lô nhỏ lợi ít (D47). |
 
 Mẫu lỗi sẽ được bốc lại (tối đa `max_attempts_per_sample` lần) hoặc ghi nhận là lỗi trong
 manifest; không bao giờ được ghi ra. Cuối cùng toàn bộ dataset được kiểm tra hợp lệ.
@@ -112,12 +115,20 @@ tính nhất quán của bbox và keypoint, và tay ra hiệu nằm trong khung 
 
 ### `reproduce` — sinh lại và so sánh
 ```
-python -m tosdg reproduce DATASET_DIR [--index I [I ...]] [--background-library DIR]
+python -m tosdg reproduce DATASET_DIR [--index I [I ...]] [--background-library DIR] [--workers N|auto]
 ```
 Trước hết kiểm tra file trên đĩa so với manifest (như `validate`, in `ON DISK ...` nếu có lỗi), rồi dựng lại
 các mẫu từ config và seed trong manifest và so hash. In ra `identical` hoặc `DIFFERENT` cho từng mẫu và một
 dòng tổng kết. `--index` giới hạn trong các chỉ số mẫu cụ thể; `--background-library` khi thư viện nền đã
 chuyển chỗ (manifest ghi đường dẫn tương đối với repo, hoặc tuyệt đối nếu nằm ngoài repo).
+
+### `machine` — cấu hình máy và số tiến trình
+```
+python -m tosdg machine [--refresh] [--file PATH]
+```
+In số luồng CPU, RAM / bộ nhớ commit còn trống, GPU và VRAM trống (`nvidia-smi`), và `--workers auto` sẽ chạy bao nhiêu tiến trình với từng renderer (gpu / cpu / proxy) kèm giới hạn nào quyết định. Mỗi tiến trình được tính ~2,2 GB bộ nhớ (CPU) hoặc ~3,5 GB bộ nhớ + 1,3 GB VRAM (GPU).
+
+**Cấu hình máy được lưu**: lần đầu (lệnh này, hoặc `generate` / `reproduce` với `--workers` > 1) tool đo máy và lưu vào `data/machine.json` (git bỏ qua — mỗi máy một file); các lần sau chỉ đọc file. `--refresh` đo lại (bộ nhớ trống thay đổi theo những chương trình đang mở); tool cũng tự đo lại khi file là của máy khác (tên máy, số CPU), hỏng, hoặc làm với hằng số cũ. `--file` / biến môi trường `TOSDG_MACHINE_FILE`: đổi chỗ lưu. Nếu lúc chạy máy ít bộ nhớ hơn lúc đo, tiến trình hết bộ nhớ không làm hỏng lần chạy (mẫu được làm lại) — chạy `--refresh` để giảm N.
 
 ### `validate-profile` — kiểm tra profile quốc gia
 ```
@@ -697,10 +708,10 @@ tests/          test đơn vị + end-to-end + studio
 profiles/<CC>/models/  model người nguồn của bạn (GLB);  profiles/<CC>/assets/  fit JSON của chúng + GLB có skin mà renderer dùng
 tools/          build_proxy_skeleton.py, build_tripo_skeleton.py (dựng lại skeleton),
                 stop_studio.ps1 (đóng Studio đang chạy cho start_studio.bat), bring_to_front.ps1
-docs/           PROJECT_STATE.md (tiến độ), ARCHITECTURE.md, DECISIONS.md (D1–D46), HUONG_DAN.md (tài liệu này), CHANGELOG.md
+docs/           PROJECT_STATE.md (tiến độ), ARCHITECTURE.md, DECISIONS.md (D1–D47), HUONG_DAN.md (tài liệu này), CHANGELOG.md
 start_studio.bat, install_requirements.bat   mở Studio một lần bấm (đóng bản đang chạy trước); cài/nâng cấp gói
 version/        bản lưu RAR của toàn bộ file tại các mốc (ví dụ tosdg_1st_acceptable.rar)
-data/, out/     dữ liệu sinh ra (git bỏ qua)
+data/, out/     dữ liệu sinh ra (git bỏ qua); data/machine.json: cấu hình máy cho --workers
 ```
 
 ## 10. Kiểm thử

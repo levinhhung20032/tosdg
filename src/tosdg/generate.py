@@ -15,6 +15,8 @@ Contents:
   class SampleResult
   render_scene
   generate_sample
+  generate_index — one sample by index with its retries (run and parallel.run_parallel)
+  build_manifest — write manifest.json
   write_sample
   prepare_output_dir — Create the output dir, or refuse to mix a new dataset into an old one
   portable_path / resolve_portable_path — Manifest paths without user names, "/" on every OS
@@ -226,32 +228,30 @@ def resolve_portable_path(text: str) -> Path:
     return p if p.is_absolute() else repo_root() / p
 
 
-def run(ctx: GenerationContext, out_dir: str | Path, indices: list[int] | None = None,
-        log=print, overwrite: bool = False) -> dict:
-    cfg = ctx.config
-    out = Path(out_dir)
-    prepare_output_dir(out, overwrite)
-    max_attempts = cfg.get("max_attempts_per_sample", 20)
-    indices = list(range(cfg["num_samples"])) if indices is None else indices
-    samples, failures, rejection_counts = [], [], {}
-    for i in indices:
-        sample_seed = rngmod.derive_sample_seed(cfg["master_seed"], i)
-        reasons = []
-        for attempt in range(max_attempts):
-            res = generate_sample(ctx, i, sample_seed, attempt)
-            if res.ok:
-                hashes = write_sample(out, res)
-                samples.append({"sample_id": res.meta["sample_id"], "index": i, "sample_seed": sample_seed,
-                                "attempt": attempt, "metadata": f"{res.meta['sample_id']}.json", "sha256": hashes})
-                log(f"[{i:04d}] ok  attempt={attempt} gesture={res.meta['officer']['gesture']['id']} "
+def generate_index(ctx: GenerationContext, out: Path, i: int, max_attempts: int) -> dict:
+    """Sample `i` with its retries, written to `out` when it passes. Returns {"index", "sample" (manifest row) | None,
+    "failure" | None, "rejections": {reason: count}, "line": log line}; run and parallel.run_parallel both use it."""
+    sample_seed = rngmod.derive_sample_seed(ctx.config["master_seed"], i)
+    reasons, rejections = [], {}
+    for attempt in range(max_attempts):
+        res = generate_sample(ctx, i, sample_seed, attempt)
+        if res.ok:
+            hashes = write_sample(out, res)
+            row = {"sample_id": res.meta["sample_id"], "index": i, "sample_seed": sample_seed, "attempt": attempt,
+                   "metadata": f"{res.meta['sample_id']}.json", "sha256": hashes}
+            line = (f"[{i:04d}] ok  attempt={attempt} gesture={res.meta['officer']['gesture']['id']} "
                     f"camera={res.meta['camera']['profile']} bbox={res.meta['officer']['bbox']['xyxy']}")
-                break
-            reasons.append(res.errors[0])
-            key = res.errors[0].split(":")[0]
-            rejection_counts[key] = rejection_counts.get(key, 0) + 1
-        else:
-            failures.append({"index": i, "sample_seed": sample_seed, "reasons": reasons[-5:]})
-            log(f"[{i:04d}] FAILED after {max_attempts} attempts: {reasons[-1]}")
+            return {"index": i, "sample": row, "failure": None, "rejections": rejections, "line": line}
+        reasons.append(res.errors[0])
+        key = res.errors[0].split(":")[0]
+        rejections[key] = rejections.get(key, 0) + 1
+    return {"index": i, "sample": None, "failure": {"index": i, "sample_seed": sample_seed, "reasons": reasons[-5:]},
+            "rejections": rejections, "line": f"[{i:04d}] FAILED after {max_attempts} attempts: {reasons[-1]}"}
+
+
+def build_manifest(ctx: GenerationContext, out: Path, samples: list, failures: list, rejection_counts: dict) -> dict:
+    """Write manifest.json (samples by index, rejection counts by reason: the same for any order of making them)."""
+    cfg = ctx.config
     manifest = {
         "schema_version": MANIFEST_SCHEMA_VERSION,
         "generator": {"name": "tosdg", "version": GENERATOR_VERSION, "backend": cfg["backend"]},
@@ -262,8 +262,28 @@ def run(ctx: GenerationContext, out_dir: str | Path, indices: list[int] | None =
         "asset_hashes": ctx.asset_hashes,
         "assets_sha256": ctx.assets_sha256,
         "samples": sorted(samples, key=lambda s: s["index"]),
-        "failures": failures,
-        "rejection_counts": rejection_counts,
+        "failures": sorted(failures, key=lambda f: f["index"]),
+        "rejection_counts": dict(sorted(rejection_counts.items())),
     }
-    (out / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
+    (Path(out) / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n", encoding="utf-8")
     return manifest
+
+
+def run(ctx: GenerationContext, out_dir: str | Path, indices: list[int] | None = None,
+        log=print, overwrite: bool = False) -> dict:
+    """One process: the samples in index order (parallel.run_parallel: several processes, the same files)."""
+    out = Path(out_dir)
+    prepare_output_dir(out, overwrite)
+    max_attempts = ctx.config.get("max_attempts_per_sample", 20)
+    indices = list(range(ctx.config["num_samples"])) if indices is None else indices
+    samples, failures, rejection_counts = [], [], {}
+    for i in indices:
+        r = generate_index(ctx, out, i, max_attempts)
+        log(r["line"])
+        if r["sample"] is not None:
+            samples.append(r["sample"])
+        if r["failure"] is not None:
+            failures.append(r["failure"])
+        for k, v in r["rejections"].items():
+            rejection_counts[k] = rejection_counts.get(k, 0) + v
+    return build_manifest(ctx, out, samples, failures, rejection_counts)
